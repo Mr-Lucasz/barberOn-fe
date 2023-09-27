@@ -29,4 +29,10 @@ body,input, textarea, button{
   font-weight: 700;
   line-height: 2.25rem; 
   letter-spacing: 0.07813rem;
+
+  
+}
+
+html {
+  scroll-behavior: smooth;
 }

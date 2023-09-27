@@ -1,0 +1,18 @@
+.text-services {
+  margin-top: 1rem;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 3.25rem;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.box-services {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
