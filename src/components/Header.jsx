@@ -5,6 +5,12 @@ import { Navbar} from "./util/Navbar.jsx";
 
 
 export function Header() {
+  const links = [
+    { href: '#home', text: 'Home' },
+    { href: '#contacts', text: 'Contatos' },
+    { href: '#services', text: 'Serviços' },
+  ];
+
   return (
     <header className={styles.header}>
       <img
@@ -12,7 +18,7 @@ export function Header() {
         src={barberOnLogo}
         alt="logotipo da barbearia"
       />
-      <Navbar />
+      <Navbar links={links} />
       <Button color="white" size="large" buttonName="ENTRAR">
         ENTRAR
       </Button>

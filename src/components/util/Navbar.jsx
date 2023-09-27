@@ -1,19 +1,26 @@
-import styles from './Navbar.module.css';
+import styles from "./Navbar.module.css";
 
-export function Navbar() {
-    return (
-        <nav className={styles.navbar}>
-            <ul className={styles.navbarList}>
-                <li className={styles.navbarItem}>
-                    <a href="#home">Home</a>
-                </li>
-                <li className={styles.navbarItem}>
-                    <a href="#about">Contatos</a>
-                </li>
-                <li className={styles.navbarItem}>
-                    <a href="#services">Serviços</a>
-                </li>
-            </ul>
-        </nav>
-    );
+import PropTypes from "prop-types";
+
+export function Navbar({ links }) {
+  return (
+    <nav className={styles.navbar}>
+      <ul className={styles.navbarList}>
+        {links.map((link, index) => (
+          <li key={index} className={styles.navbarItem}>
+            <a href={link.href}>{link.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
 }
+
+Navbar.propTypes = {
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      href: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
