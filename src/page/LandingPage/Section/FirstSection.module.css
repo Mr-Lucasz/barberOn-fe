@@ -1,0 +1,13 @@
+.carouselItem {
+    width: 24.62506rem;
+  }
+  
+  .carouselImage {
+    width: 100%;
+    /* Outros estilos de imagem, se necessário */
+  }
+  
+  .bannerBarberOn{
+    height: 36rem;
+    margin-bottom: 1rem;
+  }

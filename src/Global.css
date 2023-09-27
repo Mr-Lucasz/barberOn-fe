@@ -1,0 +1,32 @@
+:root{
+  --blue-header:  #020115bf;
+  --blue-gradiente: linear-gradient(180deg, rgba(3, 9, 121, 0.5) 99.99%, rgba(3, 9, 121, 0) 100%);
+  --blue-body: #0A0918;
+}
+
+:focus{
+  outline: transparent;
+  box-shadow: 0 0 0 3px var(--green-500);
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background: var(--blue-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body,input, textarea, button{
+  font-family: 'Roboto','Roboto Flex', sans-serif;
+  color: #000;
+  text-align: center;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 2.25rem; 
+  letter-spacing: 0.07813rem;
+}

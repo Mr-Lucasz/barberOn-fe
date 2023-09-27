@@ -1,0 +1,15 @@
+.header {
+    background-color: rgba(2, 2, 21, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 7.5rem;
+    padding: 0 7rem;
+    position: fixed; /* Adicione esta propriedade */
+    top: 0; /* Fixa o cabeçalho no topo */
+    left: 0; /* Fixa o cabeçalho à esquerda */
+    right: 0; /* Fixa o cabeçalho à direita */
+    z-index: 100; /* Define a ordem em relação a outros elementos na página */
+  }
+  
