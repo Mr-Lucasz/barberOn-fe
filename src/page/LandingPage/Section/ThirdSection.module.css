@@ -1,0 +1,11 @@
+.formContatos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    width: 32.4375rem;
+}
+.root{
+    color: white;
+}
