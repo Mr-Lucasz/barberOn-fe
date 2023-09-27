@@ -12,3 +12,5 @@ Currently, two official plugins are available:
 
 Para instalar todas dependencias rode "npm i"
 Para incializar use o comando "npm run dev"
+
+Teste
