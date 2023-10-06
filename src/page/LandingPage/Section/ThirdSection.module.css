@@ -1,11 +1,47 @@
-.formContatos{
+.formContatos {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 32.4375rem;
+}
+.root {
+  color: white;
+}
+
+.wrapperContacts {
+  /* quero usar o css grid */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12rem;
+  margin-top: 8.56rem;
+  margin-bottom: 10rem;
+}
+@media screen and (max-width: 768px) {
+  .wrapperContacts {
     display: flex;
+    justify-content: center;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-    width: 32.4375rem;
+    gap: 2rem;
+
+  }
 }
-.root{
-    color: white;
+  
+
+
+
+.infoContatos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+}
+
+#messageInput {
+  color: white;
 }
