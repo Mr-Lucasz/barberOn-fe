@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import styles from './Button.module.css';
 
 export function Button({ color, buttonName, ...props }) {
-  // Create CSS classes based on the color and size props
+
   const buttonClasses = `${styles.button} ${styles[color]}`;
 
   return (
@@ -13,6 +13,6 @@ export function Button({ color, buttonName, ...props }) {
 }
 
 Button.propTypes = {
-  color: PropTypes.oneOf(['white', 'black']).isRequired,
+  color: PropTypes.oneOf(['white', 'black', 'red']).isRequired,
   buttonName: PropTypes.string.isRequired
 };

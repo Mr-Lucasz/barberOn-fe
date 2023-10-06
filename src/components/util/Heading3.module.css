@@ -1,0 +1,29 @@
+.heading3{
+  display: flex;
+  align-items: flex-start;
+}
+
+
+.white {
+  color: white;
+}
+
+.black {
+  color: black;
+}
+
+.small {
+  font-size: 0.875rem;
+}
+
+.medium {
+  font-size: 1rem;
+}
+
+.large {
+  font-size: 1.25rem;
+}
+
+
+
+
