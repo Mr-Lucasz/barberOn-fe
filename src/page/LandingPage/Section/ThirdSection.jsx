@@ -107,7 +107,7 @@ export default function ThirdSection() {
             Segunda a sexta: 09h às 20h - Sábado: 9h às 19h
           </span>
           <Heading3 color="white" fontSize="large" text="Telefone:" />
-          <span className={styles.telefone}>+📞 55 (94) 98118-3574</span>
+          <span className={styles.telefone}> 📞 +55 (94) 98118-3574</span>
         </div>
       </div>
     </>

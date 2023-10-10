@@ -15,10 +15,8 @@
   flex-direction: row;
   justify-content: center;
   gap: 12rem;
-  margin-top: 7.1rem;
-  margin-bottom: 4.17rem;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  margin: 1rem;
+
 
 }
 @media screen and (max-width: 768px) {
