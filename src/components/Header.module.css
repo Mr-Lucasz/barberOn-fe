@@ -1,3 +1,6 @@
+*{
+  scroll-padding-top: 10.5rem;
+}
 .header {
   background-color: rgba(2, 2, 21, 1);
   display: flex;
@@ -11,10 +14,5 @@
   left: 0;
   right: 0;
   z-index: 100;
-  opacity: 0;
   transition: opacity 0.2s;
-}
-.header.visible {
-  opacity: 1;
-  visibility: visible;
 }

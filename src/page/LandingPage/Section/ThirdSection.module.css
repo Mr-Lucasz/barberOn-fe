@@ -1,8 +1,9 @@
 .formContatos {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.25rem;
   width: 32.4375rem;
+  margin: 1rem;
 }
 .root {
   color: white;
@@ -14,8 +15,11 @@
   flex-direction: row;
   justify-content: center;
   gap: 12rem;
-  margin-top: 8.56rem;
-  margin-bottom: 10rem;
+  margin-top: 7.1rem;
+  margin-bottom: 4.17rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+
 }
 @media screen and (max-width: 768px) {
   .wrapperContacts {
@@ -29,8 +33,6 @@
 }
   
 
-
-
 .infoContatos {
   display: flex;
   flex-direction: column;
@@ -40,8 +42,18 @@
 .btn {
   display: flex;
   justify-content: center;
+  margin-top: 1.25rem;
 }
 
 #messageInput {
   color: white;
+}
+
+.endereco, .horario, .telefone{
+  margin-top: -1rem;
+  display: flex;
+  align-items: flex-start;
+  color: white;
+  font-size: 0.975rem;
+  font-weight: normal;
 }

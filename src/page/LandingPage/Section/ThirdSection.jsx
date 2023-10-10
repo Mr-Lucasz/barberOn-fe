@@ -4,7 +4,7 @@ import { Heading3 } from "../../../components/util/Heading3";
 import TextField from "@mui/material/TextField";
 import { Button } from "../../../components/util/Button";
 import { styled } from "@mui/material/styles";
-import { Navigate } from "react-router-dom";
+import InputMask from "react-input-mask";
 
 export default function ThirdSection() {
   const CssTextField = styled(TextField)({
@@ -15,7 +15,7 @@ export default function ThirdSection() {
       "& fieldset": { borderColor: "White" },
       "&:hover fieldset": { borderColor: "white" },
       "&.Mui-focused fieldset": { borderColor: "white" },
-      "& input": { color: "white" },
+      "& input": { color: "white", width: "90%" },
       "& textarea": { color: "white" },
     },
   });
@@ -23,15 +23,26 @@ export default function ThirdSection() {
   // Logic for sending WhatsApp message
   const sendForm = (event) => {
     event.preventDefault();
+
     try {
-      // const nameInput = document.getElementById("nameInput").value;
+      const nameInput = document.getElementById("nameInput").value;
       const numberInput = document.getElementById("numberInput").value;
-      const message = document.getElementById("messageInput").value;
+      const messageInput = document.getElementById("messageInput").value;
+
+      const name = `Olá, Sou ${nameInput}`;
+      const message = `${name}\n${messageInput}`;
 
       const whatsappLink = `https://api.whatsapp.com/send?phone=${numberInput}&text=${encodeURIComponent(
         message
       )}`;
-      Navigate(whatsappLink);
+
+      // Open  new tab or window
+      window.open(whatsappLink, "_blank");
+
+      // Clear the input
+      document.getElementById("nameInput").value = "";
+      document.getElementById("numberInput").value = "";
+      document.getElementById("messageInput").value = "";
     } catch (error) {
       console.log(error);
     }
@@ -53,13 +64,21 @@ export default function ThirdSection() {
             variant="outlined"
             fullWidth
           />
-          <CssTextField
-            id="numberInput"
-            label="Informe seu Número"
-            variant="outlined"
-            inputMode="numeric"
-            fullWidth
-          />
+          <InputMask
+            mask="+55 (99) 99999-9999"
+            maskChar=" "
+            alwaysShowMask={true}
+          >
+            {() => (
+              <CssTextField
+                id="numberInput"
+                label="Informe seu Número"
+                variant="outlined"
+                inputMode="numeric"
+                fullWidth
+              />
+            )}
+          </InputMask>
           <Heading3
             color="white"
             fontSize="large"
@@ -79,19 +98,16 @@ export default function ThirdSection() {
         </form>
         <div className={styles.infoContatos}>
           <Heading3 color="white" fontSize="large" text="Endereço:" />
-          <Heading3
-            color="white"
-            fontSize="small"
-            text="Rua 13 Norte, Lote 04 – Ed. Ilha de Manhattan – Águas Claras, Brasília – DF."
-          />
+          <span className={styles.endereco}>
+            Rua 13 Norte, Lote 04 – Ed. Ilha de Manhattan – Águas Claras,
+            Brasília – DF.
+          </span>
           <Heading3 color="white" fontSize="large" text="Horário:" />
-          <Heading3
-            color="white"
-            fontSize="small"
-            text="Segunda a sexta: 09h às 20h - Sábado: 9h às 19h"
-          />
+          <span className={styles.horario}>
+            Segunda a sexta: 09h às 20h - Sábado: 9h às 19h
+          </span>
           <Heading3 color="white" fontSize="large" text="Telefone:" />
-          <Heading3 color="white" fontSize="small" text="+55 (94) 98118-3574" />
+          <span className={styles.telefone}>+📞 55 (94) 98118-3574</span>
         </div>
       </div>
     </>
