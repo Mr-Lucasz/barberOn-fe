@@ -1,5 +1,5 @@
 *{
-  scroll-padding-top: 8rem;
+  scroll-padding-top: 10.5rem;
 }
 .header {
   background-color: rgba(2, 2, 21, 1);
@@ -15,4 +15,10 @@
   right: 0;
   z-index: 100;
   transition: opacity 0.2s;
+}
+
+.centeredLogo {
+  display: flex;
+  justify-content: center important!;; 
+  align-items: center; 
 }
