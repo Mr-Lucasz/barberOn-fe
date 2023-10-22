@@ -16,3 +16,9 @@
   z-index: 100;
   transition: opacity 0.2s;
 }
+
+.centeredLogo {
+  display: flex;
+  justify-content: center important!;; 
+  align-items: center; 
+}

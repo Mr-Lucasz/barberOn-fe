@@ -10,24 +10,31 @@
   margin-top: 3rem;
   margin-bottom: 0.5rem;
 }
+
 /* resposividade celular */
 @media screen and (max-width: 768px) {
   .boxServices {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    padding: 1rem;
     box-sizing: border-box;
     width: 21.25rem;
     height: 36.625rem;
-    gap: 1rem;
-    margin: 1rem;
-    margin-top: 1rem;
+    /* margin só pra esquerda e direita */
+    margin: 0 1rem;
   }
-  
+  .boxServices h2 {
+    display: flex;
+    justify-content: center;
+  }
+  .description-services p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 .img {
-  
   width: 14.375rem;
   height: 15.97119rem;
   object-fit: cover;
@@ -37,11 +44,14 @@
   border-radius: 1.5625rem;
 }
 
-.boxServices article{
-padding: 1rem;
+.boxServices article {
+  padding: 1rem;
 }
 
 .boxServices h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 24.5rem;
   height: 3.8125rem;
   color: #fff;
@@ -49,20 +59,22 @@ padding: 1rem;
   font-size: 2.00006rem;
   font-style: normal;
   font-weight: 700;
-  
 }
 
-
 .description-services {
-  width: 20rem;
-  height: 11.25rem;
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 20rem;
+  height: 11.25rem;
+  justify-content: center;
   box-sizing: border-box;
-
 }
 
 .description-services p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #fff;
   font-family: Roboto;
   font-size: 1.2rem;
