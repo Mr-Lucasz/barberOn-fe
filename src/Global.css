@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500&family=Roboto:wght@400;700&display=swap');
 
+
 :root{
   --blue-header:  #020115bf;
   --blue-gradiente: linear-gradient(180deg, rgba(3, 9, 121, 0.5) 99.99%, rgba(3, 9, 121, 0) 100%);
@@ -22,8 +23,8 @@ body{
   -webkit-font-smoothing: antialiased;
 }
 
-body,input, textarea, button{
-  font-family: 'Roboto','Roboto Flex', sans-serif;
+body, input, textarea, button{
+  font-family: 'Roboto','Roboto Flex', Baloo 2,  sans-serif;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 700;
