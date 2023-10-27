@@ -1,6 +1,7 @@
 import styles from "./Form.module.css";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import { Button } from "./util/Button.jsx";
 
 export function Form() {
 
@@ -37,6 +38,9 @@ export function Form() {
 
         <span>Forgot Password ?</span>
       </section>
+      <footer className={styles.formFooter}>
+        <Button color="blue" size="large" buttonName="ENTRAR"/>
+      </footer>
     </form>
   );
 }
