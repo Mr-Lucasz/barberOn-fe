@@ -5,7 +5,7 @@ import styles from "./Accordion.module.css";
 import { PropTypes } from 'prop-types';
 export const Accordion = ({ header, body }) => {
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     
     return (
         <div className={styles.wrapperAccordion}>
