@@ -24,11 +24,14 @@
   border-radius: 0.25rem;
   transition: background-color 0.3s;
   padding: 0.75rem;
+  border-bottom: 0.5px solid #e0e0e04b;
 }
 
 .headerAccordion:hover {
   background-color: rgba(2, 2, 21, 1);
 }
+
+/* cor do header após clicar */
 
 .bodyAccordion {
   width: 100%;
@@ -36,6 +39,7 @@
   align-items: center;
   justify-content: flex-start;
   padding: 0.75rem;
+  margin-top: 0.2rem;
 }
 
 .headerAccordion span:last-child {
