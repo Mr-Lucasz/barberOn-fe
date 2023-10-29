@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import { Button } from "../../../components/util/Button";
 import { styled } from "@mui/material/styles";
 import InputMask from "react-input-mask";
+import { Accordion } from "../../../components/util/Accordion";
 
 export default function ThirdSection() {
   const CssTextField = styled(TextField)({
@@ -97,17 +98,32 @@ export default function ThirdSection() {
           </div>
         </form>
         <div className={styles.infoContatos}>
-          <Heading3 color="white" fontSize="large" text="Endereço:" />
-          <span className={styles.endereco}>
-            Rua 13 Norte, Lote 04 – Ed. Ilha de Manhattan – Águas Claras,
-            Brasília – DF.
-          </span>
-          <Heading3 color="white" fontSize="large" text="Horário:" />
-          <span className={styles.horario}>
-            Segunda a sexta: 09h às 20h - Sábado: 9h às 19h
-          </span>
-          <Heading3 color="white" fontSize="large" text="Telefone:" />
-          <span className={styles.telefone}> 📞 +55 (94) 98118-3574</span>
+   
+          <Accordion
+            header={<Heading3 color="white" fontSize="large" text="Endereço:" />}
+            body={
+              <span className={styles.endereco}>
+                Rua 13 Norte, Lote 04 – Ed. Ilha de Manhattan – Águas Claras,
+                Brasília – DF.
+              </span>
+            }
+          />
+
+          <Accordion
+            header={<Heading3 color="white" fontSize="large" text="Horário:" />}
+            body={
+              <span className={styles.horario}>
+                Segunda a sexta: 09h às 20h - Sábado: 9h às 19h
+              </span>
+            }
+          />
+
+          <Accordion
+            header={<Heading3 color="white" fontSize="large" text="Telefone:" />}
+            body={
+              <span className={styles.telefone}> 📞 +55 (94) 98118-3574</span>
+            }
+          />
         </div>
       </div>
     </>

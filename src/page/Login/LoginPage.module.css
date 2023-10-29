@@ -1,0 +1,19 @@
+/* *{
+    overflow-y: hidden;
+    overflow-x: hidden;
+} */
+body {
+  overflow: hidden;
+}
+.loginWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url(/src/assets/Banner1.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+}
