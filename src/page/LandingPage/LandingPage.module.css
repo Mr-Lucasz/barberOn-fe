@@ -4,3 +4,7 @@ body{
    overflow-y: scroll !important;
 }
 
+.landingWrapper{
+   display: flex;
+   flex-direction: column;
+}

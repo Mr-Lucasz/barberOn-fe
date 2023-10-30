@@ -5,7 +5,7 @@ import { Form } from "../../components/Form.jsx";
 export function LoginPage() {
   return (
     <div className={styles.loginWrapper}>
-      <Header showButton={false} showNavbar={false}  showIconEnter={false}/>
+      <Header showButton={false} showNavbar={false} />
       <Form />
     </div>
   );

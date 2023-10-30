@@ -23,19 +23,21 @@
 .logo{
   width: 10.25rem;
 }
-
 .loginHeader {
+  display: flex;
   justify-content: center; 
 }
 
-.iconEnter{
+
+.btnEntrar{
   display: none;
 }
 
 @media screen and (max-width: 768px) {
   .header {
+    display: flex;
     height: 7.5rem;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
   }
   .logo {
@@ -44,6 +46,7 @@
   .iconEnter{
     display: flex;
     width: 4rem;
+    justify-content: flex-end;
   }
   .iconEnter:hover{
     cursor: pointer;
@@ -57,5 +60,9 @@
   .button{
     display: none;
   }
-
+  .loginHeader {
+    display: flex;
+    justify-content: center; 
+  }
+  
 }

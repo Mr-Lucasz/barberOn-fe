@@ -1,15 +1,28 @@
 .carouselItem {
-    width: 24.5rem;
+    /* width: 24.5rem; */
+    height: auto;
+    max-width: 80%;
   }
   
   .carouselImage {
-    width: 100%;
+    max-width: 100%; /* Define a largura máxima como 100% do contêiner pai */
+    height: auto; 
     /* Outros estilos de imagem, se necessário */
     margin-bottom: 1rem;
   }
-  
-  .bannerBarberOn{
-    /* margin-top: 1rem; */
-    height: 100%;
-    margin-bottom: 0.5rem;
+  #home{
+    display: flex;
+    padding: 3rem;
+
   }
+
+  .bannerBarberOn{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%; /* Define a largura máxima como 100% do contêiner pai */
+    height: auto; 
+
+  }
+

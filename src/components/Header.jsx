@@ -4,18 +4,31 @@ import barberOnLogo from "../assets/Logotipo.svg";
 import { Button } from "./util/Button.jsx";
 import { Navbar } from "./util/Navbar.jsx";
 import { Link } from "react-router-dom";
-import enterIcon from "../assets/Enter.svg";
+import { useEffect, useState } from "react";
 
 export function Header({
   showButton = true,
   showNavbar = true,
-  showIconEnter = true,
+
 }) {
   const links = [
     { href: "#home", text: "Home" },
     { href: "#services", text: "Serviços" },
     { href: "#contacts", text: "Contatos" },
   ];
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); 
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const isLoginPage = location.pathname === "/login";
 
   return (
@@ -29,7 +42,7 @@ export function Header({
           alt="logotipo da barbearia"
         />
       </Link>
-      {showNavbar && <Navbar links={links} />}
+      {showNavbar && <Navbar links={links}isResponsiveMode={isMobile} />}
       <div className={styles.button}>
         {showButton && (
           <Link to="/login">
@@ -39,17 +52,6 @@ export function Header({
           </Link>
         )}
       </div>
-      {showIconEnter && (
-        <Link to="/login">
-          <div className={styles.btnEntrar}>
-            <img
-              className={styles.iconEnter}
-              src={enterIcon}
-              alt="icone de entrar"
-            />
-          </div>
-        </Link>
-      )}
     </header>
   );
 }
@@ -57,11 +59,9 @@ export function Header({
 Header.propTypes = {
   showButton: PropTypes.bool,
   showNavbar: PropTypes.bool,
-  showIconEnter: PropTypes.bool,
 };
 
 Header.defaultProps = {
   showButton: true,
   showNavbar: true,
-  showIconEnter: true,
 };
