@@ -37,8 +37,15 @@
   .header {
     display: flex;
     height: 7.5rem;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: opacity 0.2s;
   }
   .logo {
     width: 7rem;
@@ -52,10 +59,12 @@
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.137);
     border-radius: 1rem;
+
   }
 
   .loginHeader {
     height: 7.5rem;
+
   }
   .button{
     display: none;

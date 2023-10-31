@@ -1,22 +1,58 @@
-.form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    border-radius: 1.25rem;
-    box-shadow: 0px 24px 24px 12px rgba(0, 0, 0, 0.25);
-    width: 40.5rem;
-    height: 80%;
-    margin-top: 5rem;
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+.formTitle,
+.formSubtitle {
+  font-family: Poppins;
 }
-.formSection{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-    gap: 1rem;
+
+.formTitle {
+  color: #000;
+ 
+  font-family: Open Sans;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.here {
+    color: #9A3648;
+    /* add sublinhado*/
+    text-decoration: underline;
+    font-weight: 600;
+
+}
+
+.formSubtitle{
+    color: #000;
+   
+    font-family: Poppins;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.formHeader{
     
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 1.25rem;
+  box-shadow: 0px 24px 24px 12px rgba(0, 0, 0, 0.25);
+  width: 40.5rem;
+  height: 80%;
+  margin-top: 5rem;
+  gap: 5rem;
+}
+.formSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+  gap: 1rem;
+}

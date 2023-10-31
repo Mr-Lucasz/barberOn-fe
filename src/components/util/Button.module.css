@@ -52,3 +52,19 @@
   );
   color: white;
 }
+
+.blue{
+  color: white;
+  background: #0A2FB6;
+  border-radius: 0.375rem !important;
+  width: 6.18225rem;
+  border: solid 1px #0A2FB6;
+
+}
+
+.button.blue:hover {
+  cursor: pointer;
+  color: #0A2FB6;
+  background: white;
+  box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15) !important;
+}

@@ -1,28 +1,60 @@
-.carouselItem {
-    /* width: 24.5rem; */
-    height: auto;
-    max-width: 80%;
+.home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: row; /* As imagens estarão em linha */
+  align-items: center; /* Alinhe as imagens verticalmente */
+  margin: 1rem 0; /* Adicione margem conforme necessário */
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.carouselImage {
+  display: flex;
+  width: 22.5rem;
+  height: auto;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 768px) {
+
+  .home {
+   display: flex;
+
+  flex-direction: column;
+  margin: 5rem 0 0 0 ;
+    
   }
-  
-  .carouselImage {
-    max-width: 100%; /* Define a largura máxima como 100% do contêiner pai */
-    height: auto; 
-    /* Outros estilos de imagem, se necessário */
-    margin-bottom: 1rem;
-  }
-  #home{
+  .imageContainer {
     display: flex;
-    padding: 3rem;
-
-  }
-
-  .bannerBarberOn{
-
-    display: flex;
-    justify-content: center;
+    flex-direction: column; 
     align-items: center;
-    max-width: 100%; /* Define a largura máxima como 100% do contêiner pai */
-    height: auto; 
-
+    margin: 1rem 0; 
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+    width: 50%;
+  }
+  .carouselImage {
+    display: flex;
+    width:100%;
+    height: auto;
+    flex-direction: row;
   }
 
+}
+
+.bannerBarberOn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}

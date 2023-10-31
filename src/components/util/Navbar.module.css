@@ -60,7 +60,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
   }
 
   .mobile:hover {
@@ -82,7 +81,6 @@
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.137);
     border-radius: 1rem;
-
   }
 
   .navbarItem {
