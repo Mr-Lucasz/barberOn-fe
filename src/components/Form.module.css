@@ -1,12 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+
+
+
+
 .formTitle,
 .formSubtitle {
   font-family: Poppins;
 }
 
 .formTitle {
+  padding-bottom: 1rem;
   color: #000;
- 
   font-family: Open Sans;
   font-size: 1.75rem;
   font-style: normal;
@@ -15,24 +20,28 @@
 }
 
 .here {
-    color: #9A3648;
-    /* add sublinhado*/
-    text-decoration: underline;
-    font-weight: 600;
+  color: #9a3648;
+  /* add sublinhado*/
 
+  font-weight: 600;
+}
+.here:hover {
+  color: #9a3648;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.formSubtitle{
-    color: #000;
-   
-    font-family: Poppins;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+.formSubtitle {
+  color: #000;
+
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
-.formHeader{
-    
+.formHeader {
 }
 
 .form {
@@ -44,15 +53,56 @@
   border-radius: 1.25rem;
   box-shadow: 0px 24px 24px 12px rgba(0, 0, 0, 0.25);
   width: 40.5rem;
-  height: 80%;
-  margin-top: 5rem;
-  gap: 5rem;
+  height: auto !important;
+  gap: 2rem;
+  box-sizing: border-box;
+  padding: 1.5em;
+  margin: 1rem;
 }
 .formSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1rem;
   gap: 1rem;
+  width: 32rem;
+}
+.spanForgot {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  padding-right: 0.2rem;
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+  margin-top: -1rem;
+}
+.spanForgot:hover {
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+h2 {
+  display: flex;
+  width: 100%;
+  padding-left: 1rem;
+}
+.userType {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-direction: row;
+  gap: 1rem;
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+}
+
+
+.formFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.userTypeCheckbox:hover {
+  cursor: pointer;
 }

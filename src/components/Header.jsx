@@ -30,10 +30,11 @@ export function Header({
     };
   }, []);
   const isLoginPage = location.pathname === "/login";
+  const isRegisterPage = location.pathname === "/register";
 
   return (
     <header
-      className={`${styles.header} ${isLoginPage ? styles.loginHeader : ""}`}
+      className={`${styles.header} ${isLoginPage ? styles.loginHeader : ""} ${isRegisterPage ? styles.loginHeader : ""}`}
     >
       <Link to="/">
         <img
