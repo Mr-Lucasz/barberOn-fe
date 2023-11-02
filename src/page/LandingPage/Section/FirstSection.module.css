@@ -11,7 +11,6 @@
   align-items: center; /* Alinhe as imagens verticalmente */
   margin: 1rem 0; /* Adicione margem conforme necessário */
   gap: 1rem;
-  padding: 1rem;
   justify-content: center;
   width: 100%;
 }
@@ -38,7 +37,6 @@
     align-items: center;
     margin: 1rem 0; 
     gap: 1rem;
-    padding: 1rem;
     justify-content: center;
     width: 50%;
   }
@@ -57,4 +55,5 @@
   align-items: center;
   width: 100%;
   box-sizing: border-box;
+  margin-top: 3rem; /* Ajuste este valor conforme necessário */
 }

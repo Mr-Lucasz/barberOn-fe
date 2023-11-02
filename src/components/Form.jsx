@@ -8,6 +8,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import PropTypes from "prop-types";
 import InputMask from "react-input-mask";
+import FileAdd from "../assets/FileAdd.svg";
 
 export function Form({ formType, showForgotPassword }) {
   const navigate = useNavigate();
@@ -16,6 +17,12 @@ export function Form({ formType, showForgotPassword }) {
 
   const [cpf, setCpf] = useState("");
   const [number, setNumber] = useState("");
+  const [isBarberOnEmployee, setIsBarberOnEmployee] = useState(false);
+
+  // Adicione uma função para lidar com a mudança do checkbox
+  const handleUserTypeChange = (event) => {
+    setIsBarberOnEmployee(event.target.checked);
+  };
 
   const handleCpfChange = (event) => {
     setCpf(event.target.value);
@@ -27,6 +34,14 @@ export function Form({ formType, showForgotPassword }) {
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+  const handleUpload = () => {
+    //depois de clicar e selecionar
+    const fileInput = document.getElementById("barberOnEmployeeFile");
+    fileInput.click();
+    
+    
+
   };
 
   const validateForm = (email, password) => {
@@ -95,12 +110,24 @@ export function Form({ formType, showForgotPassword }) {
             Por favor, informe seus dados para{" "}
             {formType === "" ? "acessar" : "criar"} uma conta
             <p>
-              Você pode logar {" "}
+              Você pode logar{" "}
               <a className={styles.here} href="/login">
                 aqui!
               </a>
             </p>
           </span>
+        )}
+        {(formType === "login" || formType === "") && (
+          <div className={styles.userType}>
+            <input
+              onChange={handleUserTypeChange}
+              type="checkbox"
+              className={styles.userTypeCheckbox}
+            />
+            <label className={styles.userTypeLabel} htmlFor="userType">
+              Funcionário BarberOn
+            </label>
+          </div>
         )}
       </header>
       <section className={styles.formSection}>
@@ -152,6 +179,25 @@ export function Form({ formType, showForgotPassword }) {
             </InputMask>
           </>
         )}
+        {isBarberOnEmployee && formType === "" && (
+          <div>
+            <input
+              style={{ display: "none" }}
+              type="file"
+              id="barberOnEmployeeFile"
+              className={styles.inputFile}
+              name="barberOnEmployeeFile"
+            />
+            <button
+              type="button"
+              className={styles.buttonUpload}
+              onClick={handleUpload}
+            >
+              Faça upload da sua Foto de Perfil
+              <img src={FileAdd} alt="Faça upload da sua Foto de Perfil" />
+            </button>
+          </div>
+        )}
         <TextField
           id="outlined-email"
           label="Informe seu Email"
@@ -181,7 +227,9 @@ export function Form({ formType, showForgotPassword }) {
           }}
         />
         {showForgotPassword && (
-          <span className={styles.spanForgot}>Forgot Password ?</span>
+          <span className={styles.spanForgot}>
+            <a href="/forgot-password">Forgot Password ?</a>
+          </span>
         )}
       </section>
       <footer className={styles.formFooter}>
@@ -191,15 +239,6 @@ export function Form({ formType, showForgotPassword }) {
           buttonName={formType === "login" ? "ENTRAR" : "CADASTRAR"}
           onClick={handleClick}
         />
-
-        {(formType === "login" || formType === "") && (
-          <div className={styles.userType}>
-            <input type="checkbox" className={styles.userTypeCheckbox} />
-            <label className={styles.userTypeLabel} htmlFor="userType">
-              Funcionário BarberOn
-            </label>
-          </div>
-        )}
       </footer>
     </form>
   );

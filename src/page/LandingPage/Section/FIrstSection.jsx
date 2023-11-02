@@ -17,7 +17,7 @@ export function FirstSection() {
           alt="Imagem 1"
           className={styles.carouselImage}
         />
-        {/* <img
+        <img
           src={imgSection1}
           alt="Imagem 2"
           className={styles.carouselImage}
@@ -31,7 +31,7 @@ export function FirstSection() {
           src={imgSection1}
           alt="Imagem 3"
           className={styles.carouselImage}
-        /> */}
+        />
       </div>
 
     </section>

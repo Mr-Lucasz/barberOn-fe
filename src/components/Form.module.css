@@ -1,9 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
-
-
-
-
 .formTitle,
 .formSubtitle {
   font-family: Poppins;
@@ -80,6 +76,10 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.spanForgot a {
+  text-decoration: none;
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+}
 
 h2 {
   display: flex;
@@ -88,13 +88,13 @@ h2 {
 }
 .userType {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   flex-direction: row;
+  padding-top: 0.5rem;
   gap: 1rem;
   color: var(--black-06, rgba(0, 0, 0, 0.6));
 }
-
 
 .formFooter {
   display: flex;
@@ -105,4 +105,26 @@ h2 {
 }
 .userTypeCheckbox:hover {
   cursor: pointer;
+}
+
+.buttonUpload {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-style: normal;
+  color: rgba(15, 14, 14, 0.637);
+  font-weight: 400;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 32rem;
+  border-radius: 4px;
+  padding: 0.5rem;
+  background-color: white;
+  border: 1px solid rgba(32, 28, 28, 0.267);
+}
+
+.buttonUpload:hover {
+  cursor: pointer;
+  border: 1px solid rgba(32, 28, 28, 0.267);
+  background-color: rgba(32, 28, 28, 0.267);
 }
