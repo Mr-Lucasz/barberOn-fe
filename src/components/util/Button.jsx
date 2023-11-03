@@ -12,7 +12,7 @@ export function Button({ color, buttonName, onClick, id, ...props }) {
 }
 
 Button.propTypes = {
-  color: PropTypes.oneOf(['white', 'black', 'red']).isRequired,
+  color: PropTypes.oneOf(['white', 'black', 'red', 'blue']).isRequired,
   buttonName: PropTypes.string.isRequired,
   onClick: PropTypes.func, 
   id: PropTypes.string,

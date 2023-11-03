@@ -1,12 +1,12 @@
 import styles from "./LoginPage.module.css";
 import { Header } from "../../components/Header.jsx";
-import { Form } from "../../components/Form.jsx";
+import { FormLogin } from "../../components/Form/FormLogin.jsx";
 
 export function LoginPage() {
   return (
     <div className={styles.loginWrapper}>
       <Header showButton={false} showNavbar={false} />
-      <Form formType="login" showForgotPassword={true} />
+      <FormLogin showForgotPassword={true} />
     </div>
   );
 }
