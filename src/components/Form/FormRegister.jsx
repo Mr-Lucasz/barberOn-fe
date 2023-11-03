@@ -65,7 +65,8 @@ export function FormRegister({ showForgotPassword }) {
       dateOfBirth === "" ||
       dateOfBirth === undefined ||
       isBarberOnEmployee === undefined ||
-      (isBarberOnEmployee && (barberOnEmployeeFile === "" || barberOnEmployeeFile === undefined))
+      (isBarberOnEmployee &&
+        (barberOnEmployeeFile === "" || barberOnEmployeeFile === undefined))
     ) {
       alert("Preencha todos os campos");
       return false;
@@ -89,8 +90,12 @@ export function FormRegister({ showForgotPassword }) {
       const isBarberOnEmployee = userTypeElement
         ? userTypeElement.checked
         : false;
-        const barberOnEmployeeFileElement = document.getElementById("barberOnEmployeeFile");
-        const barberOnEmployeeFile = barberOnEmployeeFileElement ? barberOnEmployeeFileElement.value : null;
+      const barberOnEmployeeFileElement = document.getElementById(
+        "barberOnEmployeeFile"
+      );
+      const barberOnEmployeeFile = barberOnEmployeeFileElement
+        ? barberOnEmployeeFileElement.value
+        : null;
 
       if (
         !validateForm(
@@ -121,7 +126,7 @@ export function FormRegister({ showForgotPassword }) {
 
       console.log(user);
       alert("Cadastro Finalizado com sucesso!");
-      navigate(`/register/step1/${user.id}`);
+      navigate(`/register/${user.id}/step1`);
     } catch (error) {
       console.log(error);
       alert("Erro ao realizar cadastro");

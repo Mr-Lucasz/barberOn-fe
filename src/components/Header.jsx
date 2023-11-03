@@ -5,22 +5,20 @@ import { Button } from "./util/Button.jsx";
 import { Navbar } from "./util/Navbar.jsx";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-export function Header({
-  showButton = true,
-  showNavbar = true,
-
-}) {
+export function Header({ showButton = true, showNavbar = true }) {
   const links = [
     { href: "#home", text: "Home" },
     { href: "#services", text: "Serviços" },
     { href: "#contacts", text: "Contatos" },
   ];
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const { id, step } = useParams();
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); 
+      setIsMobile(window.innerWidth < 768);
     };
 
     window.addEventListener("resize", handleResize);
@@ -31,10 +29,12 @@ export function Header({
   }, []);
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
+  const isRegisterStepPage = id && step;
 
   return (
     <header
-      className={`${styles.header} ${isLoginPage ? styles.loginHeader : ""} ${isRegisterPage ? styles.loginHeader : ""}`}
+      className={`${styles.header} ${isLoginPage ? styles.loginHeader : ""} 
+      ${isRegisterPage ? styles.loginHeader : "" }${isRegisterStepPage ? styles.loginHeader : ""}`}
     >
       <Link to="/">
         <img
@@ -43,7 +43,7 @@ export function Header({
           alt="logotipo da barbearia"
         />
       </Link>
-      {showNavbar && <Navbar links={links}isResponsiveMode={isMobile} />}
+      {showNavbar && <Navbar links={links} isResponsiveMode={isMobile} />}
       <div className={styles.button}>
         {showButton && (
           <Link to="/login">
