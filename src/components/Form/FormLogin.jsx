@@ -23,6 +23,9 @@ export function FormLogin({ showForgotPassword }) {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  const handleRedirectRegister = () => {
+    navigate("/register");
+  };
 
   const validateForm = (email, password) => {
     const regexEmail = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
@@ -79,7 +82,7 @@ export function FormLogin({ showForgotPassword }) {
           Por favor, informe seus dados para acessar uma conta
           <p>
             Você pode se cadastrar{" "}
-            <a className={styles.here} href="/register">
+            <a className={styles.here} onClick={handleRedirectRegister}>
               clicando aqui!
             </a>
           </p>
