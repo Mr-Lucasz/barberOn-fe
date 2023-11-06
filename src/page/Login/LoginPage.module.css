@@ -3,7 +3,7 @@
     overflow-x: hidden;
 } */
 body {
-  overflow: hidden;
+  overflow-y: hidden;
 }
 .loginWrapper {
   display: flex;

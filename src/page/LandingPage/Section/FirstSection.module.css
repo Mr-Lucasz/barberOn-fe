@@ -1,15 +1,59 @@
-.carouselItem {
-    width: 24.5rem;
+.home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: row; /* As imagens estarão em linha */
+  align-items: center; /* Alinhe as imagens verticalmente */
+  margin: 1rem 0; /* Adicione margem conforme necessário */
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.carouselImage {
+  display: flex;
+  width: 22.5rem;
+  height: auto;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 768px) {
+
+  .home {
+   display: flex;
+
+  flex-direction: column;
+  margin: 5rem 0 0 0 ;
+    
   }
-  
+  .imageContainer {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    margin: 1rem 0; 
+    gap: 1rem;
+    justify-content: center;
+    width: 50%;
+  }
   .carouselImage {
-    width: 100%;
-    /* Outros estilos de imagem, se necessário */
-    margin-bottom: 1rem;
+    display: flex;
+    width:100%;
+    height: auto;
+    flex-direction: row;
   }
-  
-  .bannerBarberOn{
-    /* margin-top: 1rem; */
-    height: 100%;
-    margin-bottom: 0.5rem;
-  }
+
+}
+
+.bannerBarberOn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 3rem; /* Ajuste este valor conforme necessário */
+}
