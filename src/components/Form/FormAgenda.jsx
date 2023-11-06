@@ -5,26 +5,49 @@ import Chip from "@mui/material/Chip";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Fab from "@mui/material/Fab";
 import { useState } from "react";
-
 import EditIcon from "@mui/icons-material/Edit";
 import { Button } from "../util/Button";
+import Modal from "../util/Modal";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import Trash from "../../assets/Trash.svg";
+
+const diaDaSemana = [
+  { id: 1, dia: "Segunda - Feira" },
+  { id: 2, dia: "Terça - Feira" },
+  { id: 3, dia: "Quarta - Feira" },
+  { id: 4, dia: "Quinta - Feira" },
+  { id: 5, dia: "Sexta - Feira" },
+  { id: 6, dia: "Sábado" },
+  { id: 7, dia: "Domingo" },
+];
+
+const theme = createTheme({
+  components: {
+    MuiSwitch: {
+      styleOverrides: {
+        switchBase: {
+          color: "white",
+          // hover
+          "&.Mui-checked:hover": {
+            cursor: "pointer",
+          },
+          "&.Mui-checked": {
+            color: "#030979",
+          },
+          "&.Mui-checked + .MuiSwitch-track": {
+            backgroundColor: "#030979",
+          },
+        },
+      },
+    },
+    //style Fab
+  },
+});
 
 export function FormAgenda() {
-  const diaDaSemana = [
-    { id: 1, dia: "Segunda - Feira" },
-    { id: 2, dia: "Terça - Feira" },
-    { id: 3, dia: "Quarta - Feira" },
-    { id: 4, dia: "Quinta - Feira" },
-    { id: 5, dia: "Sexta - Feira" },
-    { id: 6, dia: "Sábado" },
-    { id: 7, dia: "Domingo" },
-  ];
-
-  const statusChip = [
-    { id: 1, status: "Disponivel" },
-    { id: 2, status: "Indiponível" },
-  ];
-
   const [isChecked, setIsChecked] = useState({
     1: true,
     2: true,
@@ -35,28 +58,34 @@ export function FormAgenda() {
     7: false,
   });
 
-  const theme = createTheme({
-    components: {
-      MuiSwitch: {
-        styleOverrides: {
-          switchBase: {
-            color: "white",
-            // hover
-            "&.Mui-checked:hover": {
-              cursor: "pointer",
-            },
-            "&.Mui-checked": {
-              color: "#030979",
-            },
-            "&.Mui-checked + .MuiSwitch-track": {
-              backgroundColor: "#030979",
-            },
-          },
-        },
-      },
-      //style Fab
-    },
-  });
+  const statusChip = [
+    { id: 1, status: "Disponivel" },
+    { id: 2, status: "Indiponível" },
+  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectDay, setSelectDay] = useState("");
+  const [pauses, setPauses] = useState([]);
+
+  const addPause = () => {
+    event.preventDefault();
+    setPauses([...pauses, { start: "", end: "" }]);
+  };
+
+  const deletePause = (index) => {
+    setPauses(pauses.filter((_, i) => i !== index));
+  };
+  const handleClickSalvar = () => {
+    event.preventDefault();
+    setIsModalOpen(false);
+    alert("Salvo com sucesso!");
+
+  };
+
+  const handleClickCancelar = () => {
+    event.preventDefault();
+    console.log("cancelar");
+    setIsModalOpen(false);
+  };
 
   return (
     <FormUtil>
@@ -72,25 +101,86 @@ export function FormAgenda() {
               <Switch
                 defaultChecked
                 checked={isChecked[dia.id]}
-                onChange={() =>{
-                  setIsChecked({ ...isChecked, [dia.id]: !isChecked[dia.id] })
+                onChange={() => {
+                  setIsChecked({ ...isChecked, [dia.id]: !isChecked[dia.id] });
                 }}
               />
             </ThemeProvider>
             <label className={styles.switchLabel}> {dia.dia}</label>
-            <Chip label={isChecked[dia.id] ? "Disponivel" : "Indisponivel"} 
-            color={isChecked[dia.id] ? "success" : "error"}
-          style={{backgroundColor: isChecked[dia.id] ? "" : "#9A3648"}}
+            {/* usar função statuChip */}
+
+            <Chip
+              label={
+                isChecked[dia.id] ? statusChip[0].status : statusChip[1].status
+              }
+              color={isChecked[dia.id] ? "success" : "error"}
+              style={{ backgroundColor: isChecked[dia.id] ? "" : "#9A3648" }}
             />
           </div>
+
           <Fab
             color="primary"
             aria-label="edit"
             size="small"
-            style={{ backgroundColor: "#030979" }}
+            style={{
+              zIndex: 1,
+              backgroundColor: isChecked[dia.id]
+                ? "#030979"
+                : "var(--black-012, rgba(0, 0, 0, 0.12)",
+            }}
+            disabled={!isChecked[dia.id]}
+            onClick={() => {
+              if (isChecked[dia.id]) {
+                console.log("abrir modal");
+                setIsModalOpen(true);
+                setSelectDay(dia.dia);
+              }
+            }}
           >
             <EditIcon />
           </Fab>
+          {isModalOpen && (
+            <Modal
+              isModalOpen={isModalOpen}
+              closeModal={() => setIsModalOpen(false)}
+              modalTitle={selectDay}
+              childrenSubtitle={"Defina seu horário comercial aqui."}
+              contentModal={
+                <>
+                  <h3 className={styles.h2Modal}>Horário de funcionamento</h3>
+                  <div className={styles.horario}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["TimePicker"]}>
+                        <TimePicker label="Horário de Início" />
+                        <TimePicker label="Horárido de Fim" />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </div>
+                  {pauses.map((pause, index) => (
+                    <div  className={styles.divPause} key={index}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={["TimePicker"]}>
+                          <TimePicker label="Início da Pausa" />
+                          <TimePicker label="Fim da Pausa" />
+                        </DemoContainer>
+                        <button onClick={() => deletePause(index)}>
+                          <img src={Trash} alt="delete" />
+                        </button>
+                      </LocalizationProvider>
+                    </div>
+                  ))}
+                  <button className={styles.buttonModalPause} onClick={addPause}>
+                    Add Pausa +
+                  </button>
+
+                  <div className={styles.btnGroup}>
+                    <button className={styles.buttonModalCancel} onClick={handleClickCancelar}>Cancelar</button>
+                    <button className={styles.buttonModalSalvar} onClick={handleClickSalvar}>Salvar</button>
+                  </div>
+                </>
+              }
+            />
+          )}
         </div>
       ))}
       <footer className={styles.formFooter}>
