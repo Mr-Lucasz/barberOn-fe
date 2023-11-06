@@ -4,6 +4,7 @@ import Switch from "@mui/material/Switch";
 import Chip from "@mui/material/Chip";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Fab from "@mui/material/Fab";
+import { useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { Button } from "../util/Button";
@@ -18,10 +19,21 @@ export function FormAgenda() {
     { id: 6, dia: "Sábado" },
     { id: 7, dia: "Domingo" },
   ];
-  // const statusChip = [
-  //   { id: 1, status: "Aberto" },
-  //   { id: 2, status: "Fechado" },
-  // ];
+
+  const statusChip = [
+    { id: 1, status: "Disponivel" },
+    { id: 2, status: "Indiponível" },
+  ];
+
+  const [isChecked, setIsChecked] = useState({
+    1: true,
+    2: true,
+    3: true,
+    4: true,
+    5: true,
+    6: true,
+    7: false,
+  });
 
   const theme = createTheme({
     components: {
@@ -57,10 +69,19 @@ export function FormAgenda() {
           {/* SWITCH BUTTON ON/OFF */}
           <div className={styles.switch}>
             <ThemeProvider theme={theme}>
-              <Switch defaultChecked />
+              <Switch
+                defaultChecked
+                checked={isChecked[dia.id]}
+                onChange={() =>{
+                  setIsChecked({ ...isChecked, [dia.id]: !isChecked[dia.id] })
+                }}
+              />
             </ThemeProvider>
             <label className={styles.switchLabel}> {dia.dia}</label>
-            <Chip label="Disponível" color="success" />
+            <Chip label={isChecked[dia.id] ? "Disponivel" : "Indisponivel"} 
+            color={isChecked[dia.id] ? "success" : "error"}
+          style={{backgroundColor: isChecked[dia.id] ? "" : "#9A3648"}}
+            />
           </div>
           <Fab
             color="primary"
