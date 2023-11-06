@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import InputMask from "react-input-mask";
 import FileAdd from "../../assets/FileAdd.svg";
 import { FormUtil } from "../util/FormUtil.jsx";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 
 export function FormRegister({ showForgotPassword }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +38,9 @@ export function FormRegister({ showForgotPassword }) {
     //depois de clicar e selecionar
     const fileInput = document.getElementById("barberOnEmployeeFile");
     fileInput.click();
+  };
+  const clickRedirectLogin = () => {
+    navigate("/login");
   };
 
   const validateForm = (
@@ -142,7 +145,7 @@ export function FormRegister({ showForgotPassword }) {
           Por favor, informe seus dados para criar uma conta
           <p>
             Você pode logar{" "}
-            <a className={styles.here} href="/login">
+            <a className={styles.here} onClick={clickRedirectLogin}>
               clicando aqui!
             </a>
           </p>
