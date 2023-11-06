@@ -13,6 +13,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Trash from "../../assets/Trash.svg";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 const diaDaSemana = [
   { id: 1, dia: "Segunda - Feira" },
@@ -48,6 +50,10 @@ const theme = createTheme({
 });
 
 export function FormAgenda() {
+
+  const navigate = useNavigate();
+  const {id} = useParams();
+
   const [isChecked, setIsChecked] = useState({
     1: true,
     2: true,
@@ -62,9 +68,21 @@ export function FormAgenda() {
     { id: 1, status: "Disponivel" },
     { id: 2, status: "Indiponível" },
   ];
+  const [config, setConfig] = useState({
+    "Segunda - Feira": null,
+    "Terça - Feira": null,
+    "Quarta - Feira": null,
+    "Quinta - Feira": null,
+    "Sexta - Feira": null,
+    "Sábado": null,
+    "Domingo": null,
+  });
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectDay, setSelectDay] = useState("");
   const [pauses, setPauses] = useState([]);
+
 
   const addPause = () => {
     event.preventDefault();
@@ -74,18 +92,37 @@ export function FormAgenda() {
   const deletePause = (index) => {
     setPauses(pauses.filter((_, i) => i !== index));
   };
+
+
+  const handleClickEdit = (dia) => {
+    if (isChecked[dia.id]) {
+      console.log("abrir modal");
+      setIsModalOpen(true);
+      setSelectDay(dia.dia);
+      setPauses(config[dia.dia] || [] );
+    }
+    }
+  
   const handleClickSalvar = () => {
     event.preventDefault();
     setIsModalOpen(false);
     alert("Salvo com sucesso!");
+    setConfig({...config, [selectDay]: pauses});
 
-  };
+  }
+
 
   const handleClickCancelar = () => {
     event.preventDefault();
     console.log("cancelar");
     setIsModalOpen(false);
   };
+
+  const handleClickContinue = () => {
+    event.preventDefault();
+    navigate(`/register/${id}/step2`);
+    console.log("continuar");
+  }
 
   return (
     <FormUtil>
@@ -130,11 +167,7 @@ export function FormAgenda() {
             }}
             disabled={!isChecked[dia.id]}
             onClick={() => {
-              if (isChecked[dia.id]) {
-                console.log("abrir modal");
-                setIsModalOpen(true);
-                setSelectDay(dia.dia);
-              }
+              handleClickEdit(dia);
             }}
           >
             <EditIcon />
@@ -156,6 +189,7 @@ export function FormAgenda() {
                       </DemoContainer>
                     </LocalizationProvider>
                   </div>
+                  <h3 className={styles.h2Modal}>Pausas</h3>
                   {pauses.map((pause, index) => (
                     <div  className={styles.divPause} key={index}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -188,6 +222,7 @@ export function FormAgenda() {
           color="blue"
           size="large"
           buttonName={"CONTINUAR"}
+          onClick={handleClickContinue}
           //estilizar cor e hover
           style={{ backgroundColor: "#030979", color: "white" }}
         />

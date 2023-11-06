@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import InputMask from "react-input-mask";
 import FileAdd from "../../assets/FileAdd.svg";
 import { FormUtil } from "../util/FormUtil.jsx";
-import { redirect, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 
 export function FormRegister({ showForgotPassword }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -127,13 +127,22 @@ export function FormRegister({ showForgotPassword }) {
         barberOnEmployeeFile: barberOnEmployeeFile,
       };
 
-      console.log(user);
-      alert("Cadastro Finalizado com sucesso!");
-      navigate(`/register/${user.id}/step1`);
+      if (isBarberOnEmployee === true) {
+        console.log(user);
+        alert("Cadastro Finalizado com sucesso!");
+        navigate(`/register/${user.id}/step1`);
+      }else if(isBarberOnEmployee === false){
+        console.log(user);
+        alert("Cadastro Finalizado com sucesso!");
+        navigate("/login");
+      }
+
     } catch (error) {
       console.log(error);
       alert("Erro ao realizar cadastro");
     }
+  
+  
   };
 
   return (
