@@ -1,0 +1,153 @@
+.headerForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  padding-left: 3.25rem;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.headerForm :hover {
+  cursor: pointer;
+}
+
+.headerForm span {
+  color: #000;
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.title {
+  color: #000;
+  font-family: Open Sans;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.serviceSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 1.5rem;
+  /* border bottom */
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.75rem;
+}
+.serviceTitle {
+  color: #000;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.5rem */
+}
+
+.serviceTempo {
+  color: #8e8e8e;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 125%; /* 1.09375rem */
+}
+.serviceValor {
+  color: #000;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 1.5rem */
+  display: flex;
+  justify-content: flex-start;
+}
+
+.icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.08rem;
+}
+
+.buttonAdd {
+  display: flex;
+  justify-content: Flex-start;
+  align-items: center;
+  width: 38.5rem;
+  height: 4.5rem;
+  border-radius: 0.375rem;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+  background: #fff;
+  padding: 0 1.2rem;
+  color: #030979;
+  font-family: Roboto Flex;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 125%;
+  gap: 0.5rem;
+}
+
+.buttonAdd:hover {
+  border: 1px solid #000;
+  background: #fff;
+  cursor: pointer;
+}
+
+.buttonAdd a {
+  text-decoration: none;
+  color: #030979;
+  font-weight: bold;
+  font-size: 2.25rem;
+}
+.btnGroup {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.buttonModalCancel,
+.buttonModalSalvar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 11.25rem;
+  gap: 0.5rem;
+  border-radius: 0.375rem;
+  border: 0.1px solid rgba(3, 9, 121, 0.37);
+  background: #fff;
+  box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15);
+  color: #030979 !important;
+}
+
+.buttonModalCancel:hover,
+.buttonModalSalvar:hover {
+    box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15)!important;
+  background: #030979 !important;
+  color: #fff !important;
+  cursor: pointer;
+}
+
+.inputGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1.5rem;
+  height: 3rem;
+}
+
+.inputGroup input {
+  padding: 0 1rem;
+}
