@@ -11,7 +11,9 @@ import { NumericFormat } from "react-number-format";
 import { Select, MenuItem } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 
-export function FormService(props) {
+let serviceList = [];
+
+export function FormService() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [services, setServices] = useState([]);
   const [serviceName, setServiceName] = useState("");
@@ -37,55 +39,28 @@ export function FormService(props) {
   };
 
   const addService = () => {
-    try {
-      const newService = {
-        id: uuidv4(),
-        name: serviceName,
-        value: serviceValue,
-        hours: serviceHours,
-        minutes: serviceMinutes,
-      };
-      const serviceIds = services.map((service) => service.id);
-      if (serviceIds.includes(newService.id)) {
-        alert("Já existe um serviço com esse ID!");
-      } else {
-        setServices([...services, newService]);
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Ocorreu um erro ao adicionar o serviço.");
-    }
-  };
-  const updateService = () => {
-    try {
-      const updatedService = {
-        ...editingService,
-        name: serviceName,
-        value: serviceValue,
-        hours: serviceHours,
-        minutes: serviceMinutes,
-      };
-      const updatedServices = services.map((service) => {
-        if (service.id === updatedService.id) {
-          return updatedService;
-        } else {
-          return service;
-        }
+    if (editingService === null) {
+      setServices((prevServices) => {
+        serviceList = [
+          ...prevServices,
+          {
+            id: uuidv4(),
+            name: serviceName,
+            value: serviceValue,
+            hours: serviceHours,
+            minutes: serviceMinutes,
+          },
+        ];
+        console.log(serviceList); // Imprime o novo estado de services
+        return serviceList;
       });
-      setServices(updatedServices);
-    } catch (error) {
-      console.error(error);
-      alert("Ocorreu um erro ao atualizar o serviço.");
     }
   };
 
   const handleClickModal = () => {
     event.preventDefault();
     setIsModalOpen(true);
-    if (editingService === null) {
-      setEditingService(null);
-      handleClickLimpar();
-    }
+    handleClickLimpar();
   };
   const handleClickLimpar = () => {
     event.preventDefault();
@@ -95,28 +70,30 @@ export function FormService(props) {
     setServiceMinutes("");
   };
 
-  const handleClickAdd = () => {
+  const handleClickSave = () => {
     event.preventDefault();
-    if (editingService === null) {
-      addService();
-      alert("Serviço adicionado com sucesso!");
-    } else {
-      updateService();
-      alert("Serviço atualizado com sucesso!");
-    }
+    addService();
     setIsModalOpen(false);
-    setEditingService(null);
   };
 
-  const handleEditarService = (service) => {
+ const handleEditarService = (service) => {
+  event.preventDefault();
+  setEditingService(service);
+  setServiceName(service.name);
+  setServiceValue(service.value);
+  setServiceHours(service.hours);
+  setServiceMinutes(service.minutes);
+  setIsModalOpen(true);
+  console.log(serviceList);
+};
+
+  const handleRemoveService = (serviceToRemove) => {
     event.preventDefault();
-    setIsModalOpen(true);
-    setEditingService(service);
-  };
-  const handleRemoveService = (service) => {
-    event.preventDefault();
-    const newServices = services.filter((s) => s.id !== service.id);
-    setServices(newServices);
+    serviceList = serviceList.filter(
+      (service) => service.id !== serviceToRemove.id
+    );
+    setServices(serviceList);
+    console.log(serviceList);
   };
 
   return (
@@ -132,7 +109,7 @@ export function FormService(props) {
             <span className={styles.serviceTempo}>
               {service.hours}h{service.minutes}min
             </span>
-            <span className={styles.serviceValor}>{service.value}</span>
+            <span className={styles.serviceValor}>R$ {service.value}</span>
             <div className={styles.icons}>
               <Fab
                 color="primary"
@@ -249,9 +226,9 @@ export function FormService(props) {
                 </button>
                 <button
                   className={styles.buttonModalSalvar}
-                  onClick={handleClickAdd}
+                  onClick={handleClickSave}
                 >
-                  Add
+                  Salvar
                 </button>
               </div>
             </>
