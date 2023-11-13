@@ -14,7 +14,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Trash from "../../assets/Trash.svg";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext.jsx";
 
 const diaDaSemana = [
   { id: 1, dia: "Segunda - Feira" },
@@ -53,6 +54,7 @@ let agenda = [];
 export function FormAgenda() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user, setUser } = useContext(UserContext);
 
   const [isChecked, setIsChecked] = useState({
     1: true,
@@ -101,6 +103,7 @@ export function FormAgenda() {
       setIsModalOpen(true);
       setSelectDay(dia.dia);
       setPauses(config[dia.dia] || []);
+  
     }
   };
 
@@ -155,7 +158,6 @@ export function FormAgenda() {
         workingHours: dia.workingHours,
       };
     });
-    console.log(agenda);
   }, [isChecked]);
 
   const handleClickSalvar = () => {
@@ -177,9 +179,19 @@ export function FormAgenda() {
   const handleClickContinue = () => {
     event.preventDefault();
     agenda = generateAgenda();
+    setUser({ ...user, workingHours: agenda });
     navigate(`/register/${id}/step2`);
     console.log(agenda);
   };
+
+  useEffect(() => {
+        // Atualiza a user sempre que qqr coisa for editar em agenda
+        setUser({ ...user, workingHours: agenda });
+        console.log(user);
+      }, [agenda]
+    );
+  
+
 
   return (
     <FormUtil>

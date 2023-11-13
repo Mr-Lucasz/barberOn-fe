@@ -1,38 +1,30 @@
-import { createContext, useState } from "react";
-import { user as initialUser } from "../mock/employeeMockData";
-import { PropTypes } from "prop-types";
+import React, { useState } from 'react';
+import propTypes from 'prop-types';
 
-export const UserContext = createContext();
+export const UserContext = React.createContext();
 
 export function UserProvider({ children }) {
-  const [user, setUser] = useState(initialUser);
-
-  const updateUserWorkingHours = (day, newWorkingHours) => {
-    const dayIndex = user.workingHours.findIndex((d) => d.day === day);
-
-    if (dayIndex !== -1) {
-      // Se o dia já existe, atualize-o
-      setUser((user) => {
-        let updatedUser = { ...user };
-        updatedUser.workingHours[dayIndex] = newWorkingHours;
-        return updatedUser;
-      });
-    } else {
-      // Se o dia não existe, adicione-o
-      setUser((user) => ({
-        ...user,
-        workingHours: [...user.workingHours, newWorkingHours],
-      }));
-    }
-  };
+  const [user, setUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+    cpf: "",
+    phone: "",
+    isBarberOnEmployee: false,
+    dateOfBirth: "",
+    barberOnEmployeeFile: "",
+    workingHours: [],
+    services: [],
+  });
 
   return (
-    <UserContext.Provider value={{ user, updateUserWorkingHours }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );
 }
 
 UserProvider.propTypes = {
-  children: PropTypes.node,
+  children: propTypes.node,
 };

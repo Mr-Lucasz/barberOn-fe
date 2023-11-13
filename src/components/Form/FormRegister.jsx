@@ -9,7 +9,9 @@ import PropTypes from "prop-types";
 import InputMask from "react-input-mask";
 import FileAdd from "../../assets/FileAdd.svg";
 import { FormUtil } from "../util/FormUtil.jsx";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext.jsx";
 
 export function FormRegister({ showForgotPassword }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +19,7 @@ export function FormRegister({ showForgotPassword }) {
   const [number, setNumber] = useState("");
   const [isBarberOnEmployee, setIsBarberOnEmployee] = useState(false);
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
   // Adicione uma função para lidar com a mudança do checkbox
   const handleUserTypeChange = (event) => {
@@ -115,8 +118,11 @@ export function FormRegister({ showForgotPassword }) {
         return;
       }
 
-      let user = {
-        id: Math.random().toString(36).substr(2, 9),
+      const userId = Math.random().toString(36).substr(2, 9);
+
+      setUser({
+        ...user,
+        id: userId,
         email: email,
         password: password,
         name: name,
@@ -125,25 +131,26 @@ export function FormRegister({ showForgotPassword }) {
         dateOfBirth: dateOfBirth,
         isBarberOnEmployee: isBarberOnEmployee,
         barberOnEmployeeFile: barberOnEmployeeFile,
-      };
-
+      });
+  
       if (isBarberOnEmployee === true) {
         console.log(user);
         alert("Cadastro Finalizado com sucesso!");
-        navigate(`/register/${user.id}/step1`);
-      }else if(isBarberOnEmployee === false){
+        navigate(`/register/${userId}/step1`);
+      } else if (isBarberOnEmployee === false) {
         console.log(user);
         alert("Cadastro Finalizado com sucesso!");
         navigate("/login");
       }
-
     } catch (error) {
       console.log(error);
       alert("Erro ao realizar cadastro");
     }
-  
-  
   };
+  useEffect(() => {
+    // Armazena o objeto do usuário no localStorage
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
 
   return (
     <FormUtil>

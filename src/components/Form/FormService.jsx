@@ -11,6 +11,8 @@ import { NumericFormat } from "react-number-format";
 import { Select, MenuItem } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext.jsx";
 
 let serviceList = [];
 
@@ -23,6 +25,7 @@ export function FormService() {
   const [serviceMinutes, setServiceMinutes] = useState("");
   const [editingService, setEditingService] = useState(null);
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
   const generateHourOptions = () => {
     let options = [];
@@ -84,8 +87,13 @@ export function FormService() {
       editService();
       console.log(serviceList);
     }
+    setUser({ ...user, services: serviceList });
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const handleClickModal = (service, event) => {
     event.preventDefault();
@@ -118,9 +126,10 @@ export function FormService() {
     if (editingService) {
       editService();
     }
+    setUser({ ...user, services: serviceList });
     navigate("/home");
   };
-  
+
   const handleRemoveService = (serviceToRemove) => {
     event.preventDefault();
     serviceList = serviceList.filter(
@@ -129,6 +138,10 @@ export function FormService() {
     setServices(serviceList);
     console.log(serviceList);
   };
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <FormUtil>
@@ -179,7 +192,7 @@ export function FormService() {
         Add Serviço
       </button>
       <footer className={styles.formFooter}>
-        <Button color="save" buttonName="CONTINUAR"  onClick={handleContinue} />
+        <Button color="save" buttonName="CONTINUAR" onClick={handleContinue} />
       </footer>
       {isModalOpen && (
         <Modal
@@ -199,10 +212,9 @@ export function FormService() {
                   fullWidth
                   multiline
                   inputMode="text"
-                  value={editingService ? editingService.name : serviceName}
+                  value={serviceName}
                   onChange={(e) => setServiceName(e.target.value)}
                 />
-
                 <TextField
                   id="valueInput"
                   label="Valor do Serviço R$"
@@ -217,9 +229,7 @@ export function FormService() {
                       decimalSeparator: ".",
                       decimalScale: 2,
                       fixedDecimalScale: true,
-                      value: editingService
-                        ? editingService.value
-                        : serviceValue,
+                      value: serviceValue,
                       onValueChange: (values) => setServiceValue(values.value),
                     },
                   }}
@@ -230,7 +240,7 @@ export function FormService() {
                 {/* input de Horas e Input de Minutos */}
                 <Select
                   fullWidth
-                  value={editingService ? editingService.hours : serviceHours}
+                  value={serviceHours}
                   onChange={(e) => setServiceHours(e.target.value)}
                   displayEmpty
                 >
@@ -242,9 +252,7 @@ export function FormService() {
 
                 <Select
                   fullWidth
-                  value={
-                    editingService ? editingService.minutes : serviceMinutes
-                  }
+                  value={serviceMinutes}
                   onChange={(e) => setServiceMinutes(e.target.value)}
                   displayEmpty
                 >
