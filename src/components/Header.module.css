@@ -75,3 +75,69 @@
   }
   
 }
+
+.icons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.icons img:hover{
+  cursor: pointer;
+
+}
+
+.notificationCount{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notificationCount span{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black; 
+  background-color: white;
+  border-radius: 45%;
+  width: 1rem;
+  height: 1rem;
+  transform: translate(-100%, -100%);
+  padding: 0.1rem;
+
+}
+
+.dropdown{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  position: fixed;
+  background-color: white;
+  box-sizing: border-box;
+  margin-left: 0.25rem;
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  width: 11rem;
+}
+
+.dropdown a{
+  color: black;
+  line-height: normal;
+  font-size: 1.5rem;
+  padding: 0.75rem;
+}
+
+.dropdown a:hover{
+  display: flex;
+  
+  width: 100%;
+  background-color: rgba(10, 10, 10, 0.253);
+
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.75rem;
+  color: #070707;
+  cursor: pointer;
+}
