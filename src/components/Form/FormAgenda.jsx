@@ -14,7 +14,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Trash from "../../assets/Trash.svg";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext.jsx";
 
 const diaDaSemana = [
   { id: 1, dia: "Segunda - Feira" },
@@ -48,11 +49,12 @@ const theme = createTheme({
     //style Fab
   },
 });
+let agenda = [];
 
 export function FormAgenda() {
-
   const navigate = useNavigate();
-  const {id} = useParams();
+  const { id } = useParams();
+  const { user, setUser } = useContext(UserContext);
 
   const [isChecked, setIsChecked] = useState({
     1: true,
@@ -74,15 +76,17 @@ export function FormAgenda() {
     "Quarta - Feira": null,
     "Quinta - Feira": null,
     "Sexta - Feira": null,
-    "Sábado": null,
-    "Domingo": null,
+    Sábado: null,
+    Domingo: null,
   });
-
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectDay, setSelectDay] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
   const [pauses, setPauses] = useState([]);
-
+  const [startPause, setStartPause] = useState("");
+  const [endPause, setEndPause] = useState("");
 
   const addPause = () => {
     event.preventDefault();
@@ -93,25 +97,79 @@ export function FormAgenda() {
     setPauses(pauses.filter((_, i) => i !== index));
   };
 
-
   const handleClickEdit = (dia) => {
     if (isChecked[dia.id]) {
       console.log("abrir modal");
       setIsModalOpen(true);
       setSelectDay(dia.dia);
-      setPauses(config[dia.dia] || [] );
-    }
-    }
+      setPauses(config[dia.dia] || []);
   
+    }
+  };
+
+  const generateAgenda = () => {
+    if (agenda.length === 0) {
+      // Se a agenda ainda não foi criada
+      diaDaSemana.forEach((dia) => {
+        agenda.push({
+          dia: dia.dia,
+          status: !isChecked[dia.id] ? "Indisponível" : "Disponível",
+          workingHours: {
+            start: new Date(start).toLocaleTimeString(),
+            end: new Date(end).toLocaleTimeString(),
+            pauses: pauses.map(() => ({
+              start: new Date(startPause).toLocaleTimeString(),
+              end: new Date(endPause).toLocaleTimeString(),
+            })),
+          },
+        });
+      });
+    } else {
+      // Se a agenda já foi criada, apenas atualize-a
+      agenda = agenda.map((dia) => {
+        if (dia.dia === selectDay) {
+          return {
+            ...dia,
+            status: !isChecked[dia.id] ? "Disponível" : "Indisponível",
+            workingHours: {
+              start: new Date(start).toLocaleTimeString(),
+              end: new Date(end).toLocaleTimeString(),
+              pauses: pauses.map(() => ({
+                start: new Date(startPause).toLocaleTimeString(),
+                end: new Date(endPause).toLocaleTimeString(),
+              })),
+            },
+          };
+        } else {
+          return dia;
+        }
+      });
+    }
+
+    return agenda;
+  };
+
+  useEffect(() => {
+    // Atualiza a agenda sempre que isChecked for alterado
+    agenda = diaDaSemana.map((dia) => {
+      return {
+        ...dia,
+        status: !isChecked[dia.id] ? "Indisponível" : "Disponível",
+        workingHours: dia.workingHours,
+      };
+    });
+  }, [isChecked]);
+
   const handleClickSalvar = () => {
     event.preventDefault();
+    agenda = generateAgenda();
     setIsModalOpen(false);
+    console.log(agenda);
     alert("Salvo com sucesso!");
-    setConfig({...config, [selectDay]: pauses});
 
-  }
-
-
+    // Atualiza o status do dia que está sendo editado
+    setIsChecked({ ...isChecked, [selectDay]: true });
+  };
   const handleClickCancelar = () => {
     event.preventDefault();
     console.log("cancelar");
@@ -120,9 +178,20 @@ export function FormAgenda() {
 
   const handleClickContinue = () => {
     event.preventDefault();
+    agenda = generateAgenda();
+    setUser({ ...user, workingHours: agenda });
     navigate(`/register/${id}/step2`);
-    console.log("continuar");
-  }
+    console.log(agenda);
+  };
+
+  useEffect(() => {
+        // Atualiza a user sempre que qqr coisa for editar em agenda
+        setUser({ ...user, workingHours: agenda });
+        console.log(user);
+      }, [agenda]
+    );
+  
+
 
   return (
     <FormUtil>
@@ -184,18 +253,36 @@ export function FormAgenda() {
                   <div className={styles.horario}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["TimePicker"]}>
-                        <TimePicker label="Horário de Início" />
-                        <TimePicker label="Horárido de Fim" />
+                        <TimePicker
+                          label="Horário de Início"
+                          onChange={setStart}
+                          value={start}
+                        />
+                        <TimePicker
+                          label="Horárido de Fim"
+                          onChange={setEnd}
+                          value={end}
+                        />
                       </DemoContainer>
                     </LocalizationProvider>
                   </div>
                   <h3 className={styles.h2Modal}>Pausas</h3>
                   {pauses.map((pause, index) => (
-                    <div  className={styles.divPause} key={index}>
+                    <div className={styles.divPause} key={index}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={["TimePicker"]}>
-                          <TimePicker label="Início da Pausa" />
-                          <TimePicker label="Fim da Pausa" />
+                          <TimePicker
+                            id="start-pause"
+                            label="Início da Pausa"
+                            onChange={setStartPause}
+                            value={startPause}
+                          />
+                          <TimePicker
+                            id="end-pause"
+                            label="Fim da Pausa"
+                            onChange={setEndPause}
+                            value={endPause}
+                          />
                         </DemoContainer>
                         <button onClick={() => deletePause(index)}>
                           <img src={Trash} alt="delete" />
@@ -203,13 +290,26 @@ export function FormAgenda() {
                       </LocalizationProvider>
                     </div>
                   ))}
-                  <button className={styles.buttonModalPause} onClick={addPause}>
+                  <button
+                    className={styles.buttonModalPause}
+                    onClick={addPause}
+                  >
                     Add Pausa +
                   </button>
 
                   <div className={styles.btnGroup}>
-                    <button className={styles.buttonModalCancel} onClick={handleClickCancelar}>Cancelar</button>
-                    <button className={styles.buttonModalSalvar} onClick={handleClickSalvar}>Salvar</button>
+                    <button
+                      className={styles.buttonModalCancel}
+                      onClick={handleClickCancelar}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      className={styles.buttonModalSalvar}
+                      onClick={handleClickSalvar}
+                    >
+                      Salvar
+                    </button>
                   </div>
                 </>
               }

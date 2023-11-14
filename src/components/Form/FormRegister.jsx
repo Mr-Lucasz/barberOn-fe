@@ -9,14 +9,37 @@ import PropTypes from "prop-types";
 import InputMask from "react-input-mask";
 import FileAdd from "../../assets/FileAdd.svg";
 import { FormUtil } from "../util/FormUtil.jsx";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext.jsx";
 
-export function FormRegister({ showForgotPassword }) {
+export function FormRegister({ showForgotPassword, barber }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState("");
   const [cpf, setCpf] = useState("");
   const [number, setNumber] = useState("");
+  const [dateNasc, setDateNasc] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isBarberOnEmployee, setIsBarberOnEmployee] = useState(false);
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [barberOnEmployeeFileName, setBarberOnEmployeeFileName] = useState("");
+
+  useEffect(() => {
+    if (barber) {
+      setIsEditMode(true);
+      setName(barber.name);
+      setDateNasc(barber.dateOfBirth);
+      setEmail(barber.email);
+      setPassword(barber.password);
+      setCpf(barber.cpf);
+      setNumber(barber.phone);
+      setIsBarberOnEmployee(barber.isBarberOnEmployee);
+      setBarberOnEmployeeFileName(barber.barberOnEmployeeFile);
+    }
+  }, [barber]);
 
   // Adicione uma função para lidar com a mudança do checkbox
   const handleUserTypeChange = (event) => {
@@ -38,7 +61,11 @@ export function FormRegister({ showForgotPassword }) {
     //depois de clicar e selecionar
     const fileInput = document.getElementById("barberOnEmployeeFile");
     fileInput.click();
+    fileInput.onchange = () => {
+      setBarberOnEmployeeFileName(fileInput.value);
+    };
   };
+
   const clickRedirectLogin = () => {
     navigate("/login");
   };
@@ -115,8 +142,11 @@ export function FormRegister({ showForgotPassword }) {
         return;
       }
 
-      let user = {
-        id: Math.random().toString(36).substr(2, 9),
+      const userId = Math.random().toString(36).substr(2, 9);
+
+      setUser({
+        ...user,
+        id: userId,
         email: email,
         password: password,
         name: name,
@@ -125,47 +155,59 @@ export function FormRegister({ showForgotPassword }) {
         dateOfBirth: dateOfBirth,
         isBarberOnEmployee: isBarberOnEmployee,
         barberOnEmployeeFile: barberOnEmployeeFile,
-      };
+      });
 
       if (isBarberOnEmployee === true) {
         console.log(user);
         alert("Cadastro Finalizado com sucesso!");
-        navigate(`/register/${user.id}/step1`);
-      }else if(isBarberOnEmployee === false){
+        navigate(`/register/${userId}/step1`);
+      } else if (isBarberOnEmployee === false) {
         console.log(user);
         alert("Cadastro Finalizado com sucesso!");
         navigate("/login");
       }
-
     } catch (error) {
       console.log(error);
       alert("Erro ao realizar cadastro");
     }
-  
-  
   };
+  useEffect(() => {
+    // Armazena o objeto do usuário no localStorage
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
   return (
     <FormUtil>
       <header className={styles.formHeader}>
-        <h1 className={styles.formTitle}>Cadastro no Sistema</h1>
-
+        <h1 className={styles.formTitle}>
+          {isEditMode ? "Editar Perfil" : "Cadastro"}
+        </h1>
         <span className={styles.formSubtitle}>
-          Por favor, informe seus dados para criar uma conta
+          {isEditMode ? "Edite seu perfil" : "Preencha os campos abaixo"}
+
           <p>
-            Você pode logar{" "}
-            <a className={styles.here} onClick={clickRedirectLogin}>
-              clicando aqui!
-            </a>
+            {isEditMode
+              ? "Se você deseja sair da edição e ir para Home?  "
+              : "Já possui cadastro?"}
+            {isEditMode ? (
+              <a className={styles.here} href="/home">
+                Clique aqui!
+              </a>
+            ) : (
+              <a className={styles.here} onClick={clickRedirectLogin}>
+                clicando aqui!
+              </a>
+            )}
           </p>
         </span>
-
         <div className={styles.userType}>
           <input
             id="userType"
             onChange={handleUserTypeChange}
             type="checkbox"
             className={styles.userTypeCheckbox}
+            checked={isBarberOnEmployee}
+            disabled={isEditMode}
           />
           <label className={styles.userTypeLabel} htmlFor="userType">
             Funcionário BarberOn
@@ -173,11 +215,12 @@ export function FormRegister({ showForgotPassword }) {
         </div>
       </header>
       <section className={styles.formSection}>
-        <h2>Cadastro</h2>
+        <h2>{isEditMode ? "" : "Cadastro"}</h2>
         <>
           <TextField
             id="outlined-name"
             label="Informe seu Nome"
+            value={name}
             variant="outlined"
             required={true}
             type="text"
@@ -186,6 +229,7 @@ export function FormRegister({ showForgotPassword }) {
           <TextField
             id="outlined-dob"
             label="Data de Nascimento"
+            value={dateNasc}
             variant="outlined"
             required={true}
             type="date"
@@ -238,12 +282,14 @@ export function FormRegister({ showForgotPassword }) {
               Faça upload da sua Foto de Perfil
               <img src={FileAdd} alt="Faça upload da sua Foto de Perfil" />
             </button>
+            {barberOnEmployeeFileName && <p>{barberOnEmployeeFileName}</p>}
           </div>
         )}
         <TextField
           id="outlined-email"
           label="Informe seu Email"
           variant="outlined"
+          value={email}
           required={true}
           type="email"
           fullWidth
@@ -252,6 +298,7 @@ export function FormRegister({ showForgotPassword }) {
           id="outlined-password"
           label="Informe sua Senha"
           variant="outlined"
+          value={password}
           required={true}
           type={showPassword ? "text" : "password"}
           fullWidth
@@ -278,7 +325,7 @@ export function FormRegister({ showForgotPassword }) {
         <Button
           color="blue"
           size="large"
-          buttonName={"CADASTRAR"}
+          buttonName={isEditMode ? "SALVAR" : "CADASTRAR"}
           onClick={handleClickRegister}
         />
       </footer>
@@ -289,4 +336,5 @@ export function FormRegister({ showForgotPassword }) {
 FormRegister.propTypes = {
   formType: PropTypes.oneOf(["login", "registration"]),
   showForgotPassword: PropTypes.bool,
+  barber: PropTypes.object,
 };
