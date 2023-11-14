@@ -6,21 +6,21 @@ import { FormRegister } from "../../../components/Form/FormRegister.jsx";
 
 export function PerfilBarberPage() {
 
-    const homePageBarberLinks = [
-        { href: "/home", text: "Home" },
-        { href: "/home/agenda", text: "Agenda" },
-        { href: "/home/service", text: "Serviços" },
-    ];
 
-    return (
-        <WrapperDefault>
-        <Header
-            showButton={false}
-            isHomePageBarber={true}
-            links={homePageBarberLinks}
-        />
-        <FormRegister />
-        </WrapperDefault>
-    );
-    }
+  const homePageBarberLinks = [
+    { href: "/home", text: "Home" },
+    { href: "/home/agenda", text: "Agenda" },
+    { href: "/home/service", text: "Serviços" },
+  ];
 
+  return (
+    <WrapperDefault>
+      <Header
+        showButton={false}
+        isHomePageBarber={true}
+        links={homePageBarberLinks}
+      />
+      <FormRegister />
+    </WrapperDefault>
+  );
+}

@@ -1,0 +1,67 @@
+.dropdownNotification {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 6.5rem;
+  right: 9rem;
+  width: auto;
+max-height: 30rem;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.section-notification {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.notification-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+.sub-container {
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.sub-container .serviceTitle {
+  margin-top: -0.5rem;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.serviceTempo {
+  color: #8e8e8e;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+}
+.serviceValor {
+  color: #000;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+}

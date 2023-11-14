@@ -11,6 +11,7 @@ import HoverIcon from "../assets/HoverNotification.svg";
 import AvatarHome from "../assets/AvatarHome.svg";
 import AvatarHover from "../assets/AvatarHover.svg";
 import { useNavigate } from "react-router-dom";
+import { NotificationDrop } from "./NotificationDrop.jsx";
 
 export function Header({
   showButton = true,
@@ -29,6 +30,8 @@ export function Header({
   const [isHoveredAvatar, setIsHoveredAvatar] = useState(false);
   const [notificationCount, setNotificationCount] = useState(1);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isDropdownVisibleNotification, setIsDropdownVisibleNotification] =
+    useState(false);
   const navigate = useNavigate();
 
   function oneNewNotification() {
@@ -40,6 +43,11 @@ export function Header({
     setIsDropdownVisible(!isDropdownVisible);
   };
 
+  const handleNotificationClick = () => {
+    event.preventDefault();
+    setIsDropdownVisibleNotification(!isDropdownVisibleNotification);
+  };
+
   const handleLogout = () => {
     event.preventDefault();
     navigate("/");
@@ -48,7 +56,7 @@ export function Header({
   const handleClickVerPerfil = () => {
     event.preventDefault();
     navigate("/home/perfil");
-  }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -63,7 +71,6 @@ export function Header({
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const isRegisterStepPage = id && step;
-  
 
   return (
     <header
@@ -97,7 +104,7 @@ export function Header({
                 src={isHovered ? HoverIcon : Notification}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                onClick={oneNewNotification}
+                onClick={handleNotificationClick}
               />
               {notificationCount > 0 && <span>{notificationCount}</span>}
             </div>
@@ -115,6 +122,7 @@ export function Header({
             <a onClick={handleLogout}>Sair</a>
           </div>
         )}
+        {isDropdownVisibleNotification && <NotificationDrop />}
       </div>
     </header>
   );
