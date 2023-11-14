@@ -7,6 +7,7 @@ import { RegisterPage } from "./page/Cadastro/RegisterPage.jsx";
 import { UserProvider } from "./context/UserContext.jsx";
 import { BarberAgendaPage } from "./page/BarberPage/Agenda/BarberAgendaPage.jsx";
 import { BarberServicePage } from "./page/BarberPage/Serviços/BarberServicePage.jsx";
+import { PerfilBarberPage } from "./page/BarberPage/Perfil/PerfilBarberPage.jsx";
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
         <Route path="/home" element={<HomePageBarber />} />
         <Route path="/home/agenda" element={<BarberAgendaPage />} />
         <Route path="/home/service" element={<BarberServicePage />} />
+        <Route path="/home/perfil" element={<PerfilBarberPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route exact path="/register" element={<RegisterPage />} />
         <Route path="/register/:id/:step" element={<RegisterPage />} />

@@ -1,16 +1,17 @@
-// import styles from "./BarberServicePage.module.css";
+// import styles from "./PerfilBarberPage.module.css";
 import { Header } from "../../../components/Header.jsx";
 import { WrapperDefault } from "../../../components/util/WrapperDefault.jsx";
-import { FormService } from "../../../components/Form/FormService.jsx";
+import { FormRegister } from "../../../components/Form/FormRegister.jsx";
 
-export function BarberServicePage() {
+
+export function PerfilBarberPage() {
 
     const homePageBarberLinks = [
         { href: "/home", text: "Home" },
         { href: "/home/agenda", text: "Agenda" },
         { href: "/home/service", text: "Serviços" },
     ];
-    
+
     return (
         <WrapperDefault>
         <Header
@@ -18,7 +19,8 @@ export function BarberServicePage() {
             isHomePageBarber={true}
             links={homePageBarberLinks}
         />
-        <FormService />
+        <FormRegister />
         </WrapperDefault>
     );
     }
+

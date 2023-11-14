@@ -10,6 +10,7 @@ import Notification from "../assets/Notification.svg";
 import HoverIcon from "../assets/HoverNotification.svg";
 import AvatarHome from "../assets/AvatarHome.svg";
 import AvatarHover from "../assets/AvatarHover.svg";
+import { useNavigate } from "react-router-dom";
 
 export function Header({
   showButton = true,
@@ -28,28 +29,41 @@ export function Header({
   const [isHoveredAvatar, setIsHoveredAvatar] = useState(false);
   const [notificationCount, setNotificationCount] = useState(1);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const navigate = useNavigate();
 
   function oneNewNotification() {
     setNotificationCount(notificationCount + 1);
   }
+
   const handleAvatarClick = () => {
     event.preventDefault();
     setIsDropdownVisible(!isDropdownVisible);
   };
+
+  const handleLogout = () => {
+    event.preventDefault();
+    navigate("/");
+  };
+
+  const handleClickVerPerfil = () => {
+    event.preventDefault();
+    navigate("/home/perfil");
+  }
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const isRegisterStepPage = id && step;
+  
 
   return (
     <header
@@ -83,6 +97,7 @@ export function Header({
                 src={isHovered ? HoverIcon : Notification}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
+                onClick={oneNewNotification}
               />
               {notificationCount > 0 && <span>{notificationCount}</span>}
             </div>
@@ -90,14 +105,14 @@ export function Header({
               src={isHoveredAvatar ? AvatarHover : AvatarHome}
               onMouseEnter={() => setIsHoveredAvatar(true)}
               onMouseLeave={() => setIsHoveredAvatar(false)}
-              onClick={handleAvatarClick} // Adicione o manipulador de clique aqui
+              onClick={handleAvatarClick}
             />
           </div>
         )}
         {isDropdownVisible && (
           <div className={styles.dropdown}>
-            <a href="/profile">Ver Perfil</a>
-            <a href="/logout">Sair</a>
+            <a onClick={handleClickVerPerfil}>Ver Perfil</a>
+            <a onClick={handleLogout}>Sair</a>
           </div>
         )}
       </div>
