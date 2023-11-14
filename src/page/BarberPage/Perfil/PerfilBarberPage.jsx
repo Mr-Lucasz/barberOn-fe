@@ -2,6 +2,7 @@
 import { Header } from "../../../components/Header.jsx";
 import { WrapperDefault } from "../../../components/util/WrapperDefault.jsx";
 import { FormRegister } from "../../../components/Form/FormRegister.jsx";
+import { user } from '../../../mock/employeeMockData';
 
 
 export function PerfilBarberPage() {
@@ -20,7 +21,7 @@ export function PerfilBarberPage() {
         isHomePageBarber={true}
         links={homePageBarberLinks}
       />
-      <FormRegister />
+        <FormRegister barber={user} />
     </WrapperDefault>
   );
 }
