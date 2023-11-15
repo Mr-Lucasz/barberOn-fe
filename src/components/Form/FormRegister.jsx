@@ -107,7 +107,7 @@ export function FormRegister({ showForgotPassword, barber }) {
     return true;
   };
 
-  const handleClickRegister = function (event) {
+  const handleClickRegister = async function (event) {
     event.preventDefault();
     try {
       const email = document.getElementById("outlined-email").value;
@@ -170,6 +170,17 @@ export function FormRegister({ showForgotPassword, barber }) {
       console.log(error);
       alert("Erro ao realizar cadastro");
     }
+
+    const response = await fetch("http://localhost:8080/api/barber", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
   };
   useEffect(() => {
     // Armazena o objeto do usuário no localStorage
@@ -225,6 +236,7 @@ export function FormRegister({ showForgotPassword, barber }) {
             required={true}
             type="text"
             fullWidth
+            onChange={(e) => setName(e.target.value)}
           />
           <TextField
             id="outlined-dob"
@@ -237,6 +249,7 @@ export function FormRegister({ showForgotPassword, barber }) {
               shrink: true,
             }}
             fullWidth
+            onChange={(e) => setDateNasc(e.target.value)}
           />
           <InputMask
             id="outlined-cpf"
@@ -293,6 +306,7 @@ export function FormRegister({ showForgotPassword, barber }) {
           required={true}
           type="email"
           fullWidth
+          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           id="outlined-password"
@@ -302,6 +316,7 @@ export function FormRegister({ showForgotPassword, barber }) {
           required={true}
           type={showPassword ? "text" : "password"}
           fullWidth
+          onChange={(e) => setPassword(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

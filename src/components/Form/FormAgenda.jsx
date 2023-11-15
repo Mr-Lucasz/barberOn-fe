@@ -103,7 +103,6 @@ export function FormAgenda() {
       setIsModalOpen(true);
       setSelectDay(dia.dia);
       setPauses(config[dia.dia] || []);
-  
     }
   };
 
@@ -176,22 +175,37 @@ export function FormAgenda() {
     setIsModalOpen(false);
   };
 
-  const handleClickContinue = () => {
+  const handleClickContinue = async () => {
     event.preventDefault();
     agenda = generateAgenda();
+
+    // Atualize o usuário no estado
     setUser({ ...user, workingHours: agenda });
+
+    // Atualize a agenda e as pausas no backend
+    const response = await fetch(`http://localhost:8080/api/agendas/${user.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(agenda),
+    });
+
+    if (response.ok) {
+      console.log("Agenda atualizada com sucesso");
+    } else {
+      console.error("Erro ao atualizar a agenda");
+    }
+
     navigate(`/register/${id}/step2`);
     console.log(agenda);
   };
 
   useEffect(() => {
-        // Atualiza a user sempre que qqr coisa for editar em agenda
-        setUser({ ...user, workingHours: agenda });
-        console.log(user);
-      }, [agenda]
-    );
-  
-
+    // Atualiza a user sempre que qqr coisa for editar em agenda
+    setUser({ ...user, workingHours: agenda });
+    console.log(user);
+  }, [agenda]);
 
   return (
     <FormUtil>
