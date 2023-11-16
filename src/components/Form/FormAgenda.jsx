@@ -12,11 +12,12 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import Trash from "../../assets/Trash.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
+import { PauseFormAgenda } from "./Agenda/PauseFormAgenda.jsx";
+import PropTypes from 'prop-types';
 
 // const diaDaSemana = [
 //   { id: 1, dia: "Segunda - Feira" },
@@ -52,7 +53,7 @@ const theme = createTheme({
 });
 let agenda = [];
 
-export function FormAgenda() {
+export function FormAgenda({ isEditMode }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user, setUser } = useContext(UserContext);
@@ -77,20 +78,7 @@ export function FormAgenda() {
     fetchStatus();
   }, []);
 
-  useEffect(() => {
-    const fetchAgendas = async () => {
-      const response = await axios.get(
-        `http://localhost:8080/api/agendas/barbeiro/${id}`
-      );
-      const diaDaSemanaData = response.data.agendas.map((agenda) => ({
-        id: agenda.agendaId,
-        dia: agenda.agendaDiaSemana,
-      }));
-      setDiaDaSemana(diaDaSemanaData);
-    };
 
-    fetchAgendas();
-  }, []);
 
   const [isChecked, setIsChecked] = useState({
     1: true,
@@ -103,20 +91,6 @@ export function FormAgenda() {
   });
 
   const [status, setStatus] = useState([]);
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      const result = await axios.get("http://localhost:8080/api/status");
-      const statusData = result.data.map((status) => ({
-        id: status.id,
-        nome: status.statusNome,
-      }));
-      setStatus(statusData);
-    };
-
-    fetchStatus();
-  }, []);
-
   const [config, setConfig] = useState({
     "Segunda - Feira": null,
     "Terça - Feira": null,
@@ -152,6 +126,33 @@ export function FormAgenda() {
       setPauses(config[dia.dia] || []);
     }
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statusResult, agendasResult] = await Promise.all([
+          axios.get("http://localhost:8080/api/status"),
+          axios.get(`http://localhost:8080/api/agendas/barbeiro/${id}`)
+        ]);
+
+        const statusData = statusResult.data.map((status) => ({
+          id: status.id,
+          nome: status.statusNome
+        }));
+
+        const diaDaSemanaData = agendasResult.data.agendas.map((agenda)=>({
+          id: agenda.agendaId,
+          dia: agenda.agendaDiaSemana,
+        }));
+
+        setStatus(statusData);
+        setDiaDaSemana(diaDaSemanaData);
+      } catch (error) {
+        console.error("Erro ao buscar dados: ", error);
+      }
+    };
+
+    fetchData();
+}, [id]);
 
   const generateAgenda = () => {
     if (agenda.length === 0) {
@@ -227,7 +228,7 @@ export function FormAgenda() {
     console.log("cancelar");
     setIsModalOpen(false);
   };
-  
+
   const updateAgendaStatus = async (agendaId, statusName) => {
     const statusId = statusMap[statusName];
     const response = await fetch(
@@ -241,7 +242,7 @@ export function FormAgenda() {
     );
 
     if (response.ok) {
-      console.log(`Status da agenda ${agendaId} atualizado com sucesso`);
+      console.log(`Status da agenda ${agendaId}+${statusName} atualizado com sucesso`);
     } else {
       console.error(`Erro ao atualizar o status da agenda ${agendaId}`);
     }
@@ -364,27 +365,14 @@ export function FormAgenda() {
                   </div>
                   <h3 className={styles.h2Modal}>Pausas</h3>
                   {pauses.map((pause, index) => (
-                    <div className={styles.divPause} key={index}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={["TimePicker"]}>
-                          <TimePicker
-                            id="start-pause"
-                            label="Início da Pausa"
-                            onChange={setStartPause}
-                            value={startPause}
-                          />
-                          <TimePicker
-                            id="end-pause"
-                            label="Fim da Pausa"
-                            onChange={setEndPause}
-                            value={endPause}
-                          />
-                        </DemoContainer>
-                        <button onClick={() => deletePause(index)}>
-                          <img src={Trash} alt="delete" />
-                        </button>
-                      </LocalizationProvider>
-                    </div>
+                    <PauseFormAgenda
+                      key={index}
+                      pause={pause}
+                      index={index}
+                      deletePause={deletePause}
+                      setStartPause={setStartPause}
+                      setEndPause={setEndPause}
+                    />
                   ))}
                   <button
                     className={styles.buttonModalPause}
@@ -425,4 +413,8 @@ export function FormAgenda() {
       </footer>
     </FormUtil>
   );
+  
+}
+FormAgenda.propTypes = {
+  isEditMode: PropTypes.bool,
 }
