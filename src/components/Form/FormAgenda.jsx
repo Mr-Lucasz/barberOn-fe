@@ -16,16 +16,17 @@ import Trash from "../../assets/Trash.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
+import axios from "axios";
 
-const diaDaSemana = [
-  { id: 1, dia: "Segunda - Feira" },
-  { id: 2, dia: "Terça - Feira" },
-  { id: 3, dia: "Quarta - Feira" },
-  { id: 4, dia: "Quinta - Feira" },
-  { id: 5, dia: "Sexta - Feira" },
-  { id: 6, dia: "Sábado" },
-  { id: 7, dia: "Domingo" },
-];
+// const diaDaSemana = [
+//   { id: 1, dia: "Segunda - Feira" },
+//   { id: 2, dia: "Terça - Feira" },
+//   { id: 3, dia: "Quarta - Feira" },
+//   { id: 4, dia: "Quinta - Feira" },
+//   { id: 5, dia: "Sexta - Feira" },
+//   { id: 6, dia: "Sábado" },
+//   { id: 7, dia: "Domingo" },
+// ];
 
 const theme = createTheme({
   components: {
@@ -55,6 +56,41 @@ export function FormAgenda() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user, setUser } = useContext(UserContext);
+  const [diaDaSemana, setDiaDaSemana] = useState([]);
+  const [statusMap, setStatusMap] = useState({});
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const result = await axios.get("http://localhost:8080/api/status");
+      const statusData = result.data.map((status) => ({
+        id: status.id,
+        nome: status.statusNome,
+      }));
+      setStatus(statusData);
+      const statusMapData = result.data.reduce((acc, status) => {
+        acc[status.statusNome] = status.id;
+        return acc;
+      }, {});
+      setStatusMap(statusMapData);
+    };
+
+    fetchStatus();
+  }, []);
+
+  useEffect(() => {
+    const fetchAgendas = async () => {
+      const response = await axios.get(
+        `http://localhost:8080/api/agendas/barbeiro/${id}`
+      );
+      const diaDaSemanaData = response.data.agendas.map((agenda) => ({
+        id: agenda.agendaId,
+        dia: agenda.agendaDiaSemana,
+      }));
+      setDiaDaSemana(diaDaSemanaData);
+    };
+
+    fetchAgendas();
+  }, []);
 
   const [isChecked, setIsChecked] = useState({
     1: true,
@@ -66,10 +102,21 @@ export function FormAgenda() {
     7: false,
   });
 
-  const statusChip = [
-    { id: 1, status: "Disponivel" },
-    { id: 2, status: "Indiponível" },
-  ];
+  const [status, setStatus] = useState([]);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const result = await axios.get("http://localhost:8080/api/status");
+      const statusData = result.data.map((status) => ({
+        id: status.id,
+        nome: status.statusNome,
+      }));
+      setStatus(statusData);
+    };
+
+    fetchStatus();
+  }, []);
+
   const [config, setConfig] = useState({
     "Segunda - Feira": null,
     "Terça - Feira": null,
@@ -110,9 +157,12 @@ export function FormAgenda() {
     if (agenda.length === 0) {
       // Se a agenda ainda não foi criada
       diaDaSemana.forEach((dia) => {
+        const statusId = isChecked[dia.id]
+          ? statusMap["Disponível"]
+          : statusMap["Indisponível"];
         agenda.push({
           dia: dia.dia,
-          status: !isChecked[dia.id] ? "Indisponível" : "Disponível",
+          status: statusId,
           workingHours: {
             start: new Date(start).toLocaleTimeString(),
             end: new Date(end).toLocaleTimeString(),
@@ -127,9 +177,12 @@ export function FormAgenda() {
       // Se a agenda já foi criada, apenas atualize-a
       agenda = agenda.map((dia) => {
         if (dia.dia === selectDay) {
+          const statusId = isChecked[dia.id]
+            ? statusMap["Disponível"]
+            : statusMap["Indisponível"];
           return {
             ...dia,
-            status: !isChecked[dia.id] ? "Disponível" : "Indisponível",
+            status: statusId,
             workingHours: {
               start: new Date(start).toLocaleTimeString(),
               end: new Date(end).toLocaleTimeString(),
@@ -153,7 +206,7 @@ export function FormAgenda() {
     agenda = diaDaSemana.map((dia) => {
       return {
         ...dia,
-        status: !isChecked[dia.id] ? "Indisponível" : "Disponível",
+        status: !isChecked[dia.id] ? status[0] : status[1],
         workingHours: dia.workingHours,
       };
     });
@@ -174,6 +227,25 @@ export function FormAgenda() {
     console.log("cancelar");
     setIsModalOpen(false);
   };
+  
+  const updateAgendaStatus = async (agendaId, statusName) => {
+    const statusId = statusMap[statusName];
+    const response = await fetch(
+      `http://localhost:8080/api/agendas/${agendaId}/status/${statusId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      console.log(`Status da agenda ${agendaId} atualizado com sucesso`);
+    } else {
+      console.error(`Erro ao atualizar o status da agenda ${agendaId}`);
+    }
+  };
 
   const handleClickContinue = async () => {
     event.preventDefault();
@@ -183,13 +255,17 @@ export function FormAgenda() {
     setUser({ ...user, workingHours: agenda });
 
     // Atualize a agenda e as pausas no backend
-    const response = await fetch(`http://localhost:8080/api/agendas/${user.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(agenda),
-    });
+    const response = await fetch(
+      `http://localhost:8080/api/agendas/barbeiro/${id}/bulk`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(agenda),
+      }
+    );
+    console.log(response);
 
     if (response.ok) {
       console.log("Agenda atualizada com sucesso");
@@ -222,16 +298,22 @@ export function FormAgenda() {
                 defaultChecked
                 checked={isChecked[dia.id]}
                 onChange={() => {
-                  setIsChecked({ ...isChecked, [dia.id]: !isChecked[dia.id] });
+                  const newIsChecked = !isChecked[dia.id];
+                  setIsChecked({ ...isChecked, [dia.id]: newIsChecked });
+                  const statusName = newIsChecked
+                    ? "Disponível"
+                    : "Indisponível";
+                  updateAgendaStatus(dia.id, statusName);
                 }}
               />
             </ThemeProvider>
             <label className={styles.switchLabel}> {dia.dia}</label>
             {/* usar função statuChip */}
-
             <Chip
               label={
-                isChecked[dia.id] ? statusChip[0].status : statusChip[1].status
+                Array.isArray(status) && isChecked[dia.id]
+                  ? status.find((s) => s.nome === "Disponível")?.nome
+                  : status.find((s) => s.nome === "Indisponível")?.nome
               }
               color={isChecked[dia.id] ? "success" : "error"}
               style={{ backgroundColor: isChecked[dia.id] ? "" : "#9A3648" }}
