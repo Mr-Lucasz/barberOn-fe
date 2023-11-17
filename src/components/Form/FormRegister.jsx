@@ -12,6 +12,7 @@ import { FormUtil } from "../util/FormUtil.jsx";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
+import axios from "axios";
 
 export function FormRegister({ showForgotPassword, barber }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +27,7 @@ export function FormRegister({ showForgotPassword, barber }) {
   const { user, setUser } = useContext(UserContext);
   const [isEditMode, setIsEditMode] = useState(false);
   const [barberOnEmployeeFileName, setBarberOnEmployeeFileName] = useState("");
+  const API_URL = "http://localhost:8080/api/barber";
 
   useEffect(() => {
     if (barber) {
@@ -107,8 +109,9 @@ export function FormRegister({ showForgotPassword, barber }) {
     return true;
   };
 
-  const handleClickRegister = function (event) {
+  const handleClickRegister = async function (event) {
     event.preventDefault();
+
     try {
       const email = document.getElementById("outlined-email").value;
       const password = document.getElementById("outlined-password").value;
@@ -142,37 +145,51 @@ export function FormRegister({ showForgotPassword, barber }) {
         return;
       }
 
-      const userId = Math.random().toString(36).substr(2, 9);
-
-      setUser({
-        ...user,
-        id: userId,
+      const newUser = {
         email: email,
-        password: password,
-        name: name,
+        senha: password,
+        nome: name,
         cpf: cpf,
-        phone: phone,
-        dateOfBirth: dateOfBirth,
-        isBarberOnEmployee: isBarberOnEmployee,
-        barberOnEmployeeFile: barberOnEmployeeFile,
-      });
+        telefone: phone,
+        dataNascimento: dateOfBirth,
+      };
 
-      if (isBarberOnEmployee === true) {
-        console.log(user);
-        alert("Cadastro Finalizado com sucesso!");
-        navigate(`/register/${userId}/step1`);
-      } else if (isBarberOnEmployee === false) {
-        console.log(user);
-        alert("Cadastro Finalizado com sucesso!");
-        navigate("/login");
+      setUser(newUser);
+      const url = isBarberOnEmployee
+        ? "http://localhost:8080/api/barbeiros"
+        : "/api/clientes";
+      try {
+        axios
+          .post(url, newUser, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            console.log(response);
+
+            if (isBarberOnEmployee) {
+              const userId = response.data.id;
+              navigate(`/register/${userId}/step1`);
+            } else {
+              navigate("/login");
+            }
+          })
+
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao realizar cadastro");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert("Erro ao realizar cadastro");
     }
   };
+
   useEffect(() => {
-    // Armazena o objeto do usuário no localStorage
     localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
@@ -225,6 +242,7 @@ export function FormRegister({ showForgotPassword, barber }) {
             required={true}
             type="text"
             fullWidth
+            onChange={(e) => setName(e.target.value)}
           />
           <TextField
             id="outlined-dob"
@@ -237,6 +255,7 @@ export function FormRegister({ showForgotPassword, barber }) {
               shrink: true,
             }}
             fullWidth
+            onChange={(e) => setDateNasc(e.target.value)}
           />
           <InputMask
             id="outlined-cpf"
@@ -293,6 +312,7 @@ export function FormRegister({ showForgotPassword, barber }) {
           required={true}
           type="email"
           fullWidth
+          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           id="outlined-password"
@@ -302,6 +322,7 @@ export function FormRegister({ showForgotPassword, barber }) {
           required={true}
           type={showPassword ? "text" : "password"}
           fullWidth
+          onChange={(e) => setPassword(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
