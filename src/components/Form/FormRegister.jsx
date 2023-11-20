@@ -43,7 +43,6 @@ export function FormRegister({ showForgotPassword, barber }) {
     }
   }, [barber]);
 
-  // Adicione uma função para lidar com a mudança do checkbox
   const handleUserTypeChange = (event) => {
     setIsBarberOnEmployee(event.target.checked);
   };
@@ -109,89 +108,79 @@ export function FormRegister({ showForgotPassword, barber }) {
     return true;
   };
 
-  const handleClickRegister = async function (event) {
+  const getFormData = () => {
+    const getValue = id => document.getElementById(id)?.value;
+    const getChecked = id => document.getElementById(id)?.checked;
+  
+    return {
+      email: getValue("outlined-email"),
+      password: getValue("outlined-password"),
+      name: getValue("outlined-name"),
+      cpf: getValue("outlined-cpf"),
+      phone: getValue("outlined-phone"),
+      dateOfBirth: getValue("outlined-dob"),
+      isBarberOnEmployee: getChecked("userType"),
+      barberOnEmployeeFile: getValue("barberOnEmployeeFile")
+    }
+  }
+  
+  const handleError = error => {
+    console.error(error);
+    alert("Erro ao realizar cadastro");
+  }
+  
+  const handleClickRegister = async (event) => {
     event.preventDefault();
-
+  
     try {
-      const email = document.getElementById("outlined-email").value;
-      const password = document.getElementById("outlined-password").value;
-      const name = document.getElementById("outlined-name").value;
-      const cpf = document.getElementById("outlined-cpf").value;
-      const phone = document.getElementById("outlined-phone").value;
-      const dateOfBirth = document.getElementById("outlined-dob").value;
-      const userTypeElement = document.getElementById("userType");
-      const isBarberOnEmployee = userTypeElement
-        ? userTypeElement.checked
-        : false;
-      const barberOnEmployeeFileElement = document.getElementById(
-        "barberOnEmployeeFile"
-      );
-      const barberOnEmployeeFile = barberOnEmployeeFileElement
-        ? barberOnEmployeeFileElement.value
-        : null;
-
-      if (
-        !validateForm(
-          email,
-          password,
-          name,
-          cpf,
-          phone,
-          dateOfBirth,
-          isBarberOnEmployee,
-          barberOnEmployeeFile
-        )
-      ) {
+      const formData = getFormData();
+  
+      if (!validateForm(
+        formData.email,
+        formData.password,
+        formData.name,
+        formData.cpf,
+        formData.phone,
+        formData.dateOfBirth,
+        formData.isBarberOnEmployee,
+        formData.barberOnEmployeeFile
+      )) {
         return;
       }
-
+  
       const newUser = {
-        email: email,
-        senha: password,
-        nome: name,
-        cpf: cpf,
-        telefone: phone,
-        dataNascimento: dateOfBirth,
+        email: formData.email,
+        senha: formData.password,
+        nome: formData.name,
+        cpf: formData.cpf,
+        telefone: formData.phone,
+        dataNascimento: formData.dateOfBirth,
       };
-
+  
       setUser(newUser);
-      const url = isBarberOnEmployee
+      const url = formData.isBarberOnEmployee
         ? "http://localhost:8080/api/barbeiros"
         : "/api/clientes";
-      try {
-        axios
-          .post(url, newUser, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            console.log(response);
-
-            if (isBarberOnEmployee) {
-              const userId = response.data.id;
-              navigate(`/register/${userId}/step1`);
-            } else {
-              navigate("/login");
-            }
-          })
-
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao realizar cadastro");
+  
+      const response = await axios.post(url, newUser, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      console.log(response);
+  
+      if (formData.isBarberOnEmployee) {
+        const userId = response.data.id;
+        navigate(`/register/${userId}/step1`);
+      } else {
+        navigate("/login");
       }
     } catch (error) {
-      console.error(error);
-      alert("Erro ao realizar cadastro");
+      handleError(error);
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
 
   return (
     <FormUtil>
