@@ -94,6 +94,19 @@ export function FormAgenda({ isEditMode }) {
   const handleClickContinue = () => {
     navigate("/barbeiro/form/conta");
   };
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+      .then((response) => {
+          const agenda = response.data[0]; // Substitua 0 pelo índice da agenda que você quer usar
+          setStart(agenda.agendaHorarioInicio);
+          setEnd(agenda.agendaHorarioFim);
+ 
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [id]);
 
   const generateInitialAgendas = () => {
     const diasSemana = [
@@ -215,6 +228,22 @@ export function FormAgenda({ isEditMode }) {
                     ...prevIsChecked,
                     [dia.agendaDiaSemana]: newIsChecked,
                   }));
+                  const newStatusName = newIsChecked
+                    ? "Disponível"
+                    : "Indisponível";
+                  const newStatusId = newIsChecked ? 1 : 2;
+                  const newAgenda = agenda.map((item) =>
+                    item.agendaId === dia.agendaId
+                      ? {
+                          ...item,
+                          status: {
+                            id: newStatusId,
+                            statusNome: newStatusName,
+                          },
+                        }
+                      : item
+                  );
+                  setAgenda(newAgenda);
                   updateStatus(dia.agendaId, newIsChecked);
                 }}
               />
