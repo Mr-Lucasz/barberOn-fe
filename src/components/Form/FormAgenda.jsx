@@ -60,8 +60,10 @@ export function FormAgenda({ isEditMode }) {
   const [isChecked, setIsChecked] = useState({});
   const [agenda, setAgenda] = useState([]);
 
-  const handleClickEdit = (dia) => {
-    setSelectDay(dia.agendaDiaSemana);
+  const handleClickEdit = (agenda) => {
+    setSelectDay(agenda.agendaDiaSemana);
+    setStart(agenda.agendaHorarioInicio);
+    setEnd(agenda.agendaHorarioFim);
     setIsModalOpen(true);
   };
   const handleClickCancelar = () => {
