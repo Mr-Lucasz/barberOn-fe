@@ -19,6 +19,7 @@ import axios from "axios";
 import { PauseFormAgenda } from "./Agenda/PauseFormAgenda.jsx";
 import PropTypes from "prop-types";
 import { handleClickUpdate } from "../../components/Form/Agenda/functions.js";
+import dayjs from "dayjs";
 
 const theme = createTheme({
   components: {
@@ -43,12 +44,20 @@ const theme = createTheme({
   },
 });
 
+const dias = [
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
+];
+
 export function FormAgenda({ isEditMode }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user, setUser } = useContext(UserContext);
-  const [diaDaSemana, setDiaDaSemana] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
   const [status, setStatus] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectDay, setSelectDay] = useState("");
@@ -60,19 +69,15 @@ export function FormAgenda({ isEditMode }) {
   const [isChecked, setIsChecked] = useState({});
   const [agenda, setAgenda] = useState([]);
 
-  const handleClickEdit = (agenda) => {
-    setSelectDay(agenda.agendaDiaSemana);
-    setStart(agenda.agendaHorarioInicio);
-    setEnd(agenda.agendaHorarioFim);
+  const handleClickEdit = (dia) => {
+    setSelectDay(dia.agendaDiaSemana);
+    setStart(dayjs(`1970-01-01T${dia.agendaHorarioInicio}`));
+    setEnd(dayjs(`1970-01-01T${dia.agendaHorarioFim}`));
     setIsModalOpen(true);
   };
-  const handleClickCancelar = () => {
-    setIsModalOpen(false);
-  };
 
-  const addPause = (pause) => {
-    setPauses([...pauses, pause]);
-  };
+  const handleClickCancelar = () => setIsModalOpen(false);
+  const addPause = (pause) => setPauses([...pauses, pause]);
 
   const deletePause = (index) => {
     const newPauses = [...pauses];
@@ -80,30 +85,41 @@ export function FormAgenda({ isEditMode }) {
     setPauses(newPauses);
   };
 
-  const handleClickSalvar = () => {
-    setIsModalOpen(false);
-    agenda.filter((dia) => dia.dia !== selectDay);
-    agenda.push({
-      dia: selectDay,
-      start: start,
-      end: end,
-      pauses: pauses,
-    });
-    setDiaDaSemana(agenda);
-    setIsEdit(false);
+  const updateAgendaHour = (agendaId, start, end) => {
+    axios
+      .patch(`http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`, {
+        agendaHorarioInicio: start.format("HH:mm:ss"),
+        agendaHorarioFim: end.format("HH:mm:ss"),
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
-  const handleClickContinue = () => {
-    navigate("/barbeiro/form/conta");
+  const handleClickSalvar = () => {
+    const selectedDayAgenda = agenda.find(
+      (dia) => dia.agendaDiaSemana === selectDay
+    );
+    if (selectedDayAgenda) {
+      updateAgendaHour(selectedDayAgenda.agendaId, start, end);
+      setIsModalOpen(false);
+    } else {
+      console.error("No agenda found for the selected day.");
+    }
   };
+
+  const handleClickContinue = () => navigate(`/register/${id}/step2`);
+
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
       .then((response) => {
-          const agenda = response.data[0]; // Substitua 0 pelo índice da agenda que você quer usar
-          setStart(agenda.agendaHorarioInicio);
-          setEnd(agenda.agendaHorarioFim);
- 
+        const agenda = response.data[0]; // Substitua 0 pelo índice da agenda que você quer usar
+        setStart(agenda.agendaHorarioInicio);
+        setEnd(agenda.agendaHorarioFim);
       })
       .catch((error) => {
         console.error(error);
@@ -137,7 +153,7 @@ export function FormAgenda({ isEditMode }) {
   const updateStatus = (agendaId, isChecked) => {
     const statusId = isChecked ? 1 : 2; // 1 para "Disponível" (ON), 2 para "Indisponível" (OFF)
     axios
-      .patch(`http://localhost:8080/api/barbeiros/952/agendas/${agendaId}`, {
+      .patch(`http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`, {
         statusId: statusId,
       })
       .then((response) => {
@@ -147,23 +163,6 @@ export function FormAgenda({ isEditMode }) {
         console.error(error);
       });
   };
-
-  axios
-    .get("http://localhost:8080/api/barbeiros/952/agendas")
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  useEffect(() => {
-    fetch("http://localhost:8080/api/barbeiros/952/agendas")
-      .then((response) => response.json())
-      .then((data) => setAgenda(data))
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
 
   useEffect(() => {
     axios
@@ -178,7 +177,12 @@ export function FormAgenda({ isEditMode }) {
               newAgendas
             )
             .then((response) => {
-              setAgenda(response.data);
+              const sortedAgenda = response.data.sort(
+                (a, b) =>
+                  dias.indexOf(a.agendaDiaSemana) -
+                  dias.indexOf(b.agendaDiaSemana)
+              );
+              setAgenda(sortedAgenda);
               const newIsChecked = {};
               const newStatus = {};
               response.data.forEach((agenda) => {
@@ -194,7 +198,11 @@ export function FormAgenda({ isEditMode }) {
             });
         } else if (response.data.length > 0) {
           // Se já existem agendas cadastradas, atualizar o estado com as agendas existentes
-          setAgenda(response.data);
+          const sortedAgenda = response.data.sort(
+            (a, b) =>
+              dias.indexOf(a.agendaDiaSemana) - dias.indexOf(b.agendaDiaSemana)
+          );
+          setAgenda(sortedAgenda);
           const newIsChecked = {};
           const newStatus = {};
           response.data.forEach((agenda) => {
@@ -210,6 +218,7 @@ export function FormAgenda({ isEditMode }) {
         console.error(error);
       });
   }, [id]);
+
   return (
     <FormUtil>
       <div className={styles.headerForm}>
@@ -295,11 +304,13 @@ export function FormAgenda({ isEditMode }) {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["TimePicker"]}>
                         <TimePicker
+                          key={dia.agendaId}
                           label="Horário de Início"
                           onChange={setStart}
                           value={start}
                         />
                         <TimePicker
+                          key={dia.agendaId}
                           label="Horárido de Fim"
                           onChange={setEnd}
                           value={end}
