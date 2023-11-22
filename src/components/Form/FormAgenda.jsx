@@ -18,17 +18,8 @@ import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
 import { PauseFormAgenda } from "./Agenda/PauseFormAgenda.jsx";
 import PropTypes from "prop-types";
-import { handleClickUpdate } from "../../components/Form/Agenda/functions.js"
-
-// const diaDaSemana = [
-//   { id: 1, dia: "Segunda - Feira" },
-//   { id: 2, dia: "Terça - Feira" },
-//   { id: 3, dia: "Quarta - Feira" },
-//   { id: 4, dia: "Quinta - Feira" },
-//   { id: 5, dia: "Sexta - Feira" },
-//   { id: 6, dia: "Sábado" },
-//   { id: 7, dia: "Domingo" },
-// ];
+import { handleClickUpdate } from "../../components/Form/Agenda/functions.js";
+import dayjs from "dayjs";
 
 const theme = createTheme({
   components: {
@@ -52,57 +43,22 @@ const theme = createTheme({
     //style Fab
   },
 });
-let agenda = [];
+
+const dias = [
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
+];
 
 export function FormAgenda({ isEditMode }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user, setUser } = useContext(UserContext);
-  const [diaDaSemana, setDiaDaSemana] = useState([]);
-  const [statusMap, setStatusMap] = useState({});
-  const [isEdit, setIsEdit] = useState(false);
-  const [status, setStatus] = useState([]);
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      const result = await axios.get("http://localhost:8080/api/status");
-      const statusData = result.data.map((status) => ({
-        id: status.id,
-        nome: status.statusNome,
-      }));
-      setStatus(statusData);
-      const statusMapData = result.data.reduce((acc, status) => {
-        acc[status.statusNome] = status.id;
-        return acc;
-      }, {});
-      setStatusMap(statusMapData);
-    };
-
-    fetchStatus();
-  }, []);
-
-  const [isChecked, setIsChecked] = useState({
-    1: true,
-    2: true,
-    3: true,
-    4: true,
-    5: true,
-    6: true,
-    7: false,
-  });
-
-
-
-  const [config, setConfig] = useState({
-    "Segunda - Feira": null,
-    "Terça - Feira": null,
-    "Quarta - Feira": null,
-    "Quinta - Feira": null,
-    "Sexta - Feira": null,
-    Sábado: null,
-    Domingo: null,
-  });
-
+  const [status, setStatus] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectDay, setSelectDay] = useState("");
   const [start, setStart] = useState("");
@@ -110,222 +66,163 @@ export function FormAgenda({ isEditMode }) {
   const [pauses, setPauses] = useState([]);
   const [startPause, setStartPause] = useState("");
   const [endPause, setEndPause] = useState("");
-
-  const addPause = () => {
-    event.preventDefault();
-    setPauses([...pauses, { start: "", end: "" }]);
-  };
-
-  const deletePause = (index) => {
-    setPauses(pauses.filter((_, i) => i !== index));
-  };
+  const [isChecked, setIsChecked] = useState({});
+  const [agenda, setAgenda] = useState([]);
 
   const handleClickEdit = (dia) => {
-    if (isChecked[dia.id]) {
-      console.log("abrir modal");
-      setIsModalOpen(true);
-      setSelectDay(dia.dia);
-      setPauses(config[dia.dia] || []);
+    setSelectDay(dia.agendaDiaSemana);
+    setStart(dayjs(`1970-01-01T${dia.agendaHorarioInicio}`));
+    setEnd(dayjs(`1970-01-01T${dia.agendaHorarioFim}`));
+    setIsModalOpen(true);
+  };
+
+  const handleClickCancelar = () => setIsModalOpen(false);
+
+  const addPause = (pause) => {
+    event.preventDefault();
+    setPauses([...pauses, pause]);
+  }
+
+
+  const deletePause = (index) => {
+    const newPauses = [...pauses];
+    newPauses.splice(index, 1);
+    setPauses(newPauses);
+  };
+
+  const updateAgendaHour = (agendaId, start, end) => {
+    axios
+      .patch(`http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`, {
+        agendaHorarioInicio: start.format("HH:mm:ss"),
+        agendaHorarioFim: end.format("HH:mm:ss"),
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleClickSalvar = () => {
+    const selectedDayAgenda = agenda.find(
+      (dia) => dia.agendaDiaSemana === selectDay
+    );
+    if (selectedDayAgenda) {
+      updateAgendaHour(selectedDayAgenda.agendaId, start, end);
+      setIsModalOpen(false);
+    } else {
+      console.error("No agenda found for the selected day.");
     }
   };
+
+  const handleClickContinue = () => navigate(`/register/${id}/step2`);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const statusResult = await axios.get(
-          "http://localhost:8080/api/status"
-        );
-
-        const statusData = statusResult.data.map((status) => ({
-          id: status.id,
-          nome: status.statusNome,
-        }));
-
-        setStatus(statusData);
-
-        // Verifica se está no modo edição
-        if (id) {
-          setIsEdit(true); // Atualiza o estado isEdit para true
-
-          // Busca dados da agenda apenas se estiver no modo de edição
-          const agendasResult = await axios.get(
-            `http://localhost:8080/api/agendas/barbeiro/${id}`
-          );
-
-          const diaDaSemanaData = agendasResult.data.agendas.map((agenda) => ({
-            id: agenda.agendaId,
-            dia: agenda.agendaDiaSemana,
-          }));
-
-          setDiaDaSemana(diaDaSemanaData);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar dados: ", error);
-      }
-    };
-
-    fetchData();
+    axios
+      .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+      .then((response) => {
+        const agenda = response.data[0]; // Substitua 0 pelo índice da agenda que você quer usar
+        setStart(agenda.agendaHorarioInicio);
+        setEnd(agenda.agendaHorarioFim);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [id]);
-  const generateAgenda = () => {
-    if (agenda.length === 0) {
-      // Se a agenda ainda não foi criada
-      diaDaSemana.forEach((dia) => {
-        const statusId = isChecked[dia.id]
-          ? statusMap["Disponível"]
-          : statusMap["Indisponível"];
-        agenda.push({
-          dia: dia.dia,
-          status: statusId,
-          workingHours: {
-            start: new Date(start).toLocaleTimeString(),
-            end: new Date(end).toLocaleTimeString(),
-            pauses: pauses.map(() => ({
-              start: new Date(startPause).toLocaleTimeString(),
-              end: new Date(endPause).toLocaleTimeString(),
-            })),
-          },
-        });
+
+  const generateInitialAgendas = () => {
+    const diasSemana = [
+      "Domingo",
+      "Segunda - Feira",
+      "Terça - Feira",
+      "Quarta - Feira",
+      "Quinta - Feira",
+      "Sexta - Feira",
+      "Sábado",
+    ];
+    const horarioInicio = "08:00:00";
+    const horarioFim = "18:00:00";
+    const statusId = 1;
+    const pausa = [];
+    const newAgendas = diasSemana.map((dia) => ({
+      agendaDiaSemana: dia,
+      agendaHorarioInicio: horarioInicio,
+      agendaHorarioFim: horarioFim,
+      statusId: statusId,
+      pausas: pausa,
+    }));
+    return newAgendas;
+  };
+  //função uptade status que chama endpoint patch
+  const updateStatus = (agendaId, isChecked) => {
+    const statusId = isChecked ? 1 : 2; // 1 para "Disponível" (ON), 2 para "Indisponível" (OFF)
+    axios
+      .patch(`http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`, {
+        statusId: statusId,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    } else {
-      // Se a agenda já foi criada, apenas atualize-a
-      agenda = agenda.map((dia) => {
-        if (dia.dia === selectDay) {
-          const statusId = isChecked[dia.id]
-            ? statusMap["Disponível"]
-            : statusMap["Indisponível"];
-          return {
-            ...dia,
-            status: statusId,
-            workingHours: {
-              start: new Date(start).toLocaleTimeString(),
-              end: new Date(end).toLocaleTimeString(),
-              pauses: pauses.map(() => ({
-                start: new Date(startPause).toLocaleTimeString(),
-                end: new Date(endPause).toLocaleTimeString(),
-              })),
-            },
-          };
-        } else {
-          return dia;
+  };
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+      .then((response) => {
+        if (response.data.length === 0) {
+          // Se não existem agendas cadastradas, gerar as agendas iniciais e enviar uma solicitação POST para salvar as agendas no backend
+          const newAgendas = generateInitialAgendas();
+          axios
+            .post(
+              `http://localhost:8080/api/barbeiros/${id}/agendas`,
+              newAgendas
+            )
+            .then((response) => {
+              const sortedAgenda = response.data.sort(
+                (a, b) =>
+                  dias.indexOf(a.agendaDiaSemana) -
+                  dias.indexOf(b.agendaDiaSemana)
+              );
+              setAgenda(sortedAgenda);
+              const newIsChecked = {};
+              const newStatus = {};
+              response.data.forEach((agenda) => {
+                newIsChecked[agenda.agendaDiaSemana] =
+                  agenda.status.statusNome === "Disponível";
+                newStatus[agenda.agendaDiaSemana] = agenda.status.statusNome;
+              });
+              setIsChecked(newIsChecked);
+              setStatus(newStatus);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } else if (response.data.length > 0) {
+          // Se já existem agendas cadastradas, atualizar o estado com as agendas existentes
+          const sortedAgenda = response.data.sort(
+            (a, b) =>
+              dias.indexOf(a.agendaDiaSemana) - dias.indexOf(b.agendaDiaSemana)
+          );
+          setAgenda(sortedAgenda);
+          const newIsChecked = {};
+          const newStatus = {};
+          response.data.forEach((agenda) => {
+            newIsChecked[agenda.agendaDiaSemana] =
+              agenda.status.statusNome === "Disponível";
+            newStatus[agenda.agendaDiaSemana] = agenda.status.statusNome;
+          });
+          setIsChecked(newIsChecked);
+          setStatus(newStatus);
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    }
-
-    return agenda;
-  };
-
-  useEffect(() => {
-    // Atualiza a agenda sempre que isChecked for alterado
-    agenda = diaDaSemana.map((dia) => {
-      return {
-        ...dia,
-        status: !isChecked[dia.id] ? status[0] : status[1],
-        workingHours: dia.workingHours,
-      };
-    });
-  }, [isChecked]);
-
-  const handleClickSalvar = async () => {
-    event.preventDefault();
-
-    // Gere a nova agenda com os valores atualizados
-    agenda = generateAgenda();
-
-    setIsModalOpen(false);
-    console.log(agenda);
-
-    // Determine se estamos criando (POST) ou atualizando (PUT)
-    if (isEdit) {
-      // Atualize no backend se estiver no modo de edição
-      try {
-        const response = await axios.put(
-          `http://localhost:8080/api/agendas/barbeiro/${id}`,
-          agenda
-        );
-        console.log(response);
-        console.log("Agenda atualizada com sucesso");
-      } catch (error) {
-        console.error("Erro ao atualizar a agenda");
-      }
-    } else {
-      // Crie no backend se estiver no modo de cadastro
-      try {
-        const response = await axios.post(
-          "http://localhost:8080/api/agendas",
-          agenda
-        );
-        console.log(response);
-        console.log("Agenda criada com sucesso");
-      } catch (error) {
-        console.error("Erro ao criar a agenda");
-      }
-    }
-
-    // Se está salvando, atualize o status como "Disponível"
-    setIsChecked({ ...isChecked, [selectDay]: true });
-  };
-
-  const handleClickCancelar = () => {
-    event.preventDefault();
-    console.log("cancelar");
-    setIsModalOpen(false);
-  };
-
-  const updateAgendaStatus = async (agendaId, statusName) => {
-    const statusId = statusMap[statusName];
-    const response = await fetch(
-      `http://localhost:8080/api/agendas/${agendaId}/status/${statusId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.ok) {
-      console.log(
-        `Status da agenda ${agendaId}+${statusName} atualizado com sucesso`
-      );
-    } else {
-      console.error(`Erro ao atualizar o status da agenda ${agendaId}`);
-    }
-  };
-
-  const handleClickContinue = async () => {
-    event.preventDefault();
-    agenda = generateAgenda();
-
-    // Atualize o usuário no estado
-    setUser({ ...user, workingHours: agenda });
-
-    // Atualize a agenda e as pausas no backend
-    const response = await fetch(
-      `http://localhost:8080/api/agendas/barbeiro/${id}/bulk`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(agenda),
-      }
-    );
-    console.log(response);
-
-    if (response.ok) {
-      console.log("Agenda atualizada com sucesso");
-    } else {
-      console.error("Erro ao atualizar a agenda");
-    }
-
-    navigate(`/register/${id}/step2`);
-    console.log(agenda);
-  };
-
-  useEffect(() => {
-    // Atualiza a user sempre que qqr coisa for editar em agenda
-    setUser({ ...user, workingHours: agenda });
-    console.log(user);
-  }, [agenda]);
+  }, [id]);
 
   return (
     <FormUtil>
@@ -333,34 +230,52 @@ export function FormAgenda({ isEditMode }) {
         <h1 className={styles.title}>Agenda</h1>
         <span>Informe seu horário de trabalho.</span>
       </div>
-      {diaDaSemana.map((dia, index) => (
+      {agenda.map((dia, index) => (
         <div key={index} className={styles.agendaSection}>
-          {/* SWITCH BUTTON ON/OFF */}
+          {/* SWITCH BUTTON ON/OFF - Status disponivel ou Indisponivel*/}
           <div className={styles.switch}>
             <ThemeProvider theme={theme}>
               <Switch
-                defaultChecked
-                checked={isChecked[dia.id]}
+                key={dia.agendaId}
+                checked={isChecked[dia.agendaDiaSemana]}
                 onChange={() => {
-                  const newIsChecked = !isChecked[dia.id];
-                  setIsChecked({ ...isChecked, [dia.id]: newIsChecked });
-                  const statusName = newIsChecked
+                  const newIsChecked = !isChecked[dia.agendaDiaSemana];
+                  setIsChecked((prevIsChecked) => ({
+                    ...prevIsChecked,
+                    [dia.agendaDiaSemana]: newIsChecked,
+                  }));
+                  const newStatusName = newIsChecked
                     ? "Disponível"
                     : "Indisponível";
-                  updateAgendaStatus(dia.id, statusName);
+                  const newStatusId = newIsChecked ? 1 : 2;
+                  const newAgenda = agenda.map((item) =>
+                    item.agendaId === dia.agendaId
+                      ? {
+                          ...item,
+                          status: {
+                            id: newStatusId,
+                            statusNome: newStatusName,
+                          },
+                        }
+                      : item
+                  );
+                  setAgenda(newAgenda);
+                  updateStatus(dia.agendaId, newIsChecked);
                 }}
               />
             </ThemeProvider>
-            <label className={styles.switchLabel}> {dia.dia}</label>
+            <label className={styles.switchLabel}>{dia.agendaDiaSemana}</label>
             {/* usar função statuChip */}
+
             <Chip
-              label={
-                Array.isArray(status) && isChecked[dia.id]
-                  ? status.find((s) => s.nome === "Disponível")?.nome
-                  : status.find((s) => s.nome === "Indisponível")?.nome
-              }
-              color={isChecked[dia.id] ? "success" : "error"}
-              style={{ backgroundColor: isChecked[dia.id] ? "" : "#9A3648" }}
+              key={dia.agendaId}
+              label={dia.status.statusNome}
+              color={isChecked[dia.agendaDiaSemana] ? "success" : "error"}
+              style={{
+                backgroundColor: isChecked[dia.agendaDiaSemana]
+                  ? ""
+                  : "#9A3648",
+              }}
             />
           </div>
 
@@ -370,11 +285,11 @@ export function FormAgenda({ isEditMode }) {
             size="small"
             style={{
               zIndex: 1,
-              backgroundColor: isChecked[dia.id]
+              backgroundColor: isChecked[dia.agendaDiaSemana]
                 ? "#030979"
                 : "var(--black-012, rgba(0, 0, 0, 0.12)",
             }}
-            disabled={!isChecked[dia.id]}
+            disabled={!isChecked[dia.agendaDiaSemana]}
             onClick={() => {
               handleClickEdit(dia);
             }}
@@ -394,11 +309,13 @@ export function FormAgenda({ isEditMode }) {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["TimePicker"]}>
                         <TimePicker
+                          key={dia.agendaId}
                           label="Horário de Início"
                           onChange={setStart}
                           value={start}
                         />
                         <TimePicker
+                          key={dia.agendaId}
                           label="Horárido de Fim"
                           onChange={setEnd}
                           value={end}
@@ -419,8 +336,7 @@ export function FormAgenda({ isEditMode }) {
                   ))}
                   <button
                     className={styles.buttonModalPause}
-                    onClick={addPause}
-                  >
+                    onClick={addPause}>
                     Add Pausa +
                   </button>
 
@@ -452,7 +368,7 @@ export function FormAgenda({ isEditMode }) {
             size="large"
             buttonName={"ATUALIZAR"}
             onClick={(event) =>
-              handleClickUpdate(event, user, setUser, id, generateAgenda)
+              handleClickUpdate(event, user, setUser, id, agenda)
             }
             style={{ backgroundColor: "#030979", color: "white" }}
           />
