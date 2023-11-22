@@ -77,7 +77,12 @@ export function FormAgenda({ isEditMode }) {
   };
 
   const handleClickCancelar = () => setIsModalOpen(false);
-  const addPause = (pause) => setPauses([...pauses, pause]);
+
+  const addPause = (pause) => {
+    event.preventDefault();
+    setPauses([...pauses, pause]);
+  }
+
 
   const deletePause = (index) => {
     const newPauses = [...pauses];
@@ -331,8 +336,7 @@ export function FormAgenda({ isEditMode }) {
                   ))}
                   <button
                     className={styles.buttonModalPause}
-                    onClick={addPause}
-                  >
+                    onClick={addPause}>
                     Add Pausa +
                   </button>
 
