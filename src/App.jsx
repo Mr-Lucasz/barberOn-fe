@@ -24,7 +24,7 @@ export function App() {
         <Route path="/register/:id/:step" element={<RegisterPage />} />
         {/* <Route path="/homeclient" element={<HomePageClient />} /> */}
         <Route path="/homeclient/perfil" element={<PerfilClientPage />} />
-        {/* <Route path="/homeclient/agendar" element={<AgendarClientPage />} /> */}
+        <Route path="/homeclient/agendar" element={<AgendarClientPage />} />
         {/* <Route path="/homeclient/historico" element={<HistoricoClientPage />} /> */}
       </Routes>
     </UserProvider>
