@@ -13,18 +13,26 @@ export function PauseFormAgenda({
   setStartPause,
   setEndPause,
 }) {
+  const handleStartChange = (newStart) => {
+    setStartPause(newStart, index);
+  };
+
+  const handleEndChange = (newEnd) => {
+    setEndPause(newEnd, index);
+  };
+
   return (
     <div className={styles.divPause}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["TimePicker"]}>
           <TimePicker
             label="Início da Pausa"
-            onChange={setStartPause}
+            onChange={handleStartChange}
             value={pause.start}
           />
           <TimePicker
             label="Fim da Pausa"
-            onChange={setEndPause}
+            onChange={handleEndChange}
             value={pause.end}
           />
         </DemoContainer>

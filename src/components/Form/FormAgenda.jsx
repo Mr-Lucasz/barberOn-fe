@@ -73,6 +73,7 @@ export function FormAgenda({ isEditMode }) {
     setSelectDay(dia.agendaDiaSemana);
     setStart(dayjs(`1970-01-01T${dia.agendaHorarioInicio}`));
     setEnd(dayjs(`1970-01-01T${dia.agendaHorarioFim}`));
+    setPauses(dia.pausas);
     setIsModalOpen(true);
   };
 
@@ -81,7 +82,20 @@ export function FormAgenda({ isEditMode }) {
   const addPause = (pause) => {
     event.preventDefault();
     setPauses([...pauses, pause]);
-  }
+    uptadeAgendaPause(pause);
+  };
+
+  const setStartPause = (newStart, index) => {
+    const newPauses = [...pauses];
+    newPauses[index].start = newStart;
+    setPauses(newPauses);
+  };
+  
+  const setEndPause = (newEnd, index) => {
+    const newPauses = [...pauses];
+    newPauses[index].end = newEnd;
+    setPauses(newPauses);
+  };
 
 
   const deletePause = (index) => {
@@ -103,13 +117,37 @@ export function FormAgenda({ isEditMode }) {
         console.error(error);
       });
   };
+  const uptadeAgendaPause = (pause, selectedDayAgenda) => {
+    axios
+      .patch(
+        `http://localhost:8080/api/barbeiros/${id}/agendas/${selectedDayAgenda.agendaId}/pausas`,
+        {
+          pausas: [
+            {
+              pausaHorarioInicio: startPause.format("HH:mm:ss"),
+              pausaHorarioFim: endPause.format("HH:mm:ss"),
+            },
+          ],
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setPauses([...pauses, pause]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
 
   const handleClickSalvar = () => {
+    event.preventDefault();
     const selectedDayAgenda = agenda.find(
       (dia) => dia.agendaDiaSemana === selectDay
     );
     if (selectedDayAgenda) {
       updateAgendaHour(selectedDayAgenda.agendaId, start, end);
+      // uptadeAgendaPause(pauses, selectedDayAgenda);
       setIsModalOpen(false);
     } else {
       console.error("No agenda found for the selected day.");
@@ -336,7 +374,8 @@ export function FormAgenda({ isEditMode }) {
                   ))}
                   <button
                     className={styles.buttonModalPause}
-                    onClick={addPause}>
+                    onClick={addPause}
+                  >
                     Add Pausa +
                   </button>
 
