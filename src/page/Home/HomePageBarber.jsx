@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import events from "./events";
+import events from "./events.js";
 import styles from "./HomePageBarber.module.css";
 import { Header } from "../../components/Header.jsx";
 import "react-big-calendar/lib/css/react-big-calendar.css";
