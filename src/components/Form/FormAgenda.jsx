@@ -79,16 +79,49 @@ export function FormAgenda({ isEditMode }) {
 
   const handleClickCancelar = () => setIsModalOpen(false);
 
-  const addPause = (pause) => {
+
+
+  const addPause = () => {
     event.preventDefault();
-    setPauses([...pauses, pause]);
-    uptadeAgendaPause(pause);
+    const newPause = {
+      pausaHorarioInicio: startPause.format("HH:mm:ss"),
+      pausaHorarioFim: endPause.format("HH:mm:ss"),
+    };
+    setPauses([...pauses, newPause]);
+    const selectedDayAgenda = agenda.find(
+      (dia) => dia.agendaDiaSemana === selectDay
+    );
+    updateAgendaPause(newPause, selectedDayAgenda);
   };
 
+  //http://localhost:8080/api/pausas/{pausaId}
+  const deletePauseApi = (pausaId) => {
+    axios
+      .delete(`http://localhost:8080/api/pausas/${pausaId}`)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+
   const deletePause = (index) => {
-    const newPauses = [...pauses];
-    newPauses.splice(index, 1);
-    setPauses(newPauses);
+    event.preventDefault();
+    const selectedDayAgenda = agenda.find(
+      (dia) => dia.agendaDiaSemana === selectDay
+    );
+    const newPausas = selectedDayAgenda.pausas.filter(
+      (pausa, i) => i !== index
+    );
+    const newAgenda = agenda.map((dia) =>
+      dia.agendaDiaSemana === selectDay
+        ? { ...dia, pausas: newPausas }
+        : { ...dia }
+    );
+    setAgenda(newAgenda);
+    deletePauseApi(pauses[index].pausaId);
   };
 
   const updateAgendaHour = (agendaId, start, end) => {
@@ -104,22 +137,17 @@ export function FormAgenda({ isEditMode }) {
         console.error(error);
       });
   };
-  const uptadeAgendaPause = (pause, selectedDayAgenda) => {
+
+  const updateAgendaPause = (newPause, selectedDayAgenda) => {
     axios
       .patch(
         `http://localhost:8080/api/barbeiros/${id}/agendas/${selectedDayAgenda.agendaId}/pausas`,
         {
-          pausas: [
-            {
-              pausaHorarioInicio: startPause.format("HH:mm:ss"),
-              pausaHorarioFim: endPause.format("HH:mm:ss"),
-            },
-          ],
+          pausas: [...selectedDayAgenda.pausas, newPause],
         }
       )
       .then((response) => {
         console.log(response);
-        setPauses([...pauses, pause]);
       })
       .catch((error) => {
         console.error(error);
