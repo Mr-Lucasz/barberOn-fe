@@ -1,5 +1,5 @@
 import { LandingPage } from "./page/LandingPage/LandingPage.jsx";
-import { HomePage } from "./page/Home/HomePage.jsx";
+import { HomePageBarber } from "./page/Home/HomePageBarber.jsx";
 import "./App.module.css";
 import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./page/Login/LoginPage.jsx";
@@ -16,7 +16,7 @@ export function App() {
     <UserProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/home" element={<HomePageBarber />} />
         <Route path="/home/agenda" element={<BarberAgendaPage />} />
         <Route path="/home/service" element={<BarberServicePage />} />
         <Route path="/home/perfil" element={<PerfilBarberPage />} />
