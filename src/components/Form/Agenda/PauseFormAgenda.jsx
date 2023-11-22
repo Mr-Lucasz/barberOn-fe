@@ -5,20 +5,21 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Trash from "../../../assets/Trash.svg";
+import dayjs from "dayjs";
 
 export function PauseFormAgenda({
   index,
   pause,
   deletePause,
-  setStartPause,
-  setEndPause,
+  onStartPauseChange,
+  onEndPauseChange,
 }) {
   const handleStartChange = (newStart) => {
-    setStartPause(newStart, index);
+    onStartPauseChange(newStart, index);
   };
 
   const handleEndChange = (newEnd) => {
-    setEndPause(newEnd, index);
+    onEndPauseChange(newEnd, index);
   };
 
   return (
@@ -28,12 +29,12 @@ export function PauseFormAgenda({
           <TimePicker
             label="Início da Pausa"
             onChange={handleStartChange}
-            value={pause.start}
+            value={dayjs(`1970-01-01T${pause.pausaHorarioInicio}`)} 
           />
           <TimePicker
             label="Fim da Pausa"
             onChange={handleEndChange}
-            value={pause.end}
+            value={dayjs(`1970-01-01T${pause.pausaHorarioFim}`)} 
           />
         </DemoContainer>
         <button onClick={() => deletePause(index)}>
@@ -48,6 +49,6 @@ PauseFormAgenda.propTypes = {
   index: propTypes.number.isRequired,
   pause: propTypes.object.isRequired,
   deletePause: propTypes.func.isRequired,
-  setStartPause: propTypes.func.isRequired,
-  setEndPause: propTypes.func.isRequired,
+  onStartPauseChange: propTypes.func.isRequired,
+  onEndPauseChange: propTypes.func.isRequired,
 };

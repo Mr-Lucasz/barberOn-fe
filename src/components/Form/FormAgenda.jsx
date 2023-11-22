@@ -85,19 +85,6 @@ export function FormAgenda({ isEditMode }) {
     uptadeAgendaPause(pause);
   };
 
-  const setStartPause = (newStart, index) => {
-    const newPauses = [...pauses];
-    newPauses[index].start = newStart;
-    setPauses(newPauses);
-  };
-  
-  const setEndPause = (newEnd, index) => {
-    const newPauses = [...pauses];
-    newPauses[index].end = newEnd;
-    setPauses(newPauses);
-  };
-
-
   const deletePause = (index) => {
     const newPauses = [...pauses];
     newPauses.splice(index, 1);
@@ -138,7 +125,6 @@ export function FormAgenda({ isEditMode }) {
         console.error(error);
       });
   };
-
 
   const handleClickSalvar = () => {
     event.preventDefault();
@@ -364,12 +350,12 @@ export function FormAgenda({ isEditMode }) {
                   <h3 className={styles.h2Modal}>Pausas</h3>
                   {pauses.map((pause, index) => (
                     <PauseFormAgenda
-                      key={index}
+                      key={pause.pausaId}
                       pause={pause}
                       index={index}
                       deletePause={deletePause}
-                      setStartPause={setStartPause}
-                      setEndPause={setEndPause}
+                      onStartPauseChange={setStartPause}
+                      onEndPauseChange={setEndPause}
                     />
                   ))}
                   <button
