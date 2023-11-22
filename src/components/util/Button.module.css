@@ -2,7 +2,7 @@
   display: flex;
   width: 12rem;
   height: 3rem;
-  padding: 0rem 1rem;
+  padding: 0rem 0.5rem;
   justify-content: center;
   align-items: center;
   gap: 1rem;
@@ -47,7 +47,53 @@
     180deg,
     rgba(154, 54, 72, 0.77) 0%,
     rgba(154, 54, 72, 0.12) 100%
-
   );
   color: white;
 }
+
+.blue {
+  display: flex;
+  color: white !important;
+  background: #0a2fb6;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 0.375rem !important;
+  width: 10rem;
+  height: 3rem;
+  background: #0a2fb6;
+  box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15);
+}
+
+.button.blue:hover {
+  cursor: pointer;
+  color: #0a2fb6 !important;
+  background: white;
+  box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15) !important;
+  border: solid 1px #0a2fb6;
+}
+
+.save {
+  width: 14rem;
+  height: 4.5rem;
+  flex-shrink: 0;
+  border-radius: 0.375rem;
+  background: #030979;
+  box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15);
+  color: #FFF;
+  text-align: center;
+  font-family: Roboto Flex;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 1.875rem */
+}
+
+.save:hover {
+  cursor: pointer;
+  background:#FFF;
+  color: #030979;
+  box-shadow: 0px 4px 30px 0px rgba(38, 58, 67, 0.15) !important;
+  border: sokid 1px #030979;
+
+}
+

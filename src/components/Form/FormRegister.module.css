@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+.formTitle,
+.formSubtitle {
+  font-family: Poppins;
+}
+
+.formTitle {
+  color: #000;
+  font-family: Open Sans;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.here {
+  color: #9a3648;
+  /* add sublinhado*/
+
+  font-weight: 600;
+}
+.here:hover {
+  color: #9a3648;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.formSubtitle {
+  color: #000;
+  font-size: 0.5rem;
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 32rem;
+}
+.spanForgot {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  padding-right: 0.2rem;
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+  margin-top: -1rem;
+}
+.spanForgot:hover {
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+  text-decoration: underline;
+  cursor: pointer;
+}
+.spanForgot a {
+  text-decoration: none;
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+}
+
+h2 {
+  display: flex;
+  width: 100%;
+  font-size: 1.2rem;
+}
+.userType {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  flex-direction: row;
+  padding-top: 0.5rem;
+  gap: 1rem;
+  color: var(--black-06, rgba(0, 0, 0, 0.6));
+}
+
+.formFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.userTypeCheckbox:hover {
+  cursor: pointer;
+}
+
+.buttonUpload {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-style: normal;
+  color: rgba(15, 14, 14, 0.637);
+  font-weight: 400;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 32rem;
+  border-radius: 4px;
+  padding: 0.5rem;
+  background-color: white;
+  border: 1px solid rgba(32, 28, 28, 0.267);
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.buttonUpload:hover {
+  cursor: pointer;
+  border: 1px solid rgba(32, 28, 28, 0.267);
+  background-color: rgba(32, 28, 28, 0.267);
+}

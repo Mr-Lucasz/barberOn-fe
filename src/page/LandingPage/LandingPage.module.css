@@ -1,9 +1,10 @@
 body{
    overflow-x: hidden;
+   margin-top: 2.5rem;
+   overflow-y: scroll !important;
 }
 
-/* LandingPage.module.css */
-.secondSection {
-   margin-top: 80px; /* Ajuste a altura conforme a do seu cabeçalho */
- }
- 
+.landingWrapper{
+   display: flex;
+   flex-direction: column;
+}

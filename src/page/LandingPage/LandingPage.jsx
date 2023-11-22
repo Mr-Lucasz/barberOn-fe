@@ -3,6 +3,7 @@ import { Header } from "../../components/Header.jsx";
 import { FirstSection } from "./Section/FIrstSection.jsx";
 import { SecondSection } from "./Section/SecondSection.jsx";
 import ThirdSection from "./Section/ThirdSection";
+import { Footer } from "../../components/Footer";
 
 export function LandingPage() {
   return (
@@ -11,6 +12,7 @@ export function LandingPage() {
       <FirstSection />
       <SecondSection />
       <ThirdSection/>
+      <Footer />
     </div>
   );
 }

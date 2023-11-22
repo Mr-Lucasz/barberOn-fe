@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500&family=Roboto:wght@400;700&display=swap');
+
+
 :root{
   --blue-header:  #020115bf;
   --blue-gradiente: linear-gradient(180deg, rgba(3, 9, 121, 0.5) 99.99%, rgba(3, 9, 121, 0) 100%);
@@ -10,7 +13,7 @@
 }
 
 *{
-  margin: 0;
+  margin: 0r;
   padding: 0;
   box-sizing: border-box;
 }
@@ -20,15 +23,15 @@ body{
   -webkit-font-smoothing: antialiased;
 }
 
-body,input, textarea, button{
-  font-family: 'Roboto','Roboto Flex', sans-serif;
-  text-align: center;
+body, input, textarea, button{
+  font-family: 'Roboto','Roboto Flex', Baloo 2,  sans-serif;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 700;
   line-height: 2.25rem; 
   letter-spacing: 0.07813rem;
-
+  padding-left: 0.25rem;
+  box-sizing: border-box;
   
 }
 

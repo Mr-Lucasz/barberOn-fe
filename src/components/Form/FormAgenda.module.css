@@ -1,0 +1,92 @@
+.headerForm {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
+}
+.agendaSection {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  padding: 0 1rem;
+  padding-bottom: 0.5rem;
+  /*border line de abaixo da div*/
+
+  border-bottom: 1px solid #e5e5e5;
+}
+.switch {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  width: 100%;
+  gap: 2.5rem;
+}
+.switchLabel {
+  color: #000000;
+  font-family: "Roboto Flex-Bold", Helvetica;
+  font-weight: 700;
+  font-size: 16px;
+  width: 10rem;
+}
+.subtitleModal {
+  display: flex;
+  justify-content: flex-start;
+  color: rgba(0, 0, 0, 0.5);
+  font-family: Roboto Flex;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 125%;
+}
+
+.horario{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 0.5rem; 
+    
+}
+
+.buttonModalPause{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    margin-top: 0.5rem;
+    gap: 0.2rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #030979 !important;
+}
+.buttonModalPause:hover{
+    background-color: #030979 !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.btnGroup {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 0.5rem;
+  gap:1.25rem;
+}
+
+
+.buttonModalCancel , .buttonModalSalvar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white!important;
+    background-color: #030979!important;
+    border: 1px solid #030979!important;
+}
+
+.buttonModalCancel:hover, .buttonModalSalvar:hover{
+    background-color: white!important;
+    color:  #030979!important;
+}

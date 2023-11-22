@@ -2,15 +2,6 @@ import { LandingPage } from "./page/LandingPage/LandingPage.jsx";
 import { HomePage } from "./page/Home/HomePage.jsx";
 import "./App.module.css";
 import { Routes, Route } from "react-router-dom";
-<<<<<<< Updated upstream
-
-export function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/home" element={<HomePage />} />
-    </Routes>
-=======
 import { LoginPage } from "./page/Login/LoginPage.jsx";
 import { RegisterPage } from "./page/Cadastro/RegisterPage.jsx";
 import { UserProvider } from "./context/UserContext.jsx";
@@ -37,6 +28,5 @@ export function App() {
         {/* <Route path="/homeclient/historico" element={<HistoricoClientPage />} /> */}
       </Routes>
     </UserProvider>
->>>>>>> Stashed changes
   );
 }
