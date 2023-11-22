@@ -9,13 +9,14 @@ import { BarberAgendaPage } from "./page/BarberPage/Agenda/BarberAgendaPage.jsx"
 import { BarberServicePage } from "./page/BarberPage/Serviços/BarberServicePage.jsx";
 import { PerfilBarberPage } from "./page/BarberPage/Perfil/PerfilBarberPage.jsx";
 import { PerfilClientPage } from "./page/ClientPage/Perfil/PerfilClientPage.jsx";
+import { AgendarClientPage } from "./page/ClientPage/Agendar/AgendarClientPage.jsx";
 
 export function App() {
   return (
     <UserProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<HomePageBarber />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/home/agenda" element={<BarberAgendaPage />} />
         <Route path="/home/service" element={<BarberServicePage />} />
         <Route path="/home/perfil" element={<PerfilBarberPage />} />
