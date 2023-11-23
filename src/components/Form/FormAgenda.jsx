@@ -174,8 +174,8 @@ export function FormAgenda({ isEditMode }) {
     );
     if (selectedDayAgenda) {
       updateAgendaHour(selectedDayAgenda.agendaId, start, end);
-      // Include the new pause in the update request if isNewPause is true
-      if (isNewPause) {
+      // Include the new pause in the update request if isNewPause is true and pauses have changed
+      if (isNewPause && JSON.stringify(pauses) !== JSON.stringify(selectedDayAgenda.pausas)) {
         updateAgendaPause(
           [
             ...pauses,
@@ -191,6 +191,7 @@ export function FormAgenda({ isEditMode }) {
     } else {
       console.error("No agenda found for the selected day.");
     }
+    setIsModalOpen(false);
   };
 
   const handleClickContinue = () => navigate(`/register/${id}/step2`);
@@ -415,8 +416,8 @@ export function FormAgenda({ isEditMode }) {
                     className={styles.buttonModalPause}
                     onClick={() => {
                       const newPause = {
-                        pausaHorarioInicio: "10:00:00", // Substitua por valores reais
-                        pausaHorarioFim: "11:00:00", // Substitua por valores reais
+                        pausaHorarioInicio: "00:00:00", 
+                        pausaHorarioFim: "00:00:00", 
                       };
                       addPause(newPause);
                     }}
