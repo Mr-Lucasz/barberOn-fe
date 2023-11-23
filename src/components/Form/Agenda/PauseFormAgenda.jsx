@@ -15,10 +15,12 @@ export function PauseFormAgenda({
   onEndPauseChange,
 }) {
   const handleStartChange = (newStart) => {
+    console.log("Start time changed:", newStart); // Log the new start time
     onStartPauseChange(newStart, index);
   };
-
+  
   const handleEndChange = (newEnd) => {
+    console.log("End time changed:", newEnd); // Log the new end time
     onEndPauseChange(newEnd, index);
   };
 

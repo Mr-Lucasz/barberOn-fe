@@ -68,6 +68,7 @@ export function FormAgenda({ isEditMode }) {
   const [endPause, setEndPause] = useState("");
   const [isChecked, setIsChecked] = useState({});
   const [agenda, setAgenda] = useState([]);
+  const [isNewPause, setIsNewPause] = useState(false);
 
   const handleClickEdit = (dia) => {
     setSelectDay(dia.agendaDiaSemana);
@@ -85,52 +86,51 @@ export function FormAgenda({ isEditMode }) {
       console.error("Invalid pause object:", pause);
       return;
     }
+    console.log("Adding pause:", pause); // Log the pause being added
     setPauses([...pauses, pause]);
+    setIsNewPause(true); // Set isNewPause to true when a new pause is added
   };
 
   //http://localhost:8080/api/pausas/{pausaId}
-  const deletePauseApi = (pausaId) => {
+  const deletePauseApi = (pausaId, index) => {
     axios
       .delete(`http://localhost:8080/api/pausas/${pausaId}`)
       .then((response) => {
         console.log(response);
-        const newAgenda = agenda.map((dia) => {
-          if (dia.agendaDiaSemana === selectDay) {
-            return { ...dia, pausas: dia.pausas.filter((pausa) => pausa.id !== pausaId) };
-          } else {
-            return dia;
-          }
-        });
-        setAgenda(newAgenda);
-        
-        // Atualize o estado das pausas
-        const newPauses = pauses.filter((pausa) => pausa.id !== pausaId);
+        // Atualize o estado das pausas aqui, depois que a pausa foi deletada no servidor
+        const newPauses = pauses.filter((_, i) => i !== index);
         setPauses(newPauses);
       })
       .catch((error) => {
         console.error(error);
       });
   };
+  
+
   const deletePause = (index) => {
     event.preventDefault();
-    const selectedDayAgenda = agenda.find(
-      (dia) => dia.agendaDiaSemana === selectDay
-    );
-    const newPausas = selectedDayAgenda.pausas.filter(
-      (pausa, i) => i !== index
-    );
-    const newAgenda = agenda.map((dia) =>
-      dia.agendaDiaSemana === selectDay
-        ? { ...dia, pausas: newPausas }
-        : { ...dia }
-    );
-    setAgenda(newAgenda);
-    if (pauses[index].pausaId) {
-      deletePauseApi(pauses[index].pausaId);
+    if (isNewPause) {
+      // If the pause is new and is deleted immediately, clear the information and do not make an update request
+      const newPauses = pauses.filter((_, i) => i !== index);
+      setPauses(newPauses);
+      setIsNewPause(false); // Reset isNewPause to false
+    } else {
+      const selectedDayAgenda = agenda.find(
+        (dia) => dia.agendaDiaSemana === selectDay
+      );
+      const newPausas = selectedDayAgenda.pausas.filter(
+        (pausa, i) => i !== index
+      );
+      const newAgenda = agenda.map((dia) =>
+        dia.agendaDiaSemana === selectDay
+          ? { ...dia, pausas: newPausas }
+          : { ...dia }
+      );
+      setAgenda(newAgenda);
+      if (pauses[index].pausaId) {
+        deletePauseApi(pauses[index].pausaId, index); // Pass the index to deletePauseApi
+      }
     }
-    // Atualize o estado das pausas
-    const newPauses = pauses.filter((_, i) => i !== index);
-    setPauses(newPauses);
   };
 
   const updateAgendaHour = (agendaId, start, end) => {
@@ -168,14 +168,25 @@ export function FormAgenda({ isEditMode }) {
 
   const handleClickSalvar = () => {
     event.preventDefault();
+    console.log("Saving pause with start time:", startPause, "and end time:", endPause);
     const selectedDayAgenda = agenda.find(
       (dia) => dia.agendaDiaSemana === selectDay
     );
     if (selectedDayAgenda) {
       updateAgendaHour(selectedDayAgenda.agendaId, start, end);
-      // Atualize a função updateAgendaPause para incluir todas as pausas
-      updateAgendaPause(pauses, selectedDayAgenda);
-
+      // Include the new pause in the update request if isNewPause is true
+      if (isNewPause) {
+        updateAgendaPause(
+          [
+            ...pauses,
+            { pausaHorarioInicio: startPause, pausaHorarioFim: endPause },
+          ],
+          selectedDayAgenda
+        );
+        setIsNewPause(false); // Reset isNewPause to false after the update request
+      } else {
+        updateAgendaPause(pauses, selectedDayAgenda);
+      }
       setIsModalOpen(false);
     } else {
       console.error("No agenda found for the selected day.");
@@ -390,11 +401,11 @@ export function FormAgenda({ isEditMode }) {
                     </LocalizationProvider>
                   </div>
                   <h3 className={styles.h2Modal}>Pausas</h3>
-                  {pauses.map((pause) => (
+                  {pauses.map((pause, index) => (
                     <PauseFormAgenda
-                      key={pause.pausaId} // Use pausaId como chave
+                      key={pause.pausaId} 
                       pause={pause}
-                      index={pause.pausaId}
+                      index={index} 
                       deletePause={deletePause}
                       onStartPauseChange={setStartPause}
                       onEndPauseChange={setEndPause}
