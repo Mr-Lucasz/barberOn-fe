@@ -14,9 +14,9 @@ export function HomePageClient() {
   const [eventsData, setEventsData] = useState(events);
 
   const homePageBarberLinks = [
-    { href: "/home", text: "Home" },
-    { href: "/home/agenda", text: "Agenda" },
-    { href: "/home/service", text: "Serviços" },
+    { href: "/homeclient", text: "Home" },
+    { href: "/homeclient/agendar", text: "Agendar" },
+    { href: "/homeclient/historico", text: "Historico" },
   ];
 
   //criar uma constante para Styles de calendar
