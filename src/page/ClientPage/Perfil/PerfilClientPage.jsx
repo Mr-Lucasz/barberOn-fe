@@ -1,8 +1,8 @@
 // import styles from "./PerfilClientPage.module.css";
 import { Header } from "../../../components/Header.jsx";
 import { WrapperDefault } from "../../../components/util/WrapperDefault.jsx";
-import { FormRegister } from "../../../components/Form/FormRegister.jsx";
 import { user } from '../../../mock/employeeMockData';
+import { FormRegister } from "../../../components/Form/FormRegister.jsx";
 
 
 export function PerfilClientPage() {
