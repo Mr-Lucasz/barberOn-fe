@@ -10,6 +10,7 @@ import { BarberServicePage } from "./page/BarberPage/Serviços/BarberServicePage
 import { PerfilBarberPage } from "./page/BarberPage/Perfil/PerfilBarberPage.jsx";
 import { PerfilClientPage } from "./page/ClientPage/Perfil/PerfilClientPage.jsx";
 import { AgendarClientPage } from "./page/ClientPage/Agendar/AgendarClientPage.jsx";
+import { HomePageClient } from "./page/Home/HomePageClient.jsx";
 
 export function App() {
   return (
@@ -23,7 +24,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route exact path="/register" element={<RegisterPage />} />
         <Route path="/register/:id/:step" element={<RegisterPage />} />
-        {/*<Route path="/homeclient" element={<HomePageClient />} /> */}
+        <Route path="/homeclient" element={<HomePageClient />} />
         <Route path="/homeclient/perfil" element={<PerfilClientPage />} />
         <Route path="/homeclient/agendar" element={<AgendarClientPage />} />
         {/* <Route path="/homeclient/historico" element={<HistoricoClientPage />} /> */}
