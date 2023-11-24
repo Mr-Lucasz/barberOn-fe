@@ -71,6 +71,7 @@ export function FormAgenda({ isEditMode }) {
   const [isNewPause, setIsNewPause] = useState(false);
 
   const handleClickEdit = (dia) => {
+    
     setSelectDay(dia.agendaDiaSemana);
     setStart(dayjs(`1970-01-01T${dia.agendaHorarioInicio}`));
     setEnd(dayjs(`1970-01-01T${dia.agendaHorarioFim}`));
@@ -78,17 +79,19 @@ export function FormAgenda({ isEditMode }) {
     setIsModalOpen(true);
   };
 
+
   const handleClickCancelar = () => setIsModalOpen(false);
 
   const addPause = (pause) => {
     event.preventDefault();
-    if (!pause.pausaHorarioInicio || !pause.pausaHorarioFim) {
-      console.error("Invalid pause object:", pause);
-      return;
-    }
-    console.log("Adding pause:", pause); // Log the pause being added
-    setPauses([...pauses, pause]);
-    setIsNewPause(true); // Set isNewPause to true when a new pause is added
+
+    const newPause = {
+      pausaHorarioInicio: pause.pausaHorarioInicio,
+      pausaHorarioFim: pause.pausaHorarioFim,
+    };
+
+    setPauses([...pauses, newPause]);
+    setIsNewPause(true);
   };
 
   //http://localhost:8080/api/pausas/{pausaId}
@@ -105,7 +108,6 @@ export function FormAgenda({ isEditMode }) {
         console.error(error);
       });
   };
-  
 
   const deletePause = (index) => {
     event.preventDefault();
@@ -160,6 +162,17 @@ export function FormAgenda({ isEditMode }) {
       )
       .then((response) => {
         console.log(response);
+  
+        // Fetch the agendas again after updating the pauses
+        axios
+          .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+          .then((response) => {
+            // Update the state with the latest data
+            setAgenda(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -168,21 +181,23 @@ export function FormAgenda({ isEditMode }) {
 
   const handleClickSalvar = () => {
     event.preventDefault();
-    console.log("Saving pause with start time:", startPause, "and end time:", endPause);
+    console.log(
+      "Saving pause with start time:",
+      startPause,
+      "and end time:",
+      endPause
+    );
     const selectedDayAgenda = agenda.find(
       (dia) => dia.agendaDiaSemana === selectDay
     );
     if (selectedDayAgenda) {
       updateAgendaHour(selectedDayAgenda.agendaId, start, end);
       // Include the new pause in the update request if isNewPause is true and pauses have changed
-      if (isNewPause && JSON.stringify(pauses) !== JSON.stringify(selectedDayAgenda.pausas)) {
-        updateAgendaPause(
-          [
-            ...pauses,
-            { pausaHorarioInicio: startPause, pausaHorarioFim: endPause },
-          ],
-          selectedDayAgenda
-        );
+      if (
+        isNewPause &&
+        JSON.stringify(pauses) !== JSON.stringify(selectedDayAgenda.pausas)
+      ) {
+        updateAgendaPause(pauses, selectedDayAgenda);
         setIsNewPause(false); // Reset isNewPause to false after the update request
       } else {
         updateAgendaPause(pauses, selectedDayAgenda);
@@ -404,23 +419,39 @@ export function FormAgenda({ isEditMode }) {
                   <h3 className={styles.h2Modal}>Pausas</h3>
                   {pauses.map((pause, index) => (
                     <PauseFormAgenda
-                      key={pause.pausaId} 
+                      key={pause.pausaId}
                       pause={pause}
-                      index={index} 
+                      index={index}
                       deletePause={deletePause}
-                      onStartPauseChange={setStartPause}
-                      onEndPauseChange={setEndPause}
+                      onStartPauseChange={(newStartTime, index) => {
+                        // Atualize o estado de startPause aqui
+                        const newPause = {
+                          ...pause,
+                          pausaHorarioInicio: newStartTime,
+                        };
+                        const newPauses = pauses.map((item, i) =>
+                          i === index ? newPause : item
+                        );
+                        setPauses(newPauses);
+
+                      }}
+                      onEndPauseChange={(newEndTime, index) => {
+                        // Atualize o estado de endPause aqui
+                        const newPause = {
+                          ...pause,
+                          pausaHorarioFim: newEndTime,
+                        };
+                        const newPauses = pauses.map((item, i) =>
+                          i === index ? newPause : item
+                        );
+                        setPauses(newPauses);
+                        
+                      }}
                     />
                   ))}
                   <button
                     className={styles.buttonModalPause}
-                    onClick={() => {
-                      const newPause = {
-                        pausaHorarioInicio: "00:00:00", 
-                        pausaHorarioFim: "00:00:00", 
-                      };
-                      addPause(newPause);
-                    }}
+                    onClick={addPause}
                   >
                     Add Pausa +
                   </button>

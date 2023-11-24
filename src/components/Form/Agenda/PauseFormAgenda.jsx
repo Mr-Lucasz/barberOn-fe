@@ -16,12 +16,12 @@ export function PauseFormAgenda({
 }) {
   const handleStartChange = (newStart) => {
     console.log("Start time changed:", newStart); // Log the new start time
-    onStartPauseChange(newStart, index);
+    onStartPauseChange(newStart.format("HH:mm:ss"), index);
   };
   
   const handleEndChange = (newEnd) => {
     console.log("End time changed:", newEnd); // Log the new end time
-    onEndPauseChange(newEnd, index);
+    onEndPauseChange(newEnd.format("HH:mm:ss"), index);
   };
 
   return (
@@ -31,12 +31,12 @@ export function PauseFormAgenda({
           <TimePicker
             label="Início da Pausa"
             onChange={handleStartChange}
-            value={dayjs(`1970-01-01T${pause.pausaHorarioInicio}`)} 
+            value={dayjs(pause.pausaHorarioInicio, "HH:mm:ss")}
           />
           <TimePicker
             label="Fim da Pausa"
             onChange={handleEndChange}
-            value={dayjs(`1970-01-01T${pause.pausaHorarioFim}`)} 
+            value={dayjs(pause.pausaHorarioFim, "HH:mm:ss")}
           />
         </DemoContainer>
         <button onClick={() => deletePause(index)}>
