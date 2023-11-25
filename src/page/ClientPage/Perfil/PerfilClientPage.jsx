@@ -1,8 +1,8 @@
-// import styles from "./PerfilClientPage.module.css";
+import styles from "./PerfilClientPage.module.css";
 import { Header } from "../../../components/Header.jsx";
 import { WrapperDefault } from "../../../components/util/WrapperDefault.jsx";
-import { user } from '../../../mock/employeeMockData';
 import { FormRegister } from "../../../components/Form/FormRegister.jsx";
+import { user } from '../../../mock/employeeMockData';
 
 
 export function PerfilClientPage() {
@@ -18,7 +18,7 @@ export function PerfilClientPage() {
       <WrapperDefault>
         <Header
           showButton={false}
-          isHomePageClient={true}
+          isHomePageBarber={true}
           links={homePageClientLinks}
         />
           <FormRegister barber={user} />

@@ -53,9 +53,13 @@ export function Header({
     navigate("/");
   };
 
-  const handleClickVerPerfil = () => {
+  // const handleClickVerPerfil = () => {
+  //   event.preventDefault();
+  //   navigate("/home/perfil");
+  // };
+  const handleClickVerPerfil = (profilePath) => {
     event.preventDefault();
-    navigate("/home/perfil");
+    navigate(profilePath);
   };
 
   useEffect(() => {
@@ -132,6 +136,7 @@ Header.propTypes = {
   showButton: PropTypes.bool,
   showNavbar: PropTypes.bool,
   isHomePageBarber: PropTypes.bool,
+  onClickVerPerfil: PropTypes.func,
   links: PropTypes.arrayOf(
     PropTypes.shape({
       href: PropTypes.string.isRequired,
@@ -145,4 +150,5 @@ Header.defaultProps = {
   showNavbar: true,
   isHomePageBarber: false,
   links: null,
+  onClickVerPerfil: () => {},
 };

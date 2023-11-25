@@ -50,6 +50,7 @@ export function HomePageClient() {
         showButton={false}
         isHomePageBarber={true}
         links={homePageBarberLinks}
+        onClickVerPerfil={() => handleClickVerPerfil("/homeclient/perfil")}
       />
       <Calendar
         views={["day", "agenda", "work_week", "month"]}
