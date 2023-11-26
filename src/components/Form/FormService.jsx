@@ -109,6 +109,16 @@ export function FormService() {
     }
   };
 
+  const getBarberData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/barbeiros/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error getting barber data:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchServices = async () => {
       const servicesFromServer = await getServices();
@@ -159,7 +169,7 @@ export function FormService() {
           : service
       );
     });
-    
+
   
     const updatedService = {
       ...editingService,
@@ -225,14 +235,23 @@ export function FormService() {
     setEditingService(null);
     setIsModalOpen(false);
   };
-  const handleContinue = (event) => {
+  const handleContinue = async (event) => {
     event.preventDefault();
     if (editingService) {
-      editService();
+      await editService();
     }
     setUser({ ...user, services: serviceList });
+  
+    // Busque os dados do barbeiro e armazene-os no localStorage
+    const barberData = await getBarberData(id);
+    if (barberData) {
+      localStorage.setItem("barberData", JSON.stringify(barberData));
+    }
+    localStorage.setItem("userData", JSON.stringify(user));
+  
     navigate("/home");
   };
+
   useEffect(() => {
     serviceList = [...services];
   }, [services]);

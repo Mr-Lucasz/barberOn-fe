@@ -27,7 +27,7 @@ export function FormRegister({ showForgotPassword, barber }) {
   const { user, setUser } = useContext(UserContext);
   const [isEditMode, setIsEditMode] = useState(false);
   const [barberOnEmployeeFileName, setBarberOnEmployeeFileName] = useState("");
-  const API_URL = "http://localhost:8080/api/barber";
+  const API_URL = "http://localhost:8080/api/barbeiros";
 
   useEffect(() => {
     if (barber) {
@@ -128,6 +128,74 @@ export function FormRegister({ showForgotPassword, barber }) {
     console.error(error);
     alert("Erro ao realizar cadastro");
   }
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    let month = '' + (date.getMonth() + 1);
+    let day = '' + date.getDate();
+    const year = date.getFullYear();
+  
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+  
+    return [year, month, day].join('-');
+  }
+
+  useEffect(() => {
+    const fetchBarberData = async () => {
+      try {
+        const barberDataString = localStorage.getItem('barberData');
+        if (barberDataString) {
+          const barberData = JSON.parse(barberDataString);
+          const barberId = barberData.id;
+          
+          const response = await axios.get(`${API_URL}/${barberId}`);
+          const barberDetails = response.data;
+          
+          setName(barberDetails.nome);
+          setDateNasc(formatDate(barberDetails.dataNascimento));
+          setEmail(barberDetails.email);
+          setPassword(barberDetails.senha);
+          setCpf(barberDetails.cpf);
+          setNumber(barberDetails.telefone);
+          setIsBarberOnEmployee(true); 
+          setBarberOnEmployeeFileName(barberDetails.imagem); 
+        } else {
+          navigate('/login', { replace: true }); 
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (isEditMode) {
+      fetchBarberData();
+    }
+  }, [isEditMode]);
+  
+  const handleSave = async () => {
+    event.preventDefault();
+    try {
+      const updatedBarber = {
+        nome: name,
+        dataNascimento: dateNasc, 
+        email: email,
+        senha: password,
+        cpf: cpf,
+        telefone: number,
+      };
+  
+      const barberId = JSON.parse(localStorage.getItem('barberData')).id;
+      const response = await axios.patch(`${API_URL}/${barberId}`, updatedBarber);
+  
+      console.log(response);
+      alert('Dados do barbeiro atualizados com sucesso!');
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao atualizar os dados do barbeiro');
+    }
+  };
   
   const handleClickRegister = async (event) => {
     event.preventDefault();
@@ -337,7 +405,7 @@ export function FormRegister({ showForgotPassword, barber }) {
           color="blue"
           size="large"
           buttonName={isEditMode ? "SALVAR" : "CADASTRAR"}
-          onClick={handleClickRegister}
+          onClick={isEditMode ? handleSave : handleClickRegister}
         />
       </footer>
     </FormUtil>
