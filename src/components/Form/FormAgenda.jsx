@@ -80,6 +80,31 @@ export function FormAgenda({ isEditMode }) {
   };
 
 
+
+  useEffect(() => {
+    const fetchBarberData = async () => {
+      try {
+        const barberDataString = localStorage.getItem('barberData');
+        if (barberDataString) {
+          const barberData = JSON.parse(barberDataString);
+          const barberId = barberData.id;
+  
+          const response = await axios.get(`http://localhost:8080/api/barbeiros/${barberId}/agendas`);
+          const barberDetails = response.data;
+          setAgenda(barberDetails);
+        } else {
+          navigate('/login', { replace: true }); 
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    if (isEditMode) {
+      fetchBarberData();
+    }
+  }, [isEditMode]);
+
   const handleClickCancelar = () => setIsModalOpen(false);
 
   const addPause = (pause) => {
@@ -112,10 +137,9 @@ export function FormAgenda({ isEditMode }) {
   const deletePause = (index) => {
     event.preventDefault();
     if (isNewPause) {
-      // If the pause is new and is deleted immediately, clear the information and do not make an update request
       const newPauses = pauses.filter((_, i) => i !== index);
       setPauses(newPauses);
-      setIsNewPause(false); // Reset isNewPause to false
+      setIsNewPause(false);
     } else {
       const selectedDayAgenda = agenda.find(
         (dia) => dia.agendaDiaSemana === selectDay
@@ -130,10 +154,10 @@ export function FormAgenda({ isEditMode }) {
       );
       setAgenda(newAgenda);
       if (pauses[index].pausaId) {
-        deletePauseApi(pauses[index].pausaId, index); // Pass the index to deletePauseApi
+        deletePauseApi(pauses[index].pausaId, index); 
       }
     }
-  };
+};
 
   const updateAgendaHour = (agendaId, start, end) => {
     axios
@@ -167,7 +191,6 @@ export function FormAgenda({ isEditMode }) {
         axios
           .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
           .then((response) => {
-            // Update the state with the latest data
             setAgenda(response.data);
           })
           .catch((error) => {

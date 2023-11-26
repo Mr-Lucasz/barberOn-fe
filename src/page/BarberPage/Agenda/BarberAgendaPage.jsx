@@ -2,6 +2,8 @@
 import { Header } from "../../../components/Header.jsx";
 import { WrapperDefault } from "../../../components/util/WrapperDefault.jsx";
 import { FormAgenda } from "../../../components/Form/FormAgenda.jsx";
+import { user } from '../../../mock/employeeMockData';
+import { useState } from 'react';
 
 export function BarberAgendaPage() {
   const homePageBarberLinks = [
@@ -10,6 +12,8 @@ export function BarberAgendaPage() {
     { href: "/home/service", text: "Serviços" },
   ];
 
+  const [editing, setEditing] = useState(true);
+
   return (
    <WrapperDefault>
       <Header
@@ -17,7 +21,7 @@ export function BarberAgendaPage() {
         isHomePageBarber={true}
         links={homePageBarberLinks}
       />
-          <FormAgenda />
+          <FormAgenda barber={user} isEditMode={editing} />
  </WrapperDefault>
   );
 }
