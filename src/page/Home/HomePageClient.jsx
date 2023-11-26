@@ -19,15 +19,6 @@ export function HomePageClient() {
     { href: "/homeclient/historico", text: "Historico" },
   ];
 
-  //criar uma constante para Styles de calendar
-  const myStyle = {
-    display: "flex",
-    backgroundColor: "white",
-    color: "black",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  };
 
   const handleSelect = ({ start, end }) => {
     console.log(start);
@@ -51,17 +42,6 @@ export function HomePageClient() {
         isHomePageBarber={true}
         links={homePageBarberLinks}
         onClickVerPerfil={() => handleClickVerPerfil("/homeclient/perfil")}
-      />
-      <Calendar
-        views={["day", "agenda", "work_week", "month"]}
-        selectable
-        localizer={localizer}
-        defaultDate={new Date()}
-        defaultView="month"
-        events={eventsData}
-        style={myStyle}
-        onSelectEvent={(event) => alert(event.title)}
-        onSelectSlot={handleSelect}
       />
     </div>
     </WrapperDefault>

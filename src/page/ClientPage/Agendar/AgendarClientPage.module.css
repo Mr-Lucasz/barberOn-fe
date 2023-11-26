@@ -1,0 +1,50 @@
+.container {
+  background-color: rgba(255, 255, 255, 0.8); /* branco com 80% de opacidade */
+  padding: 80px;
+  border-radius: 10px;
+  width: 80%; /* Ajuste a largura conforme necessário */
+  margin: 0 auto; /* Centralizar horizontalmente */
+  margin-top: 20px; /* Espaçamento superior */
+}
+
+.textXl {
+  font-size: 1.5rem;
+}
+
+.fontBold {
+  font-weight: bold;
+}
+
+.barberList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.barberItem {
+  text-align: center;
+  margin: 20px;
+}
+
+.barberImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: translateX(-80%);
+}
