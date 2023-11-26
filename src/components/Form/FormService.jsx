@@ -61,12 +61,19 @@ export function FormService() {
     }
   };
 
-  const patchService = async (service) => {
+  const patchService = async (servicoId) => {
     try {
-      // Edite o serviço na lista de serviços
+      const updatedService = {
+        servicoTitulo: serviceName,
+        servicoDescricao: serviceName,
+        servicoValor: parseFloat(serviceValue),
+        servicoTempoHora: parseInt(serviceHours),
+        servicoTempoMinuto: parseInt(serviceMinutes),
+      };
+  
       const response = await axios.patch(
-        `http://localhost:8080/api/servicos/${id}/${service.id}`,
-        serviceList
+        `http://localhost:8080/api/servicos/${id}/${servicoId}`,
+        updatedService
       );
       return response.data;
     } catch (error) {
@@ -139,10 +146,9 @@ export function FormService() {
   };
 
   const editService = async () => {
-    // Lógica para editar um serviço existente
     setServices((prevServices) => {
-      const updatedServices = prevServices.map((service) =>
-        service.id === editingService.id
+      return prevServices.map((service) =>
+        service.servicoId === editingService.servicoId
           ? {
               ...service,
               servicoTitulo: serviceName,
@@ -152,10 +158,23 @@ export function FormService() {
             }
           : service
       );
-      return updatedServices;
     });
+    
   
-    // Atualize editingService para null depois de editar o serviço
+    const updatedService = {
+      ...editingService,
+      servicoTitulo: serviceName,
+      servicoValor: serviceValue,
+      servicoTempoHora: serviceHours,
+      servicoTempoMinuto: serviceMinutes,
+    };
+  
+    try {
+      await patchService(editingService.servicoId);
+    } catch (error) {
+      console.error("Error updating service:", error);
+    }
+  
     setEditingService(null);
   };
 
@@ -226,7 +245,7 @@ export function FormService() {
       </div>
       {!error && services.length > 0 ? (
         services.map((service, index) => (
-          <div className={styles.serviceSection} key={service.id}>
+          <div className={styles.serviceSection} key={service.servicoId}>
             <span className={styles.serviceTitle}>{service.servicoTitulo}</span>
             <span className={styles.serviceTempo}>
               {service.servicoTempoHora}h{service.servicoTempoMinuto}min
