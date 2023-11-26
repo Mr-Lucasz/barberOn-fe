@@ -51,7 +51,10 @@ export function FormService() {
     try {
       // Adicione o serviço à lista de serviços
       serviceList.push(service);
-      const response = await axios.post(`http://localhost:8080/api/servicos/${id}`, serviceList);
+      const response = await axios.post(
+        `http://localhost:8080/api/servicos/${id}`,
+        serviceList
+      );
       return response.data;
     } catch (error) {
       console.error("Error posting service:", error);
@@ -61,7 +64,10 @@ export function FormService() {
   const patchService = async (service) => {
     try {
       // Edite o serviço na lista de serviços
-      const response = await axios.patch(`http://localhost:8080/api/servicos/${id}/${service.id}`, serviceList);
+      const response = await axios.patch(
+        `http://localhost:8080/api/servicos/${id}/${service.id}`,
+        serviceList
+      );
       return response.data;
     } catch (error) {
       console.error("Error patching service:", error);
@@ -70,7 +76,9 @@ export function FormService() {
 
   const removeService = async (servicoId) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/servicos/${servicoId}`);
+      const response = await axios.delete(
+        `http://localhost:8080/api/servicos/${servicoId}`
+      );
       return response.data;
     } catch (error) {
       console.error("Error deleting service:", error);
@@ -79,7 +87,9 @@ export function FormService() {
 
   const getServices = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/servicos/${id}`);
+      const response = await axios.get(
+        `http://localhost:8080/api/servicos/${id}`
+      );
       if (response.status === 404) {
         setError(true);
         return [];
@@ -103,15 +113,16 @@ export function FormService() {
 
   const addService = async () => {
     const newService = {
-        servicoTitulo: serviceName,
-        servicoDescricao: serviceName,
-        servicoValor: parseFloat(serviceValue),
-        servicoTempoHora: parseInt(serviceHours),
-        servicoTempoMinuto: parseInt(serviceMinutes),
+      servicoTitulo: serviceName,
+      servicoDescricao: serviceName,
+      servicoValor: parseFloat(serviceValue),
+      servicoTempoHora: parseInt(serviceHours),
+      servicoTempoMinuto: parseInt(serviceMinutes),
     };
     const postedService = await postService(newService);
     setServices((prevServices) => [...prevServices, postedService]);
-};
+    serviceList = [...services];
+  };
 
   const editService = () => {
     // Lógica para editar um serviço existente
@@ -175,18 +186,27 @@ export function FormService() {
     setUser({ ...user, services: serviceList });
     navigate("/home");
   };
-  
+  useEffect(() => {
+    serviceList = [...services];
+  }, [services]);
+
   const handleRemoveService = async (serviceToRemove) => {
-    event.preventDefault();
-  
-    const deletedService = await removeService(serviceToRemove.servicoId);
-    if (deletedService) {
-      setServices((prevServices) =>
-        prevServices.filter((service) => service.servicoId !== serviceToRemove.servicoId)
-      );
+    // Remova o serviço da lista de serviços imediatamente
+    setServices((prevServices) =>
+      prevServices.filter(
+        (service) => service.servicoId !== serviceToRemove.servicoId
+      )
+    );
+
+    try {
+      // Tente remover o serviço usando a API
+      await removeService(serviceToRemove.servicoId);
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      // Se a chamada para a API falhar, adicione o serviço de volta à lista
+      setServices((prevServices) => [...prevServices, serviceToRemove]);
     }
   };
-
 
   return (
     <FormUtil>
@@ -201,7 +221,9 @@ export function FormService() {
             <span className={styles.serviceTempo}>
               {service.servicoTempoHora}h{service.servicoTempoMinuto}min
             </span>
-            <span className={styles.serviceValor}>R$ {service.servicoValor}</span>
+            <span className={styles.serviceValor}>
+              R$ {service.servicoValor}
+            </span>
             <div className={styles.icons}>
               <Fab
                 color="primary"
