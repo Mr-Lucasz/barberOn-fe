@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 let serviceList = [];
 
@@ -25,8 +26,10 @@ export function FormService() {
   const [serviceHours, setServiceHours] = useState("");
   const [serviceMinutes, setServiceMinutes] = useState("");
   const [editingService, setEditingService] = useState(null);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
+  const { id } = useParams();
 
   const generateHourOptions = () => {
     let options = [];
@@ -38,41 +41,77 @@ export function FormService() {
 
   const generateMinuteOptions = () => {
     let options = [];
-    for (let i = 5; i < 60; i += 5) {
+    for (let i = 0; i < 60; i += 5) {
       options.push(<MenuItem value={i}>{i}</MenuItem>);
     }
     return options;
   };
 
-  const saveService = (service) => {
-    axios
-      .post("http://localhost:8080/services", service)
-      .then((response) => {
-        console.log(response);
+  const postService = async (service) => {
+    try {
+      // Adicione o serviço à lista de serviços
+      serviceList.push(service);
+      const response = await axios.post(`http://localhost:8080/api/servicos/${id}`, serviceList);
+      return response.data;
+    } catch (error) {
+      console.error("Error posting service:", error);
+    }
+  };
+
+  const patchService = async (service) => {
+    try {
+      // Edite o serviço na lista de serviços
+      const response = await axios.patch(`http://localhost:8080/api/servicos/${id}/${service.id}`, serviceList);
+      return response.data;
+    } catch (error) {
+      console.error("Error patching service:", error);
+    }
+  };
+
+  const removeService = async (servicoId) => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/api/servicos/${servicoId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting service:", error);
+    }
+  };
+
+  const getServices = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/servicos/${id}`);
+      if (response.status === 404) {
+        setError(true);
+        return [];
       }
-      )
-      .catch((error) => {
-        console.log(error);
-      });
+      return response.data;
+    } catch (error) {
+      console.error("Error getting services:", error);
+      setError(true);
+      return [];
+    }
   };
 
+  useEffect(() => {
+    const fetchServices = async () => {
+      const servicesFromServer = await getServices();
+      setServices(servicesFromServer);
+    };
 
-  const addService = () => {
-    // Lógica para adicionar um novo serviço
-    setServices((prevServices) => {
-      serviceList = [
-        ...prevServices,
-        {
-          id: uuidv4(),
-          name: serviceName,
-          value: serviceValue,
-          hours: serviceHours,
-          minutes: serviceMinutes,
-        },
-      ];
-      return serviceList;
-    });
-  };
+    fetchServices();
+  }, []);
+
+  const addService = async () => {
+    const newService = {
+        servicoTitulo: serviceName,
+        servicoDescricao: serviceName,
+        servicoValor: parseFloat(serviceValue),
+        servicoTempoHora: parseInt(serviceHours),
+        servicoTempoMinuto: parseInt(serviceMinutes),
+    };
+    const postedService = await postService(newService);
+    setServices((prevServices) => [...prevServices, postedService]);
+};
 
   const editService = () => {
     // Lógica para editar um serviço existente
@@ -81,10 +120,10 @@ export function FormService() {
         service.id === editingService.id
           ? {
               ...service,
-              name: serviceName,
-              value: serviceValue,
-              hours: serviceHours,
-              minutes: serviceMinutes,
+              servicoTitulo: serviceName,
+              servicoValor: serviceValue,
+              servicoTempoHora: serviceHours,
+              servicoTempoMinuto: serviceMinutes,
             }
           : service
       );
@@ -96,27 +135,20 @@ export function FormService() {
     event.preventDefault();
     if (editingService === null) {
       addService();
-      console.log(serviceList);
     } else {
       editService();
-      console.log(serviceList);
     }
-    setUser({ ...user, services: serviceList });
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   const handleClickModal = (service, event) => {
     event.preventDefault();
     if (service) {
       setEditingService(service);
-      setServiceName(service.name);
-      setServiceValue(service.value);
-      setServiceHours(service.hours);
-      setServiceMinutes(service.minutes);
+      setServiceName(service.servicoTitulo);
+      setServiceValue(service.servicoValor);
+      setServiceHours(service.servicoTempoHora);
+      setServiceMinutes(service.servicoTempoMinuto);
     } else {
       handleClickLimpar(event);
     }
@@ -143,19 +175,18 @@ export function FormService() {
     setUser({ ...user, services: serviceList });
     navigate("/home");
   };
-
-  const handleRemoveService = (serviceToRemove) => {
+  
+  const handleRemoveService = async (serviceToRemove) => {
     event.preventDefault();
-    serviceList = serviceList.filter(
-      (service) => service.id !== serviceToRemove.id
-    );
-    setServices(serviceList);
-    console.log(serviceList);
+  
+    const deletedService = await removeService(serviceToRemove.servicoId);
+    if (deletedService) {
+      setServices((prevServices) =>
+        prevServices.filter((service) => service.servicoId !== serviceToRemove.servicoId)
+      );
+    }
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <FormUtil>
@@ -163,14 +194,14 @@ export function FormService() {
         <h1 className={styles.title}> &#60; Serviços</h1>
         <span>Informe seu horário de trabalho.</span>
       </div>
-      {services.length > 0 ? (
+      {!error && services.length > 0 ? (
         services.map((service, index) => (
-          <div className={styles.serviceSection} key={index}>
-            <span className={styles.serviceTitle}>{service.name}</span>
+          <div className={styles.serviceSection} key={service.id}>
+            <span className={styles.serviceTitle}>{service.servicoTitulo}</span>
             <span className={styles.serviceTempo}>
-              {service.hours}h{service.minutes}min
+              {service.servicoTempoHora}h{service.servicoTempoMinuto}min
             </span>
-            <span className={styles.serviceValor}>R$ {service.value}</span>
+            <span className={styles.serviceValor}>R$ {service.servicoValor}</span>
             <div className={styles.icons}>
               <Fab
                 color="primary"
