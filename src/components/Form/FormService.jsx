@@ -121,13 +121,27 @@ export function FormService() {
     };
     const postedService = await postService(newService);
     setServices((prevServices) => [...prevServices, postedService]);
-    serviceList = [...services];
   };
 
-  const editService = () => {
+  const handleRemoveService = async (serviceToRemove) => {
+    setServices((prevServices) =>
+      prevServices.filter(
+        (service) => service.servicoId !== serviceToRemove.servicoId
+      )
+    );
+    try {
+      // Tente remover o serviço usando a API
+      await removeService(serviceToRemove.servicoId);
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      setServices((prevServices) => [...prevServices, serviceToRemove]);
+    }
+  };
+
+  const editService = async () => {
     // Lógica para editar um serviço existente
     setServices((prevServices) => {
-      serviceList = prevServices.map((service) =>
+      const updatedServices = prevServices.map((service) =>
         service.id === editingService.id
           ? {
               ...service,
@@ -138,28 +152,42 @@ export function FormService() {
             }
           : service
       );
-      return serviceList;
+      return updatedServices;
     });
+  
+    // Atualize editingService para null depois de editar o serviço
+    setEditingService(null);
   };
 
-  const handleClickSave = (event) => {
+  const handleClickSave = async (event) => {
     event.preventDefault();
-    if (editingService === null) {
-      addService();
+    if (editingService !== null) {
+      await editService();
     } else {
-      editService();
+      addService();
     }
+    setEditingService(null);
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    if (editingService) {
+      setServiceName(editingService.servicoTitulo);
+      setServiceValue(editingService.servicoValor);
+      setServiceHours(editingService.servicoTempoHora);
+      setServiceMinutes(editingService.servicoTempoMinuto);
+    } else {
+      setServiceName("");
+      setServiceValue("");
+      setServiceHours("");
+      setServiceMinutes("");
+    }
+  }, [editingService]);
 
   const handleClickModal = (service, event) => {
     event.preventDefault();
     if (service) {
       setEditingService(service);
-      setServiceName(service.servicoTitulo);
-      setServiceValue(service.servicoValor);
-      setServiceHours(service.servicoTempoHora);
-      setServiceMinutes(service.servicoTempoMinuto);
     } else {
       handleClickLimpar(event);
     }
@@ -189,24 +217,6 @@ export function FormService() {
   useEffect(() => {
     serviceList = [...services];
   }, [services]);
-
-  const handleRemoveService = async (serviceToRemove) => {
-    // Remova o serviço da lista de serviços imediatamente
-    setServices((prevServices) =>
-      prevServices.filter(
-        (service) => service.servicoId !== serviceToRemove.servicoId
-      )
-    );
-
-    try {
-      // Tente remover o serviço usando a API
-      await removeService(serviceToRemove.servicoId);
-    } catch (error) {
-      console.error("Error deleting service:", error);
-      // Se a chamada para a API falhar, adicione o serviço de volta à lista
-      setServices((prevServices) => [...prevServices, serviceToRemove]);
-    }
-  };
 
   return (
     <FormUtil>
