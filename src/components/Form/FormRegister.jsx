@@ -176,9 +176,10 @@ export function FormRegister({ showForgotPassword, barber }) {
       } else {
         navigate("/login");
       }
-    } catch (error) {
+    } catch (error) {1
       handleError(error);
     }
+    
   };
 
 

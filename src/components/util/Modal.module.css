@@ -20,7 +20,11 @@
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   gap: 1.25rem;
+  max-height: 45rem!important;
 }
+
+
+
 .headerModal {
   display: flex;
   justify-content: space-between;
@@ -87,4 +91,20 @@
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1); 
+}
+
+.modal::-webkit-scrollbar {
+  width: 4px; 
+  margin-left: 44rem;
+}
+.modal::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.726); 
+
+}
+
+.modal::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1); 
 }

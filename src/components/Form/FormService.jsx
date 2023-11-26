@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
+import axios from "axios";
 
 let serviceList = [];
 
@@ -42,6 +43,19 @@ export function FormService() {
     }
     return options;
   };
+
+  const saveService = (service) => {
+    axios
+      .post("http://localhost:8080/services", service)
+      .then((response) => {
+        console.log(response);
+      }
+      )
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
 
   const addService = () => {
     // Lógica para adicionar um novo serviço
