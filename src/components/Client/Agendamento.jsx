@@ -1,3 +1,4 @@
+// Agendamento.jsx
 import styles from "./Agendamento.module.css";
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
@@ -22,14 +23,67 @@ const mockTableData = [
     valor: "R$ 50,00",
     acoes: "Ações",
   },
+  {
+    barbeiro: "Barbeiro 3",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 4",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 5",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 6",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 7",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 8",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 9",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  }
 ];
 
 export function Agendamento() {
   const [search, setSearch] = useState("");
-
+  const [currentPage, setCurrentPage] = useState(1);
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
+
+  const itemsPerPage = 8;
+  const offset = (currentPage - 1) * itemsPerPage;
+  const pagedData = mockTableData.slice(offset, offset + itemsPerPage);
 
   return (
     <div className={styles.wrapperThree}>
@@ -71,8 +125,8 @@ export function Agendamento() {
         />
       </div>
       <div className={styles.tableContainer}>
-        <TableAgendamento data={mockTableData} />
-      </div>
+      <TableAgendamento data={pagedData} totalItems={mockTableData.length} onPageChange={setCurrentPage} />
+    </div>
     </div>
   );
 }
