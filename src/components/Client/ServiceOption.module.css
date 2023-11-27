@@ -1,0 +1,45 @@
+.wrapperOne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+
+}
+
+.filterContainer {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  height: 1.4375rem;
+}
+
+.filterAvaliacao,
+.filterStatus {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.1rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #9a3648;
+  border: 1px solid #0000007a;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.filterButton:hover {
+  background-color: #9a3648;
+  border: 1px solid #0000007a;
+  transform: scale(1.1);
+}
+
