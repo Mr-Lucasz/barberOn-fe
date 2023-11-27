@@ -18,7 +18,7 @@ import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
 import { PauseFormAgenda } from "./Agenda/PauseFormAgenda.jsx";
 import PropTypes from "prop-types";
-import { handleClickUpdate } from "../../components/Form/Agenda/functions.js";
+
 import dayjs from "dayjs";
 
 const theme = createTheme({
@@ -27,7 +27,6 @@ const theme = createTheme({
       styleOverrides: {
         switchBase: {
           color: "white",
-          // hover
           "&.Mui-checked:hover": {
             cursor: "pointer",
           },
@@ -40,7 +39,6 @@ const theme = createTheme({
         },
       },
     },
-    //style Fab
   },
 });
 
@@ -71,7 +69,6 @@ export function FormAgenda({ isEditMode }) {
   const [isNewPause, setIsNewPause] = useState(false);
 
   const handleClickEdit = (dia) => {
-    
     setSelectDay(dia.agendaDiaSemana);
     setStart(dayjs(`1970-01-01T${dia.agendaHorarioInicio}`));
     setEnd(dayjs(`1970-01-01T${dia.agendaHorarioFim}`));
@@ -79,21 +76,29 @@ export function FormAgenda({ isEditMode }) {
     setIsModalOpen(true);
   };
 
-
-
   useEffect(() => {
     const fetchBarberData = async () => {
       try {
-        const barberDataString = localStorage.getItem('barberData');
+        const barberDataString = localStorage.getItem("barberData");
         if (barberDataString) {
           const barberData = JSON.parse(barberDataString);
           const barberId = barberData.id;
   
-          const response = await axios.get(`http://localhost:8080/api/barbeiros/${barberId}/agendas`);
+          const response = await axios.get(
+            `http://localhost:8080/api/barbeiros/${barberId}/agendas`
+          );
           const barberDetails = response.data;
           setAgenda(barberDetails);
+  
+          // Adicione este bloco de código para definir o estado isChecked
+          const newIsChecked = {};
+          barberDetails.forEach((agenda) => {
+            newIsChecked[agenda.agendaDiaSemana] =
+              agenda.status.statusNome === "Disponível";
+          });
+          setIsChecked(newIsChecked);
         } else {
-          navigate('/login', { replace: true }); 
+          navigate("/login", { replace: true });
         }
       } catch (error) {
         console.error(error);
@@ -103,7 +108,37 @@ export function FormAgenda({ isEditMode }) {
     if (isEditMode) {
       fetchBarberData();
     }
-  }, [isEditMode]);
+  }, [isEditMode, navigate]);
+
+  const handleClickUpdate = async (event) => {
+    event.preventDefault();
+
+    if (isEditMode) {
+      try {
+        updateAgendaHour(agenda.agendaId, start, end);
+        updateAgendaPause(pauses, agenda);
+        const updatedAgenda = {
+          agendaHorarioInicio: start.format("HH:mm:ss"),
+          agendaHorarioFim: end.format("HH:mm:ss"),
+          pausas: pauses.map((pause) => ({
+            pausaHorarioInicio: pause.pausaHorarioInicio,
+            pausaHorarioFim: pause.pausaHorarioFim,
+          })),
+        };
+        const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+        const response = await axios.patch(
+          `http://localhost:8080/api/barbeiros/${barberId}/agendas`,
+          updatedAgenda
+        );
+
+        console.log(response);
+        alert("Agenda atualizada com sucesso!");
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao atualizar a agenda");
+      }
+    }
+  };
 
   const handleClickCancelar = () => setIsModalOpen(false);
 
@@ -119,13 +154,13 @@ export function FormAgenda({ isEditMode }) {
     setIsNewPause(true);
   };
 
-  //http://localhost:8080/api/pausas/{pausaId}
   const deletePauseApi = (pausaId, index) => {
+
+
     axios
       .delete(`http://localhost:8080/api/pausas/${pausaId}`)
       .then((response) => {
         console.log(response);
-        // Atualize o estado das pausas aqui, depois que a pausa foi deletada no servidor
         const newPauses = pauses.filter((_, i) => i !== index);
         setPauses(newPauses);
       })
@@ -154,14 +189,18 @@ export function FormAgenda({ isEditMode }) {
       );
       setAgenda(newAgenda);
       if (pauses[index].pausaId) {
-        deletePauseApi(pauses[index].pausaId, index); 
+        deletePauseApi(pauses[index].pausaId, index);
       }
     }
-};
+  };
 
   const updateAgendaHour = (agendaId, start, end) => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/barbeiros/${barberId}/agendas/${agendaId}`
+      : `http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`;
     axios
-      .patch(`http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`, {
+      .patch(apiUrl, {
         agendaHorarioInicio: start.format("HH:mm:ss"),
         agendaHorarioFim: end.format("HH:mm:ss"),
       })
@@ -174,9 +213,12 @@ export function FormAgenda({ isEditMode }) {
   };
 
   const updateAgendaPause = (pauses, selectedDayAgenda) => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/barbeiros/${barberId}/agendas/${selectedDayAgenda.agendaId}/pausas`
+      : `http://localhost:8080/api/barbeiros/${id}/agendas/${selectedDayAgenda.agendaId}/pausas`;
     axios
-      .patch(
-        `http://localhost:8080/api/barbeiros/${id}/agendas/${selectedDayAgenda.agendaId}/pausas`,
+      .patch(apiUrl,
         {
           pausas: pauses.map((pause) => ({
             pausaHorarioInicio: pause.pausaHorarioInicio,
@@ -186,10 +228,12 @@ export function FormAgenda({ isEditMode }) {
       )
       .then((response) => {
         console.log(response);
-  
-        // Fetch the agendas again after updating the pauses
+        const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+        const apiUrl = isEditMode
+          ? `http://localhost:8080/api/barbeiros/${barberId}/agendas`
+          : `http://localhost:8080/api/barbeiros/${id}/agendas`;
         axios
-          .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+          .get(apiUrl)
           .then((response) => {
             setAgenda(response.data);
           })
@@ -215,13 +259,12 @@ export function FormAgenda({ isEditMode }) {
     );
     if (selectedDayAgenda) {
       updateAgendaHour(selectedDayAgenda.agendaId, start, end);
-      // Include the new pause in the update request if isNewPause is true and pauses have changed
       if (
         isNewPause &&
         JSON.stringify(pauses) !== JSON.stringify(selectedDayAgenda.pausas)
       ) {
         updateAgendaPause(pauses, selectedDayAgenda);
-        setIsNewPause(false); // Reset isNewPause to false after the update request
+        setIsNewPause(false);
       } else {
         updateAgendaPause(pauses, selectedDayAgenda);
       }
@@ -232,19 +275,35 @@ export function FormAgenda({ isEditMode }) {
     setIsModalOpen(false);
   };
 
-  const handleClickContinue = () => navigate(`/register/${id}/step2`);
+  const handleClickContinue = () =>{
+  
+    if (isEditMode) {
+      navigate("/home/agenda");
+      alert("Agenda atualizada com sucesso!");
+    }else{
+    navigate(`/register/${id}/step2`)
+    }
+}
+  
 
   useEffect(() => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/barbeiros/${barberId}/agendas`
+      : `http://localhost:8080/api/barbeiros/${id}/agendas`;
+
+    if (isEditMode) {
     axios
-      .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+      .get(apiUrl)
       .then((response) => {
-        const agenda = response.data[0]; // Substitua 0 pelo índice da agenda que você quer usar
+        const agenda = response.data[0];
         setStart(agenda.agendaHorarioInicio);
         setEnd(agenda.agendaHorarioFim);
       })
       .catch((error) => {
         console.error(error);
       });
+    }
   }, [id]);
 
   const generateInitialAgendas = () => {
@@ -270,11 +329,16 @@ export function FormAgenda({ isEditMode }) {
     }));
     return newAgendas;
   };
-  //função uptade status que chama endpoint patch
+
   const updateStatus = (agendaId, isChecked) => {
-    const statusId = isChecked ? 1 : 2; // 1 para "Disponível" (ON), 2 para "Indisponível" (OFF)
+
+    const statusId = isChecked ? 1 : 2;
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/barbeiros/${barberId}/agendas/${agendaId}`
+      : `http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`;
     axios
-      .patch(`http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`, {
+      .patch(apiUrl, {
         statusId: statusId,
       })
       .then((response) => {
@@ -286,11 +350,14 @@ export function FormAgenda({ isEditMode }) {
   };
 
   useEffect(() => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/barbeiros/${barberId}/agendas`
+      : `http://localhost:8080/api/barbeiros/${id}/agendas`;
     axios
-      .get(`http://localhost:8080/api/barbeiros/${id}/agendas`)
+      .get(apiUrl)
       .then((response) => {
         if (response.data.length === 0) {
-          // Se não existem agendas cadastradas, gerar as agendas iniciais e enviar uma solicitação POST para salvar as agendas no backend
           const newAgendas = generateInitialAgendas();
           axios
             .post(
@@ -318,7 +385,6 @@ export function FormAgenda({ isEditMode }) {
               console.error(error);
             });
         } else if (response.data.length > 0) {
-          // Se já existem agendas cadastradas, atualizar o estado com as agendas existentes
           const sortedAgenda = response.data.sort(
             (a, b) =>
               dias.indexOf(a.agendaDiaSemana) - dias.indexOf(b.agendaDiaSemana)
@@ -348,7 +414,6 @@ export function FormAgenda({ isEditMode }) {
       </div>
       {agenda.map((dia, index) => (
         <div key={index} className={styles.agendaSection}>
-          {/* SWITCH BUTTON ON/OFF - Status disponivel ou Indisponivel*/}
           <div className={styles.switch}>
             <ThemeProvider theme={theme}>
               <Switch
@@ -381,7 +446,6 @@ export function FormAgenda({ isEditMode }) {
               />
             </ThemeProvider>
             <label className={styles.switchLabel}>{dia.agendaDiaSemana}</label>
-            {/* usar função statuChip */}
 
             <Chip
               key={dia.agendaId}
@@ -447,7 +511,6 @@ export function FormAgenda({ isEditMode }) {
                       index={index}
                       deletePause={deletePause}
                       onStartPauseChange={(newStartTime, index) => {
-                        // Atualize o estado de startPause aqui
                         const newPause = {
                           ...pause,
                           pausaHorarioInicio: newStartTime,
@@ -456,10 +519,8 @@ export function FormAgenda({ isEditMode }) {
                           i === index ? newPause : item
                         );
                         setPauses(newPauses);
-
                       }}
                       onEndPauseChange={(newEndTime, index) => {
-                        // Atualize o estado de endPause aqui
                         const newPause = {
                           ...pause,
                           pausaHorarioFim: newEndTime,
@@ -468,7 +529,6 @@ export function FormAgenda({ isEditMode }) {
                           i === index ? newPause : item
                         );
                         setPauses(newPauses);
-                        
                       }}
                     />
                   ))}
@@ -502,15 +562,14 @@ export function FormAgenda({ isEditMode }) {
 
       <footer className={styles.formFooter}>
         {isEditMode ? (
-          <Button
-            color="blue"
-            size="large"
-            buttonName={"ATUALIZAR"}
-            onClick={(event) =>
-              handleClickUpdate(event, user, setUser, id, agenda)
-            }
-            style={{ backgroundColor: "#030979", color: "white" }}
-          />
+                    <Button
+                    color="blue"
+                    size="large"
+                    buttonName={"ATUALIZAR"}
+                    onClick={handleClickContinue}
+                    style={{ backgroundColor: "#030979", color: "white" }}
+                  />
+
         ) : (
           <Button
             color="blue"

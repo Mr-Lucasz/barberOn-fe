@@ -15,10 +15,11 @@ import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 let serviceList = [];
 
-export function FormService() {
+export function FormService({ isEditMode }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [services, setServices] = useState([]);
   const [serviceName, setServiceName] = useState("");
@@ -48,13 +49,15 @@ export function FormService() {
   };
 
   const postService = async (service) => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/servicos/${barberId}`
+      : `http://localhost:8080/api/servicos/${id}`;
+
     try {
       // Adicione o serviço à lista de serviços
       serviceList.push(service);
-      const response = await axios.post(
-        `http://localhost:8080/api/servicos/${id}`,
-        serviceList
-      );
+      const response = await axios.post(apiUrl, serviceList);
       return response.data;
     } catch (error) {
       console.error("Error posting service:", error);
@@ -70,11 +73,11 @@ export function FormService() {
         servicoTempoHora: parseInt(serviceHours),
         servicoTempoMinuto: parseInt(serviceMinutes),
       };
-  
-      const response = await axios.patch(
-        `http://localhost:8080/api/servicos/${id}/${servicoId}`,
-        updatedService
-      );
+      const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+      const apiUrl = isEditMode
+        ? `http://localhost:8080/api/servicos/${barberId}/${servicoId}`
+        : `http://localhost:8080/api/servicos/${id}/${servicoId}`;
+      const response = await axios.patch(apiUrl, updatedService);
       return response.data;
     } catch (error) {
       console.error("Error patching service:", error);
@@ -93,9 +96,13 @@ export function FormService() {
   };
 
   const getServices = async () => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/servicos/${barberId}`
+      : `http://localhost:8080/api/servicos/${id}`;
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/servicos/${id}`
+      apiUrl
       );
       if (response.status === 404) {
         setError(true);
@@ -111,7 +118,9 @@ export function FormService() {
 
   const getBarberData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/barbeiros/${id}`);
+      const response = await axios.get(
+        `http://localhost:8080/api/barbeiros/${id}`
+      );
       return response.data;
     } catch (error) {
       console.error("Error getting barber data:", error);
@@ -170,7 +179,6 @@ export function FormService() {
       );
     });
 
-  
     const updatedService = {
       ...editingService,
       servicoTitulo: serviceName,
@@ -178,13 +186,13 @@ export function FormService() {
       servicoTempoHora: serviceHours,
       servicoTempoMinuto: serviceMinutes,
     };
-  
+
     try {
       await patchService(editingService.servicoId);
     } catch (error) {
       console.error("Error updating service:", error);
     }
-  
+
     setEditingService(null);
   };
 
@@ -241,14 +249,14 @@ export function FormService() {
       await editService();
     }
     setUser({ ...user, services: serviceList });
-  
+
     // Busque os dados do barbeiro e armazene-os no localStorage
     const barberData = await getBarberData(id);
     if (barberData) {
       localStorage.setItem("barberData", JSON.stringify(barberData));
     }
     localStorage.setItem("userData", JSON.stringify(user));
-  
+
     navigate("/home");
   };
 
@@ -398,3 +406,7 @@ export function FormService() {
     </FormUtil>
   );
 }
+
+FormService.defaultProps = {
+  isEditMode: PropTypes.bool,
+};
