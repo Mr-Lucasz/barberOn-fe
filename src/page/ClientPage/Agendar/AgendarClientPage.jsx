@@ -22,9 +22,11 @@ export function AgendarClientPage() {
         isHomePageClient={true}
         links={homePageBarberLinks}
       />
-      <Frame setTabNumber={setTabNumber}>
+      <Frame tabNumber={tabNumber} setTabNumber={setTabNumber}>
         {tabNumber === 0 && <BarberOption />}
-        {tabNumber === 1 && <ServicoOption />}
+        {tabNumber === 1 && (
+          <ServicoOption onReserveButtonClick={() => setTabNumber(2)} />
+        )}
       </Frame>
     </WrapperDefault>
   );

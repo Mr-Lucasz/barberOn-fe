@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
+
+.boxItem {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.5625rem;
+  border: 1px solid #dedede;
+  background: rgba(154, 54, 72, 0);
+  box-shadow: 0px 13px 19px 0px rgba(0, 0, 0, 0.07),
+    0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  width: auto;
+  margin: 1rem;
+}
+
+.infoContainerSelect {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-family: "Montserrat", sans-serif;
+  width: 100%;
+}
+.infoContainer {
+  width: 100%;
+}
+
+.price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 9, 121, 0.5);
+  width: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+.descount {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--second-text-color, #737373);
+}
+
+.time {
+  font-family: "Montserrat", sans-serif;
+  color: var(--text-color, #252b42);
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.buttonAgendar {
+  display: flex;
+  height: 2.25rem;
+  padding: 0rem 1rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.25rem;
+  border: 1px solid #030979;
+  background-color: white;
+  color: #030979;
+  cursor: pointer;
+}
+
+.buttonAgendar:hover {
+  border: 1px solid #030979;
+  background-color: #030979;
+  color: white;
+  cursor: pointer;
+}
+
+.buttonAgendar:disabled {
+  color: gray;
+  background-color: white;
+  cursor: not-allowed;
+}

@@ -4,8 +4,7 @@ import ReactStars from "react-stars";
 import defaultPerfil from "../../assets/thumb.svg";
 import Chip from "@mui/material/Chip";
 
-export function BoxItemBarber({ imgClassName, stars, status }) {
-
+export function BoxItemBarber({ imgClassName, stars, status, name }) {
   const statusChips = [
     { value: "Disponível", label: "Disponível" },
     { value: "Indisponível", label: "Indisponível" },
@@ -17,7 +16,7 @@ export function BoxItemBarber({ imgClassName, stars, status }) {
         <img className={imgClassName} src={defaultPerfil} alt="barber" />
       </div>
       <div className={styles.infoContainer}>
-        <h2>Nome Barber</h2>
+        <h2>{name}</h2>
         <Chip
           label={status}
           color={status === "Disponível" ? "success" : "error"}
@@ -36,4 +35,5 @@ BoxItemBarber.propTypes = {
   imgClassName: propTypes.string,
   stars: propTypes.string,
   status: propTypes.string,
+  name: propTypes.string,
 };

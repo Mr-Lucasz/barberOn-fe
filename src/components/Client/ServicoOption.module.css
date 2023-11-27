@@ -1,0 +1,50 @@
+.wrapperTwo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.buttonReservar {
+  display: flex;
+  height: 2.25rem;
+  padding: 0rem 1rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.25rem;
+  border: 1px solid #030979;
+  background-color: white;
+  color: #030979;
+  cursor: pointer;
+}
+
+.buttonReservar:hover {
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+}
+
+.buttonReservar:disabled {
+  /* estilo do botão quando desabilitado */
+  color: gray;
+  background-color: white;
+  cursor: not-allowed;
+  border: solid 1px #000000;
+}
+
+.containerButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: -1rem;
+}
+
+.serviceItem {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}

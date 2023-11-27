@@ -3,16 +3,22 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useState } from "react";
 import { CustomTabPanel } from "./CustomTabPanel.jsx";
-
+import { useEffect } from "react";
 import propTypes from "prop-types";
 
-export function Frame({ children, setTabNumber }) {
+export function Frame({ children, setTabNumber, tabNumber }) {
   const [value, setValue] = useState(0);
+
+  
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setTabNumber(newValue);
   };
+
+  useEffect(() => {
+    handleChange(null, tabNumber)
+  }, [tabNumber])
 
   function a11yProps(index) {
     return {
@@ -41,6 +47,7 @@ export function Frame({ children, setTabNumber }) {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         {children}
+        TESTE
       </CustomTabPanel>
     </div>
   );
@@ -49,4 +56,5 @@ export function Frame({ children, setTabNumber }) {
 Frame.propTypes = {
   children: propTypes.node.isRequired,
   setTabNumber: propTypes.func.isRequired,
+  tabNumber: propTypes.number.isRequired,
 };

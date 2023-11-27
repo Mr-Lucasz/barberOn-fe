@@ -156,12 +156,11 @@ export function BarberOption() {
           displayData.map((barbeiro) => (
             <BoxItemBarber
               key={barbeiro.id}
+              name={barbeiro.name}
               imgClassName={styles.imgBarber}
               stars={barbeiro.stars}
               status={barbeiro.status}
-            >
-              {barbeiro.name}
-            </BoxItemBarber>
+           />
           ))
         )}
       </div>
