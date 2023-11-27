@@ -4,7 +4,8 @@
     align-items: center;
     justify-content: center;
     background-color: #fff;
-    max-width: 106rem;
+   width: 106rem;
+    height: auto;
     margin: 0 auto;
     padding: 1rem;
     border-radius: 1rem;
