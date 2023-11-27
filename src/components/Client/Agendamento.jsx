@@ -5,7 +5,24 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TableAgendamento } from "./TableAgendamento";
 
+const mockTableData = [
+  {
+    barbeiro: "Barbeiro 1",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+  {
+    barbeiro: "Barbeiro 2",
+    servico: "Corte",
+    horario: "09:00",
+    valor: "R$ 50,00",
+    acoes: "Ações",
+  },
+];
 
 export function Agendamento() {
   const [search, setSearch] = useState("");
@@ -25,14 +42,14 @@ export function Agendamento() {
 
         <div className={styles.filterSelect}>
           <select className={styles.select}>
-          <option>Selecione um horário</option>
+            <option>Selecione um horário</option>
             <option>MANHÃ</option>
             <option>TARDE</option>
             <option>NOITE</option>
           </select>
         </div>
         <div className={styles.filterSelectHorario}>
-          <select className={styles.select}>  
+          <select className={styles.select}>
             <option>Selecione um horário</option>
             <option>09:00</option>
             <option>09:00</option>
@@ -40,8 +57,7 @@ export function Agendamento() {
           </select>
         </div>
         <div className={styles.btnAgendar}>
-            <button>AGENDAR</button>
-   
+          <button>AGENDAR</button>
         </div>
       </div>
 
@@ -53,6 +69,9 @@ export function Agendamento() {
           variant="outlined"
           fullWidth
         />
+      </div>
+      <div className={styles.tableContainer}>
+        <TableAgendamento data={mockTableData} />
       </div>
     </div>
   );
