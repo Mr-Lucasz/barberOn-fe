@@ -1,0 +1,55 @@
+.wrapperThree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+
+.filterContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+}
+
+.filterSelectHorario select,
+.filterContainer select {
+  margin-bottom: -0.5rem;
+  padding: 1.2rem;
+  border-color: rgb(118, 118, 118), rgb(133, 133, 133);
+  border-style: solid;
+  background-color: rgb(255, 255, 250);
+  border-radius: 0.25rem;
+  width: auto;
+  color: gray;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.btnAgendar button {
+  padding: 0.75rem 1rem;
+  margin-bottom: -0.5rem;
+  border-radius: 0.35rem;
+  background: var(--custom-primary, #1976d2);
+  color: var(--shades-white, #fff);
+  text-align: center;
+  border: none;
+}
+
+.btnAgendar button:hover {
+  background: var(--custom-primary-dark, #004ba0);
+  cursor: pointer;
+}
+
+.filterSearch{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    width: 50%;
+}
+

@@ -4,6 +4,7 @@
     justify-content: center;
     flex-direction: column;
     height: 1.4375rem;
+
 }
 
 .selectWrapper select {
@@ -20,7 +21,10 @@
     color: #0000007a;
     background-color: white;
     border: 1px solid #0000007a;
+    
 }
+
+
 
 .selectWrapper select:hover {
     border: 1px solid rgb(4, 4, 56);

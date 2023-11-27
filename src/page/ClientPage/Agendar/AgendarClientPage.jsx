@@ -5,6 +5,7 @@ import { BarberOption } from "../../../components/Client/BarberOption";
 import { ServicoOption } from "../../../components/Client/ServicoOption";
 import styles from "./AgendarClientPage.module.css";
 import { useState } from "react";
+import { Agendamento } from "../../../components/Client/Agendamento";
 
 export function AgendarClientPage() {
   const [tabNumber, setTabNumber] = useState(0);
@@ -27,6 +28,7 @@ export function AgendarClientPage() {
         {tabNumber === 1 && (
           <ServicoOption onReserveButtonClick={() => setTabNumber(2)} />
         )}
+        {tabNumber === 2 && <Agendamento />}
       </Frame>
     </WrapperDefault>
   );
