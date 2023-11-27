@@ -18,7 +18,7 @@ export function BarberServicePage() {
             isHomePageBarber={true}
             links={homePageBarberLinks}
         />
-        <FormService />
+        <FormService isEditMode={true} />
         </WrapperDefault>
     );
     }

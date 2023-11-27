@@ -14,10 +14,12 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 let serviceList = [];
 
-export function FormService() {
+export function FormService({ isEditMode }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [services, setServices] = useState([]);
   const [serviceName, setServiceName] = useState("");
@@ -25,8 +27,10 @@ export function FormService() {
   const [serviceHours, setServiceHours] = useState("");
   const [serviceMinutes, setServiceMinutes] = useState("");
   const [editingService, setEditingService] = useState(null);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
+  const { id } = useParams();
 
   const generateHourOptions = () => {
     let options = [];
@@ -38,85 +42,189 @@ export function FormService() {
 
   const generateMinuteOptions = () => {
     let options = [];
-    for (let i = 5; i < 60; i += 5) {
+    for (let i = 0; i < 60; i += 5) {
       options.push(<MenuItem value={i}>{i}</MenuItem>);
     }
     return options;
   };
 
-  const saveService = (service) => {
-    axios
-      .post("http://localhost:8080/services", service)
-      .then((response) => {
-        console.log(response);
+  const postService = async (service) => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/servicos/${barberId}`
+      : `http://localhost:8080/api/servicos/${id}`;
+
+    try {
+      // Adicione o serviço à lista de serviços
+      serviceList.push(service);
+      const response = await axios.post(apiUrl, serviceList);
+      return response.data;
+    } catch (error) {
+      console.error("Error posting service:", error);
+    }
+  };
+
+  const patchService = async (servicoId) => {
+    try {
+      const updatedService = {
+        servicoTitulo: serviceName,
+        servicoDescricao: serviceName,
+        servicoValor: parseFloat(serviceValue),
+        servicoTempoHora: parseInt(serviceHours),
+        servicoTempoMinuto: parseInt(serviceMinutes),
+      };
+      const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+      const apiUrl = isEditMode
+        ? `http://localhost:8080/api/servicos/${barberId}/${servicoId}`
+        : `http://localhost:8080/api/servicos/${id}/${servicoId}`;
+      const response = await axios.patch(apiUrl, updatedService);
+      return response.data;
+    } catch (error) {
+      console.error("Error patching service:", error);
+    }
+  };
+
+  const removeService = async (servicoId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/servicos/${servicoId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting service:", error);
+    }
+  };
+
+  const getServices = async () => {
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const apiUrl = isEditMode
+      ? `http://localhost:8080/api/servicos/${barberId}`
+      : `http://localhost:8080/api/servicos/${id}`;
+    try {
+      const response = await axios.get(
+      apiUrl
+      );
+      if (response.status === 404) {
+        setError(true);
+        return [];
       }
+      return response.data;
+    } catch (error) {
+      console.error("Error getting services:", error);
+      setError(true);
+      return [];
+    }
+  };
+
+  const getBarberData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/barbeiros/${id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error getting barber data:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const servicesFromServer = await getServices();
+      setServices(servicesFromServer);
+    };
+
+    fetchServices();
+  }, []);
+
+  const addService = async () => {
+    const newService = {
+      servicoTitulo: serviceName,
+      servicoDescricao: serviceName,
+      servicoValor: parseFloat(serviceValue),
+      servicoTempoHora: parseInt(serviceHours),
+      servicoTempoMinuto: parseInt(serviceMinutes),
+    };
+    const postedService = await postService(newService);
+    setServices((prevServices) => [...prevServices, postedService]);
+  };
+
+  const handleRemoveService = async (serviceToRemove) => {
+    setServices((prevServices) =>
+      prevServices.filter(
+        (service) => service.servicoId !== serviceToRemove.servicoId
       )
-      .catch((error) => {
-        console.log(error);
-      });
+    );
+    try {
+      // Tente remover o serviço usando a API
+      await removeService(serviceToRemove.servicoId);
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      setServices((prevServices) => [...prevServices, serviceToRemove]);
+    }
   };
 
-
-  const addService = () => {
-    // Lógica para adicionar um novo serviço
+  const editService = async () => {
     setServices((prevServices) => {
-      serviceList = [
-        ...prevServices,
-        {
-          id: uuidv4(),
-          name: serviceName,
-          value: serviceValue,
-          hours: serviceHours,
-          minutes: serviceMinutes,
-        },
-      ];
-      return serviceList;
-    });
-  };
-
-  const editService = () => {
-    // Lógica para editar um serviço existente
-    setServices((prevServices) => {
-      serviceList = prevServices.map((service) =>
-        service.id === editingService.id
+      return prevServices.map((service) =>
+        service.servicoId === editingService.servicoId
           ? {
               ...service,
-              name: serviceName,
-              value: serviceValue,
-              hours: serviceHours,
-              minutes: serviceMinutes,
+              servicoTitulo: serviceName,
+              servicoValor: serviceValue,
+              servicoTempoHora: serviceHours,
+              servicoTempoMinuto: serviceMinutes,
             }
           : service
       );
-      return serviceList;
     });
+
+    const updatedService = {
+      ...editingService,
+      servicoTitulo: serviceName,
+      servicoValor: serviceValue,
+      servicoTempoHora: serviceHours,
+      servicoTempoMinuto: serviceMinutes,
+    };
+
+    try {
+      await patchService(editingService.servicoId);
+    } catch (error) {
+      console.error("Error updating service:", error);
+    }
+
+    setEditingService(null);
   };
 
-  const handleClickSave = (event) => {
+  const handleClickSave = async (event) => {
     event.preventDefault();
-    if (editingService === null) {
-      addService();
-      console.log(serviceList);
+    if (editingService !== null) {
+      await editService();
     } else {
-      editService();
-      console.log(serviceList);
+      addService();
     }
-    setUser({ ...user, services: serviceList });
+    setEditingService(null);
     setIsModalOpen(false);
   };
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    if (editingService) {
+      setServiceName(editingService.servicoTitulo);
+      setServiceValue(editingService.servicoValor);
+      setServiceHours(editingService.servicoTempoHora);
+      setServiceMinutes(editingService.servicoTempoMinuto);
+    } else {
+      setServiceName("");
+      setServiceValue("");
+      setServiceHours("");
+      setServiceMinutes("");
+    }
+  }, [editingService]);
 
   const handleClickModal = (service, event) => {
     event.preventDefault();
     if (service) {
       setEditingService(service);
-      setServiceName(service.name);
-      setServiceValue(service.value);
-      setServiceHours(service.hours);
-      setServiceMinutes(service.minutes);
     } else {
       handleClickLimpar(event);
     }
@@ -135,27 +243,26 @@ export function FormService() {
     setEditingService(null);
     setIsModalOpen(false);
   };
-  const handleContinue = (event) => {
+  const handleContinue = async (event) => {
     event.preventDefault();
     if (editingService) {
-      editService();
+      await editService();
     }
     setUser({ ...user, services: serviceList });
+
+    // Busque os dados do barbeiro e armazene-os no localStorage
+    const barberData = await getBarberData(id);
+    if (barberData) {
+      localStorage.setItem("barberData", JSON.stringify(barberData));
+    }
+    localStorage.setItem("userData", JSON.stringify(user));
+
     navigate("/home");
   };
 
-  const handleRemoveService = (serviceToRemove) => {
-    event.preventDefault();
-    serviceList = serviceList.filter(
-      (service) => service.id !== serviceToRemove.id
-    );
-    setServices(serviceList);
-    console.log(serviceList);
-  };
-
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    serviceList = [...services];
+  }, [services]);
 
   return (
     <FormUtil>
@@ -163,14 +270,16 @@ export function FormService() {
         <h1 className={styles.title}> &#60; Serviços</h1>
         <span>Informe seu horário de trabalho.</span>
       </div>
-      {services.length > 0 ? (
+      {!error && services.length > 0 ? (
         services.map((service, index) => (
-          <div className={styles.serviceSection} key={index}>
-            <span className={styles.serviceTitle}>{service.name}</span>
+          <div className={styles.serviceSection} key={service.servicoId}>
+            <span className={styles.serviceTitle}>{service.servicoTitulo}</span>
             <span className={styles.serviceTempo}>
-              {service.hours}h{service.minutes}min
+              {service.servicoTempoHora}h{service.servicoTempoMinuto}min
             </span>
-            <span className={styles.serviceValor}>R$ {service.value}</span>
+            <span className={styles.serviceValor}>
+              R$ {service.servicoValor}
+            </span>
             <div className={styles.icons}>
               <Fab
                 color="primary"
@@ -297,3 +406,7 @@ export function FormService() {
     </FormUtil>
   );
 }
+
+FormService.defaultProps = {
+  isEditMode: PropTypes.bool,
+};
