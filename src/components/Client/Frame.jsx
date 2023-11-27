@@ -47,7 +47,6 @@ export function Frame({ children, setTabNumber, tabNumber }) {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         {children}
-        TESTE
       </CustomTabPanel>
     </div>
   );
