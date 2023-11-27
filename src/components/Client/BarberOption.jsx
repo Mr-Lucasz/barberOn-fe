@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import { BoxItemBarber } from "./BoxItemBarber.jsx";
 import Pagination from "@mui/material/Pagination";
 import { useEffect } from "react";
+import propTypes from "prop-types";
 
 const mockData = [
   {
@@ -45,7 +46,7 @@ const mockData = [
   },
 ];
 
-export function BarberOption() {
+export function BarberOption({ setTabNumber}) {
   const [avalicaoFilter, setAvaliacaoFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -160,7 +161,8 @@ export function BarberOption() {
               imgClassName={styles.imgBarber}
               stars={barbeiro.stars}
               status={barbeiro.status}
-           />
+              onChooseServiceButtonClick={() => setTabNumber(1)}
+            />
           ))
         )}
       </div>
@@ -172,3 +174,7 @@ export function BarberOption() {
     </div>
   );
 }
+
+BarberOption.propTypes = {
+  setTabNumber: propTypes.func.isRequired,
+};

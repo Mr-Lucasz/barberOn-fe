@@ -4,7 +4,13 @@ import ReactStars from "react-stars";
 import defaultPerfil from "../../assets/thumb.svg";
 import Chip from "@mui/material/Chip";
 
-export function BoxItemBarber({ imgClassName, stars, status, name }) {
+export function BoxItemBarber({
+  imgClassName,
+  stars,
+  status,
+  name,
+  onChooseServiceButtonClick,
+}) {
   const statusChips = [
     { value: "Disponível", label: "Disponível" },
     { value: "Indisponível", label: "Indisponível" },
@@ -24,7 +30,12 @@ export function BoxItemBarber({ imgClassName, stars, status, name }) {
         {/* usar react stars */}
         <ReactStars count={5} value={stars} size={24} color2={"#E77C40"} />
 
-        <button className={styles.buttonAgendar}>Escolher Serviço</button>
+        <button
+          className={styles.buttonAgendar}
+          onClick={onChooseServiceButtonClick}
+        >
+          Escolher Serviço
+        </button>
       </div>
     </div>
   );
@@ -36,4 +47,5 @@ BoxItemBarber.propTypes = {
   stars: propTypes.string,
   status: propTypes.string,
   name: propTypes.string,
+  onChooseServiceButtonClick: propTypes.func,
 };
