@@ -6,16 +6,14 @@ import { CustomTabPanel } from "./CustomTabPanel.jsx";
 
 import propTypes from "prop-types";
 
-export function Frame({ children }) {
+export function Frame({ children, setTabNumber }) {
   const [value, setValue] = useState(0);
-
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setTabNumber(newValue);
   };
 
- 
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
@@ -44,12 +42,11 @@ export function Frame({ children }) {
       <CustomTabPanel value={value} index={2}>
         {children}
       </CustomTabPanel>
-
-   
     </div>
   );
 }
 
 Frame.propTypes = {
   children: propTypes.node.isRequired,
+  setTabNumber: propTypes.func.isRequired,
 };

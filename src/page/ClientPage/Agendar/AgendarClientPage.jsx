@@ -1,12 +1,14 @@
 import { WrapperDefault } from "../../../components/util/WrapperDefault";
 import { Header } from "../../../components/Header";
 import { Frame } from "../../../components/Client/Frame";
-import { ServiceOption } from "../../../components/Client/ServiceOption";
+import { BarberOption } from "../../../components/Client/BarberOption";
+import { ServicoOption } from "../../../components/Client/ServicoOption";
 import styles from "./AgendarClientPage.module.css";
-
-
+import { useState } from "react";
 
 export function AgendarClientPage() {
+  const [tabNumber, setTabNumber] = useState(0);
+
   const homePageBarberLinks = [
     { href: "/home", text: "Home" },
     { href: "/home/agenda", text: "Agendar" },
@@ -20,8 +22,9 @@ export function AgendarClientPage() {
         isHomePageClient={true}
         links={homePageBarberLinks}
       />
-      <Frame>
-        <ServiceOption/>
+      <Frame setTabNumber={setTabNumber}>
+        {tabNumber === 0 && <BarberOption />}
+        {tabNumber === 1 && <ServicoOption />}
       </Frame>
     </WrapperDefault>
   );
