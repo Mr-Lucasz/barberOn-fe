@@ -4,7 +4,13 @@ import Pagination from "@mui/material/Pagination";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import styles from "./TableAgendamento.module.css";
 
-export function TableAgendamento({ data }) {
+export function TableAgendamento({ data, totalItems, onPageChange }) {
+  const itemsPerPage = 8;
+
+  const handlePageChange = (event, page) => {
+    onPageChange(page);
+  };
+
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -33,8 +39,8 @@ export function TableAgendamento({ data }) {
         </tbody>
       </table>
       <div className={styles.paginationContainer}>
-        <Pagination count={Math.ceil(data.length / 4)} />
-      </div>
+      <Pagination count={Math.ceil(totalItems / itemsPerPage)} onChange={handlePageChange} />
+    </div>
     </div>
   );
 }
@@ -50,4 +56,6 @@ TableAgendamento.propTypes = {
       acoes: propsTypes.string,
     })
   ).isRequired,
+  totalItems: propsTypes.number.isRequired,
+  onPageChange: propsTypes.func
 };
