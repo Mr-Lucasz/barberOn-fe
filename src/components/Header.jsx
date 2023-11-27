@@ -17,6 +17,7 @@ export function Header({
   showButton = true,
   showNavbar = true,
   isHomePageBarber = false,
+  isHomePageClient = false,
   links,
 }) {
   const link = [
@@ -97,17 +98,19 @@ export function Header({
             </Button>
           </Link>
         )}
-        {isHomePageBarber && (
+        {isHomePageBarber || isHomePageClient ? (
           <div className={styles.icons}>
-            <div className={styles.notificationCount}>
-              <img
-                src={isHovered ? HoverIcon : Notification}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={handleNotificationClick}
-              />
-              {notificationCount > 0 && <span>{notificationCount}</span>}
-            </div>
+            {isHomePageBarber && !isHomePageClient && (
+              <div className={styles.notificationCount}>
+                <img
+                  src={isHovered ? HoverIcon : Notification}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                  onClick={handleNotificationClick}
+                />
+                {notificationCount > 0 && <span>{notificationCount}</span>}
+              </div>
+            )}
             <img
               src={isHoveredAvatar ? AvatarHover : AvatarHome}
               onMouseEnter={() => setIsHoveredAvatar(true)}
@@ -115,7 +118,7 @@ export function Header({
               onClick={handleAvatarClick}
             />
           </div>
-        )}
+        ) : null}
         {isDropdownVisible && (
           <div className={styles.dropdown}>
             <a onClick={handleClickVerPerfil}>Ver Perfil</a>

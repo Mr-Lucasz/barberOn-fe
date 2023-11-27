@@ -10,6 +10,7 @@ import { BarberServicePage } from "./page/BarberPage/Serviços/BarberServicePage
 import { PerfilBarberPage } from "./page/BarberPage/Perfil/PerfilBarberPage.jsx";
 import { PerfilClientPage } from "./page/ClientPage/Perfil/PerfilClientPage.jsx";
 import { AgendarClientPage } from "./page/ClientPage/Agendar/AgendarClientPage.jsx";
+import { InitialPage } from "./page/ClientPage/InitialPage.jsx";
 
 export function App() {
   return (
@@ -20,6 +21,7 @@ export function App() {
         <Route path="/home/agenda" element={<BarberAgendaPage />} />
         <Route path="/home/service" element={<BarberServicePage />} />
         <Route path="/home/perfil" element={<PerfilBarberPage />} />
+        <Route path="/inicial-page" element={<InitialPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route exact path="/register" element={<RegisterPage />} />
         <Route path="/register/:id/:step" element={<RegisterPage />} />
