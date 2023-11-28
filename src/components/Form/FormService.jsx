@@ -49,20 +49,20 @@ export function FormService({ isEditMode }) {
   };
 
   const postService = async (service) => {
-    const barberId = JSON.parse(localStorage.getItem("user")).id;
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/servicos/${barberId}`
       : `http://localhost:8080/api/servicos/${id}`;
 
-    try {
-      // Adicione o serviço à lista de serviços
-      serviceList.push(service);
-      const response = await axios.post(apiUrl, serviceList);
-      return response.data;
-    } catch (error) {
-      console.error("Error posting service:", error);
-    }
-  };
+      try {
+        // Adicione o serviço à lista de serviços
+        serviceList.push(service);
+        const response = await axios.post(apiUrl, serviceList);
+        return response.data;
+      } catch (error) {
+        console.error("Error posting service:", error);
+      }
+    };
 
   const patchService = async (servicoId) => {
     try {
@@ -96,7 +96,7 @@ export function FormService({ isEditMode }) {
   };
 
   const getServices = async () => {
-    const barberId = JSON.parse(localStorage.getItem("user")).id;
+    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/servicos/${barberId}`
       : `http://localhost:8080/api/servicos/${id}`;

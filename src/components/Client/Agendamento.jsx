@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { TableAgendamento } from "./TableAgendamento";
 import { CustomDatePicker } from "../util/CustomDatePicker";
+import axios from "axios";
 
 const mockTableData = [
   {
@@ -53,36 +54,37 @@ export function Agendamento() {
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
+  const agendamento = {
+    barbeiroId: barbeId,
+    horaInicio: date + "T" + startHour + ":00",
+    horaFim:
+      date + "T" + (parseInt(endHour) + 1).toString().padStart(2, "0") + ":00",
+    servico: {
+      servicoId: serviceIds[0],
+    },
+    cliente: {
+      id: clientId
+    },
+    status: {
+      id: statusId
+    }
+  };
+
 
   const handleClickAgendar = async () => {
+    console.log("Agendar button clicked");
     try {
-      const responseAgenda = await fetch(
-        `http://localhost:8080/api/barbeiros/${barberId}/agendas/${agendaId}`
+      const response = await axios.post(
+        `http://localhost:8080/api/agendamentos/new`,
+        agendamento,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-      const agenda = await responseAgenda.json();
-      const agendamento = {
-        barbeiro_id: barbeId,
-        horaInicio: date + " " + startHour + ":00", // selectedTime deve ser o horário selecionado pelo usuário
-        horaFim:
-          date +
-          " " +
-          (parseInt(endHour) + 1).toString().padStart(2, "0") +
-          ":00", // supondo que cada agendamento dure uma hora
-        servico_id: serviceIds[0],
-        cliente_id: clientId,
-        status_id: statusId,
-        agenda_id: agendaId,
-      };
-      const response = await fetch("http://localhost:8080/api/agendamentos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(agendamento),
-      });
 
-      alert("Agendado com sucesso!");
-      if (response.ok) {
+      if (response.status === 200 || response.status === 201) {
         alert("Agendado com sucesso!");
       } else {
         alert("Erro ao agendar. Por favor, tente novamente.");
@@ -102,10 +104,10 @@ export function Agendamento() {
     try {
       selectedDate.setDate(selectedDate.getDate() + 1);
 
-      const response = await fetch(
+      const response = await axios.get(
         `http://localhost:8080/api/barbeiros/${barberId}/agendas`
       );
-      const schedules = await response.json();
+      const schedules = response.data;
 
       const dayOfWeek = dayOfWeekMap[selectedDate.getDay()];
 
