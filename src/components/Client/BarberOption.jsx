@@ -24,6 +24,27 @@ export function BarberOption({ setTabNumber }) {
       .catch((error) => console.error(error));
   }, []);
 
+  const getDayOfWeek = () => {
+    const days = [
+      "Domingo",
+      "Segunda - Feira",
+      "Terça - Feira",
+      "Quarta - Feira",
+      "Quinta - Feira",
+      "Sexta - Feira",
+      "Sábado",
+    ];
+    const date = new Date();
+    const dayOfWeek = date.getDay();
+    return days[dayOfWeek];
+  };
+
+  const getStatusForToday = (barbeiro) => {
+    const today = getDayOfWeek();
+    const todayAgenda = barbeiro.agendas.find(agenda => agenda.agendaDiaSemana === today);
+    return todayAgenda ? todayAgenda.statusNome : 'Indisponível';
+  };
+
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
@@ -127,7 +148,7 @@ export function BarberOption({ setTabNumber }) {
               name={barbeiro.nome}
               imgClassName={styles.imgBarber}
               stars={barbeiro.mediaAvaliacao}
-              status={barbeiro.agendas[0].statusNome}
+              status={getStatusForToday(barbeiro)}
               onChooseServiceButtonClick={() => {
                 localStorage.setItem("barberId", barbeiro.id);
                 setTabNumber(1);
