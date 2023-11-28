@@ -60,6 +60,8 @@ export function Agendamento() {
 
   async function fetchAvailableTimes(barberId, selectedDate) {
     try {
+      selectedDate.setDate(selectedDate.getDate() + 1);
+
       const response = await fetch(
         `http://localhost:8080/api/barbeiros/${barberId}/agendas`
       );
@@ -89,7 +91,7 @@ export function Agendamento() {
   function handlePeriodChange(event) {
     setPeriod(event.target.value);
   }
-  
+
   function handleDateChange(newDate) {
     setDate(newDate);
     const selectedDate = new Date(newDate);
