@@ -11,11 +11,6 @@ export function BoxItemBarber({
   name,
   onChooseServiceButtonClick,
 }) {
-  const statusChips = [
-    { value: "Disponível", label: "Disponível" },
-    { value: "Indisponível", label: "Indisponível" },
-  ];
-
   return (
     <div className={styles.boxItem}>
       <div className={styles.imgContainer}>
