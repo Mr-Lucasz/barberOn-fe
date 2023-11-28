@@ -54,13 +54,14 @@ export function Agendamento() {
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
+  
   const agendamento = {
     barbeiroId: barbeId,
-    horaInicio: date + "T" + startHour + ":00",
+    horaInicio: date + "T0" + startHour + ":00",
     horaFim:
       date + "T" + (parseInt(endHour) + 1).toString().padStart(2, "0") + ":00",
-    servico: {
-      servicoId: serviceIds[0],
+      servico: {
+        servicos: serviceIds.filter((serviceId) => serviceId !== null),
     },
     cliente: {
       id: clientId
@@ -73,6 +74,7 @@ export function Agendamento() {
 
   const handleClickAgendar = async () => {
     console.log("Agendar button clicked");
+    console.log(serviceIds.map(servicoId => ({ servicoId })));
     try {
       const response = await axios.post(
         `http://localhost:8080/api/agendamentos/new`,

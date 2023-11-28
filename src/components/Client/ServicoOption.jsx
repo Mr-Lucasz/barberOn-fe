@@ -13,7 +13,7 @@ export function ServicoOption({ onReserveButtonClick }) {
   const [displayData, setDisplayData] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [services, setServices] = useState([]);
-  
+
   const toggleServiceSelection = (id) => {
     if (selectedServices.includes(id)) {
       setSelectedServices(
@@ -22,7 +22,7 @@ export function ServicoOption({ onReserveButtonClick }) {
     } else {
       setSelectedServices([...selectedServices, id]);
     }
-    localStorage.setItem("serviceIds", JSON.stringify(selectedServices)); 
+    localStorage.setItem("serviceIds", JSON.stringify(selectedServices));
   };
 
   useEffect(() => {
@@ -38,6 +38,7 @@ export function ServicoOption({ onReserveButtonClick }) {
     const end = start + 4;
     setDisplayData(services.slice(start, end));
   }, [page, services]);
+  
   return (
     <div className={styles.wrapperTwo}>
       <div className={styles.containerButton}>
