@@ -4,78 +4,15 @@ import Pagination from "@mui/material/Pagination";
 import { useEffect } from "react";
 import { useState } from "react";
 import propTypes from "prop-types";
+import axios from "axios";
 
-const mockData = [
-  {
-    id: 1,
-    name: "Corte",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 2,
-    name: "Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 3,
-    name: "Corte e Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 4,
-    name: "Corte e Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 5,
-    name: "Corte e Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 6,
-    name: "Corte e Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 7,
-    name: "Corte e Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-  {
-    id: 8,
-    name: "Corte e Barba",
-    valor: "50",
-    serviceHora: "1",
-    serviceMinuto: "30",
-    serviceDescount: "10",
-  },
-];
+
 
 export function ServicoOption({ onReserveButtonClick }) {
   const [page, setPage] = useState(1);
   const [displayData, setDisplayData] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [services, setServices] = useState([]);
   
   const toggleServiceSelection = (id) => {
     if (selectedServices.includes(id)) {
@@ -89,11 +26,18 @@ export function ServicoOption({ onReserveButtonClick }) {
   };
 
   useEffect(() => {
+    const barberId = localStorage.getItem("barberId");
+    axios
+      .get(`http://localhost:8080/api/servicos/${barberId}`)
+      .then((response) => setServices(response.data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  useEffect(() => {
     const start = (page - 1) * 4;
     const end = start + 4;
-    setDisplayData(mockData.slice(start, end));
-  }, [page]);
-
+    setDisplayData(services.slice(start, end));
+  }, [page, services]);
   return (
     <div className={styles.wrapperTwo}>
       <div className={styles.containerButton}>
@@ -111,14 +55,14 @@ export function ServicoOption({ onReserveButtonClick }) {
         ) : (
           displayData.map((servico) => (
             <BoxItemService
-              key={servico.id}
-              serviceName={servico.name}
-              servicePrice={servico.valor}
-              serviceHour={servico.serviceHora}
-              serviceMinutes={servico.serviceMinuto}
-              serviceDescount={servico.serviceDescount}
-              isSelected={selectedServices.includes(servico.id)}
-              onServiceSelect={() => toggleServiceSelection(servico.id)}
+              key={servico.servicoId}
+              serviceName={servico.servicoTitulo}
+              servicePrice={servico.servicoValor}
+              serviceHour={servico.servicoTempoHora}
+              serviceMinutes={servico.servicoTempoMinuto}
+              serviceDescount={0}
+              isSelected={selectedServices.includes(servico.servicoId)}
+              onServiceSelect={() => toggleServiceSelection(servico.servicoId)}
               isReserveButtonDisabled={selectedServices.length === 0}
               onReserveButtonClick={onReserveButtonClick}
             />
@@ -126,7 +70,7 @@ export function ServicoOption({ onReserveButtonClick }) {
         )}
       </div>
       <Pagination
-        count={Math.ceil(mockData.length / 4)}
+        count={Math.ceil(services.length / 4)}
         page={page}
         onChange={(_, value) => setPage(value)}
       />

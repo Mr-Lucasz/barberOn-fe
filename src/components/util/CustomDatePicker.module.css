@@ -1,0 +1,12 @@
+.datePicker {
+  padding: 0.5rem;
+  border-color: rgba(118, 118, 118, 0.493), rgba(133, 133, 133, 0.37);
+  border-style: solid;
+  background-color: rgb(255, 255, 250);
+  border-radius: 0.25rem;
+  width: auto;
+  color: gray;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-bottom: -0.5rem;
+}
