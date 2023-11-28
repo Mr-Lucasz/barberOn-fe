@@ -135,6 +135,7 @@ Header.propTypes = {
   showButton: PropTypes.bool,
   showNavbar: PropTypes.bool,
   isHomePageBarber: PropTypes.bool,
+  isHomePageClient: PropTypes.bool,
   links: PropTypes.arrayOf(
     PropTypes.shape({
       href: PropTypes.string.isRequired,
@@ -147,5 +148,6 @@ Header.defaultProps = {
   showButton: true,
   showNavbar: true,
   isHomePageBarber: false,
+  isHomePageClient: false,
   links: null,
 };

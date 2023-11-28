@@ -12,6 +12,7 @@ import { PerfilClientPage } from "./page/ClientPage/Perfil/PerfilClientPage.jsx"
 import { AgendarClientPage } from "./page/ClientPage/Agendar/AgendarClientPage.jsx";
 import { InitialPage } from "./page/ClientPage/InitialPage.jsx";
 
+
 export function App() {
   return (
     <UserProvider>

@@ -6,8 +6,8 @@ import { user } from '../../../mock/employeeMockData';
 
 export function BarberAgendaPage() {
   const homePageBarberLinks = [
-    { href: "/home", text: "Home" },
-    { href: "/home/agenda", text: "Agenda" },
+    { href: "/inicial-page", text: "Home" },
+    { href: "/homeclient/agendar", text: "Agenda" },
     { href: "/home/service", text: "Serviços" },
   ];
 

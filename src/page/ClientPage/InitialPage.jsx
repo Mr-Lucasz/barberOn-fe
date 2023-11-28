@@ -10,8 +10,8 @@ export function InitialPage (){
     const navigate = useNavigate();
 
     const homePageBarberLinks = [
-        { href: "/home", text: "Home" },
-        { href: "/home/agenda", text: "Agendar" },
+        { href: "/inicial-page", text: "Home" },
+        { href: "/homeclient/agendar", text: "Agendar" },
         { href: "/home/service", text: "Histórico" },
       ];
 

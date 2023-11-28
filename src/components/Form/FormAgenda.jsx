@@ -79,7 +79,7 @@ export function FormAgenda({ isEditMode }) {
   useEffect(() => {
     const fetchBarberData = async () => {
       try {
-        const barberDataString = localStorage.getItem("barberData");
+        const barberDataString = localStorage.getItem('user');
         if (barberDataString) {
           const barberData = JSON.parse(barberDataString);
           const barberId = barberData.id;
@@ -125,7 +125,7 @@ export function FormAgenda({ isEditMode }) {
             pausaHorarioFim: pause.pausaHorarioFim,
           })),
         };
-        const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+        const barberId = JSON.parse(localStorage.getItem("user")).id;
         const response = await axios.patch(
           `http://localhost:8080/api/barbeiros/${barberId}/agendas`,
           updatedAgenda
@@ -195,7 +195,7 @@ export function FormAgenda({ isEditMode }) {
   };
 
   const updateAgendaHour = (agendaId, start, end) => {
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/barbeiros/${barberId}/agendas/${agendaId}`
       : `http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`;
@@ -213,7 +213,7 @@ export function FormAgenda({ isEditMode }) {
   };
 
   const updateAgendaPause = (pauses, selectedDayAgenda) => {
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/barbeiros/${barberId}/agendas/${selectedDayAgenda.agendaId}/pausas`
       : `http://localhost:8080/api/barbeiros/${id}/agendas/${selectedDayAgenda.agendaId}/pausas`;
@@ -228,7 +228,7 @@ export function FormAgenda({ isEditMode }) {
       )
       .then((response) => {
         console.log(response);
-        const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+        const barberId = JSON.parse(localStorage.getItem("user")).id;
         const apiUrl = isEditMode
           ? `http://localhost:8080/api/barbeiros/${barberId}/agendas`
           : `http://localhost:8080/api/barbeiros/${id}/agendas`;
@@ -287,7 +287,7 @@ export function FormAgenda({ isEditMode }) {
   
 
   useEffect(() => {
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/barbeiros/${barberId}/agendas`
       : `http://localhost:8080/api/barbeiros/${id}/agendas`;
@@ -333,7 +333,7 @@ export function FormAgenda({ isEditMode }) {
   const updateStatus = (agendaId, isChecked) => {
 
     const statusId = isChecked ? 1 : 2;
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/barbeiros/${barberId}/agendas/${agendaId}`
       : `http://localhost:8080/api/barbeiros/${id}/agendas/${agendaId}`;
@@ -350,7 +350,7 @@ export function FormAgenda({ isEditMode }) {
   };
 
   useEffect(() => {
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/barbeiros/${barberId}/agendas`
       : `http://localhost:8080/api/barbeiros/${id}/agendas`;
