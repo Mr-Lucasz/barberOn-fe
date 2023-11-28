@@ -7,51 +7,53 @@ import { BoxItemBarber } from "./BoxItemBarber.jsx";
 import Pagination from "@mui/material/Pagination";
 import { useEffect } from "react";
 import propTypes from "prop-types";
+import axios from "axios";
 
-const mockData = [
-  {
-    id: 1,
-    name: "Barbeiro 1",
-    status: "Disponível",
-    stars: "4",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 2,
-    name: "Barbeiro 2",
-    status: "Indisponível",
-    stars: "3",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 3,
-    name: "Barbeiro 3",
-    status: "Disponível",
-    stars: "5",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 4,
-    name: "Barbeiro 4",
-    status: "Indisponível",
-    stars: "2",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 5,
-    name: "Barbeiro 5",
-    status: "Indisponível",
-    stars: "2",
-    image: "https://via.placeholder.com/150",
-  },
-];
-
-export function BarberOption({ setTabNumber}) {
+export function BarberOption({ setTabNumber }) {
   const [avalicaoFilter, setAvaliacaoFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [displayData, setDisplayData] = useState([]);
+  const [barbers, setBarbers] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/barbeiros")
+      .then((response) => setBarbers(response.data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  useEffect(() => {
+    console.log("User in localStorage:", localStorage.getItem("user"));
+    const start = (page - 1) * 4;
+    const end = start + 4;
+    setDisplayData(barbers.slice(start, end));
+  }, [barbers, page]);
+
+
+  const getDayOfWeek = () => {
+    const days = [
+      "Domingo",
+      "Segunda - Feira",
+      "Terça - Feira",
+      "Quarta - Feira",
+      "Quinta - Feira",
+      "Sexta - Feira",
+      "Sábado",
+    ];
+    const date = new Date();
+    const dayOfWeek = date.getDay();
+    return days[dayOfWeek];
+  };
+
+  const getStatusForToday = (barbeiro) => {
+    const today = getDayOfWeek();
+    const todayAgenda = barbeiro.agendas.find(
+      (agenda) => agenda.agendaDiaSemana === today
+    );
+    return todayAgenda ? todayAgenda.statusNome : "Indisponível";
+  };
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
@@ -66,34 +68,30 @@ export function BarberOption({ setTabNumber}) {
   };
 
   const handleFilter = () => {
-    let filteredData = mockData;
+    let url = "http://localhost:8080/api/barbeiros";
 
     if (avalicaoFilter) {
-      filteredData = filteredData.filter(
-        (barbeiro) => barbeiro.stars === avalicaoFilter
-      );
+      url += `avaliacao=${avalicaoFilter}&`;
     }
 
     if (statusFilter) {
-      filteredData = filteredData.filter(
-        (barbeiro) => barbeiro.status === statusFilter
-      );
+      url += `status=${statusFilter}&`;
     }
 
     if (search) {
-      filteredData = filteredData.filter((barbeiro) =>
-        barbeiro.name.toLowerCase().includes(search.toLowerCase())
-      );
+      url += `q=${search}&`;
     }
 
-    setDisplayData(filteredData.slice(0, 4));
-    setPage(1);
+    axios
+      .get(url)
+      .then((response) => setBarbers(response.data))
+      .catch((error) => console.error(error));
   };
 
   useEffect(() => {
     const start = (page - 1) * 4;
     const end = start + 4;
-    setDisplayData(mockData.slice(start, end));
+    setDisplayData(barbers.slice(start, end));
   }, [page]);
 
   useEffect(() => {
@@ -149,28 +147,29 @@ export function BarberOption({ setTabNumber}) {
           <img src={iconSearch} alt="filter" />
         </button>
       </div>
-
       <div className={styles.barberItem}>
         {displayData.length === 0 ? (
           <div className={styles.noResults}>Nenhum resultado</div>
         ) : (
           displayData.map((barbeiro) => (
+            
             <BoxItemBarber
               key={barbeiro.id}
-              name={barbeiro.name}
+              name={barbeiro.nome}
               imgClassName={styles.imgBarber}
-              stars={barbeiro.stars}
-              status={barbeiro.status}
+              stars={barbeiro.mediaAvaliacao}
+              status={getStatusForToday(barbeiro)}
               onChooseServiceButtonClick={() => {
                 localStorage.setItem("barberId", barbeiro.id);
                 setTabNumber(1);
               }}
+     
             />
           ))
         )}
       </div>
       <Pagination
-        count={Math.ceil(mockData.length / 4)}
+        count={Math.ceil(barbers.length / 4)}
         page={page}
         onChange={(_, value) => setPage(value)}
       />

@@ -75,7 +75,12 @@ export function FormLogin({ showForgotPassword }) {
       const data = await response.json();
 
       // Armazene os dados do usuário no storage do navegador
+      if(user.userType === "BARBEIRO"){
+      localStorage.setItem("userBaber", JSON.stringify(data));
+      }
+      else if(user.userType === "CLIENTE"){
       localStorage.setItem("user", JSON.stringify(data));
+      }
 
       if (userType === "BARBEIRO") {
         navigate("/home");

@@ -228,7 +228,7 @@ export function FormRegister({ showForgotPassword, barber }) {
       setUser(newUser);
       const url = formData.isBarberOnEmployee
         ? "http://localhost:8080/api/barbeiros"
-        : "/api/clientes";
+        : "http://localhost:8080/api/clientes";
   
       const response = await axios.post(url, newUser, {
         headers: {
