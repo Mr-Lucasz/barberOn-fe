@@ -41,55 +41,104 @@ export function Agendamento() {
   const serviceIds = JSON.parse(localStorage.getItem("serviceIds"));
   const [date, setDate] = useState(new Date().toISOString().substr(0, 10));
   const [availableTimes, setAvailableTimes] = useState([]);
-  const barbeId = JSON.parse(localStorage.getItem("barberId"));
+  const barbeId = localStorage.getItem("barberId");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const barberId = localStorage.getItem("barberId");
+  const clientId = user.id;
+  const [agendaId, setAgendaId] = useState(null);
+  const [statusId, setStatusId] = useState(null);
+  const [startHour, setStartHour] = useState(null);
+  const [endHour, setEndHour] = useState(null);
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
 
-  const handleClickAgendar = () => {
-    alert("Agendado com sucesso!");
-    console.log(serviceIds);
-    console.log(barbeId);
+  const handleClickAgendar = async () => {
+    try {
+      const responseAgenda = await fetch(
+        `http://localhost:8080/api/barbeiros/${barberId}/agendas/${agendaId}`
+      );
+      const agenda = await responseAgenda.json();
+      const agendamento = {
+        barbeiro_id: barbeId,
+        horaInicio: date + " " + startHour + ":00", // selectedTime deve ser o horário selecionado pelo usuário
+        horaFim:
+          date +
+          " " +
+          (parseInt(endHour) + 1).toString().padStart(2, "0") +
+          ":00", // supondo que cada agendamento dure uma hora
+        servico_id: serviceIds[0],
+        cliente_id: clientId,
+        status_id: statusId,
+        agenda_id: agendaId,
+      };
+      const response = await fetch("http://localhost:8080/api/agendamentos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(agendamento),
+      });
+
+      alert("Agendado com sucesso!");
+      if (response.ok) {
+        alert("Agendado com sucesso!");
+      } else {
+        alert("Erro ao agendar. Por favor, tente novamente.");
+      }
+    } catch (error) {
+      console.error("Error fetching available times:", error);
+    }
   };
 
   useEffect(() => {
     const selectedDate = new Date(date);
+
     fetchAvailableTimes(barbeId, selectedDate);
   }, [barbeId, date, period]);
 
   async function fetchAvailableTimes(barberId, selectedDate) {
     try {
       selectedDate.setDate(selectedDate.getDate() + 1);
-  
+
       const response = await fetch(
         `http://localhost:8080/api/barbeiros/${barberId}/agendas`
       );
       const schedules = await response.json();
-  
+
       const dayOfWeek = dayOfWeekMap[selectedDate.getDay()];
-  
+
       const daySchedule = schedules.find(
         (schedule) => schedule.agendaDiaSemana === dayOfWeek
       );
-  
+      setAgendaId(daySchedule.agendaId);
+      setStatusId(daySchedule.status.id);
+      console.log(
+        "agenda: " + daySchedule.agendaId + " status: " + daySchedule.status.id
+      );
+
       const startTime = parseInt(daySchedule.agendaHorarioInicio.split(":")[0]);
       const endTime = parseInt(daySchedule.agendaHorarioFim.split(":")[0]);
-  
+
+      setStartHour(startTime);
+      setEndHour(endTime);
+
       const periodRange = periodRanges[period];
       const times = [];
-  
+
       for (let i = startTime; i < endTime; i++) {
         if (i >= periodRange.start && i < periodRange.end) {
           times.push(`${i.toString().padStart(2, "0")}:00`);
         }
       }
-  
+
       setAvailableTimes(times);
     } catch (error) {
       console.error("Error fetching available times:", error);
     }
   }
+
   function handlePeriodChange(event) {
     setPeriod(event.target.value);
   }

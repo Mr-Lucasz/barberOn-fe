@@ -25,6 +25,7 @@ export function BarberOption({ setTabNumber }) {
   }, []);
 
   useEffect(() => {
+    console.log("User in localStorage:", localStorage.getItem("user"));
     const start = (page - 1) * 4;
     const end = start + 4;
     setDisplayData(barbers.slice(start, end));
