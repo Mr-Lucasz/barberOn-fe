@@ -56,38 +56,40 @@ export function Agendamento() {
   useEffect(() => {
     const selectedDate = new Date(date);
     fetchAvailableTimes(barbeId, selectedDate);
-  }, [barbeId, date]);
+  }, [barbeId, date, period]);
 
   async function fetchAvailableTimes(barberId, selectedDate) {
     try {
       selectedDate.setDate(selectedDate.getDate() + 1);
-
+  
       const response = await fetch(
         `http://localhost:8080/api/barbeiros/${barberId}/agendas`
       );
       const schedules = await response.json();
-
+  
       const dayOfWeek = dayOfWeekMap[selectedDate.getDay()];
-
+  
       const daySchedule = schedules.find(
         (schedule) => schedule.agendaDiaSemana === dayOfWeek
       );
-
+  
       const startTime = parseInt(daySchedule.agendaHorarioInicio.split(":")[0]);
       const endTime = parseInt(daySchedule.agendaHorarioFim.split(":")[0]);
-
+  
+      const periodRange = periodRanges[period];
       const times = [];
-
+  
       for (let i = startTime; i < endTime; i++) {
-        times.push(`${i.toString().padStart(2, "0")}:00`);
+        if (i >= periodRange.start && i < periodRange.end) {
+          times.push(`${i.toString().padStart(2, "0")}:00`);
+        }
       }
-
+  
       setAvailableTimes(times);
     } catch (error) {
       console.error("Error fetching available times:", error);
     }
   }
-
   function handlePeriodChange(event) {
     setPeriod(event.target.value);
   }
