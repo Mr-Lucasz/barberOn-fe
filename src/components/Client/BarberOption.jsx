@@ -18,27 +18,9 @@ export function BarberOption({ setTabNumber }) {
   const [barbers, setBarbers] = useState([]);
 
   useEffect(() => {
-    const daysOfWeek = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-    const today = new Date();
-    const dayOfWeek = daysOfWeek[today.getDay()]; // Obter o dia da semana em português
-
     axios
       .get("http://localhost:8080/api/barbeiros")
-      .then((response) => {
-        const updatedBarbers = response.data.map((barbeiro) => {
-          const todayAgenda = barbeiro.agendas.find((agenda) => agenda.agendaDiaSemana === dayOfWeek);
-          console.log(todayAgenda);
-          if (todayAgenda && todayAgenda.statusId === 1) {
-            barbeiro.statusNome = todayAgenda.statusNome;
-          } else {
-            barbeiro.statusNome = "Indisponível";
-          }
-          
-          return barbeiro;
-        });
-        
-        setBarbers(updatedBarbers);
-      })
+      .then((response) => setBarbers(response.data))
       .catch((error) => console.error(error));
   }, []);
 
@@ -145,7 +127,7 @@ export function BarberOption({ setTabNumber }) {
               name={barbeiro.nome}
               imgClassName={styles.imgBarber}
               stars={barbeiro.mediaAvaliacao}
-              status={barbeiro.statusNome}
+              status={barbeiro.agendas[0].statusNome}
               onChooseServiceButtonClick={() => {
                 localStorage.setItem("barberId", barbeiro.id);
                 setTabNumber(1);
