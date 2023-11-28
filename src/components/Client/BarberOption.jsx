@@ -27,11 +27,11 @@ export function BarberOption({ setTabNumber }) {
       .then((response) => {
         const updatedBarbers = response.data.map((barbeiro) => {
           const todayAgenda = barbeiro.agendas.find((agenda) => agenda.agendaDiaSemana === dayOfWeek);
-          
+          console.log(todayAgenda);
           if (todayAgenda && todayAgenda.statusId === 1) {
-            barbeiro.status = "Disponível";
+            barbeiro.statusNome = todayAgenda.statusNome;
           } else {
-            barbeiro.status = "Indisponível";
+            barbeiro.statusNome = "Indisponível";
           }
           
           return barbeiro;
