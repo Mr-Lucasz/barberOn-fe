@@ -146,7 +146,7 @@ export function FormRegister({ showForgotPassword, barber }) {
   useEffect(() => {
     const fetchBarberData = async () => {
       try {
-        const barberDataString = localStorage.getItem('barberData');
+        const barberDataString = localStorage.getItem('user');
         if (barberDataString) {
           const barberData = JSON.parse(barberDataString);
           const barberId = barberData.id;
@@ -237,7 +237,10 @@ export function FormRegister({ showForgotPassword, barber }) {
       });
   
       console.log(response);
-  
+      if (response.data) {
+        localStorage.setItem('user', JSON.stringify(response.data));
+      }
+      
       if (formData.isBarberOnEmployee) {
         const userId = response.data.id;
         navigate(`/register/${userId}/step1`);

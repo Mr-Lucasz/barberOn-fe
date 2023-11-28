@@ -76,7 +76,7 @@ export function ServicoOption({ onReserveButtonClick }) {
   const [page, setPage] = useState(1);
   const [displayData, setDisplayData] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
-
+  
   const toggleServiceSelection = (id) => {
     if (selectedServices.includes(id)) {
       setSelectedServices(
@@ -85,6 +85,7 @@ export function ServicoOption({ onReserveButtonClick }) {
     } else {
       setSelectedServices([...selectedServices, id]);
     }
+    localStorage.setItem("serviceIds", JSON.stringify(selectedServices)); 
   };
 
   useEffect(() => {

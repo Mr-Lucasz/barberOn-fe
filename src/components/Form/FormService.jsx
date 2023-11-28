@@ -49,7 +49,7 @@ export function FormService({ isEditMode }) {
   };
 
   const postService = async (service) => {
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/servicos/${barberId}`
       : `http://localhost:8080/api/servicos/${id}`;
@@ -73,7 +73,7 @@ export function FormService({ isEditMode }) {
         servicoTempoHora: parseInt(serviceHours),
         servicoTempoMinuto: parseInt(serviceMinutes),
       };
-      const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+      const barberId = JSON.parse(localStorage.getItem("user")).id;
       const apiUrl = isEditMode
         ? `http://localhost:8080/api/servicos/${barberId}/${servicoId}`
         : `http://localhost:8080/api/servicos/${id}/${servicoId}`;
@@ -96,7 +96,7 @@ export function FormService({ isEditMode }) {
   };
 
   const getServices = async () => {
-    const barberId = JSON.parse(localStorage.getItem("barberData")).id;
+    const barberId = JSON.parse(localStorage.getItem("user")).id;
     const apiUrl = isEditMode
       ? `http://localhost:8080/api/servicos/${barberId}`
       : `http://localhost:8080/api/servicos/${id}`;
@@ -204,6 +204,7 @@ export function FormService({ isEditMode }) {
       addService();
     }
     setEditingService(null);
+    location.reload()
     setIsModalOpen(false);
   };
 
@@ -253,7 +254,7 @@ export function FormService({ isEditMode }) {
     // Busque os dados do barbeiro e armazene-os no localStorage
     const barberData = await getBarberData(id);
     if (barberData) {
-      localStorage.setItem("barberData", JSON.stringify(barberData));
+      localStorage.setItem("user", JSON.stringify(barberData));
     }
     localStorage.setItem("userData", JSON.stringify(user));
 

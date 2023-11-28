@@ -84,6 +84,14 @@ export function Agendamento() {
   const itemsPerPage = 8;
   const offset = (currentPage - 1) * itemsPerPage;
   const pagedData = mockTableData.slice(offset, offset + itemsPerPage);
+  const serviceIds = JSON.parse(localStorage.getItem("serviceIds"));
+  const barbeId = JSON.parse(localStorage.getItem("barberId"));
+
+  const handleClickAgendar = () => {
+    alert("Agendado com sucesso!");
+    console.log(serviceIds);
+    console.log(barbeId);
+  }
 
   return (
     <div className={styles.wrapperThree}>
@@ -111,7 +119,7 @@ export function Agendamento() {
           </select>
         </div>
         <div className={styles.btnAgendar}>
-          <button>AGENDAR</button>
+          <button onClick={handleClickAgendar}>AGENDAR</button>
         </div>
       </div>
 

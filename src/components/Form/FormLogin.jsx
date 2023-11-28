@@ -12,12 +12,10 @@ import { FormUtil } from "../util/FormUtil.jsx";
 export function FormLogin({ showForgotPassword }) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  // const [isBarberOnEmployee, setIsBarberOnEmployee] = useState(false);
-
+  const [isBarberOnEmployee, setIsBarberOnEmployee] = useState(false);
 
   const handleUserTypeChange = (event) => {
-    // setIsBarberOnEmployee(event.target.checked);
-    console.log(event.target.checked);
+    setIsBarberOnEmployee(event.target.checked);
   };
 
   const toggleShowPassword = () => {
@@ -44,14 +42,13 @@ export function FormLogin({ showForgotPassword }) {
     return true;
   };
 
-  const handleClickLogin = function (event) {
+  const handleClickLogin = async (event) => {
     event.preventDefault();
+
     try {
       const email = document.getElementById("outlined-email").value;
       const password = document.getElementById("outlined-password").value;
-      const isBarberOnEmployee = document.getElementById("userType").checked;
-      console.log(email);
-      console.log(password);
+      const userType = isBarberOnEmployee ? "BARBEIRO" : "CLIENTE";
 
       if (!validateForm(email, password)) {
         return;
@@ -60,16 +57,33 @@ export function FormLogin({ showForgotPassword }) {
       let user = {
         email: email,
         password: password,
-        isBarberOnEmployee: isBarberOnEmployee,
+        userType: userType,
       };
 
-      // Add your login logic here
-      console.log(user);
-      alert("Login realizado com sucesso");
-      navigate("/home");
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao realizar login");
+      }
+
+      const data = await response.json();
+
+      // Armazene os dados do usuário no storage do navegador
+      localStorage.setItem("user", JSON.stringify(data));
+
+      if (userType === "BARBEIRO") {
+        navigate("/home");
+      } else {
+        navigate("/inicial-page");
+      }
     } catch (error) {
-      console.log(error);
-      alert("Erro ao realizar login");
+      console.error("Erro ao realizar login:", error);
     }
   };
 
@@ -89,11 +103,11 @@ export function FormLogin({ showForgotPassword }) {
         </span>
 
         <div className={styles.userType}>
-
           <input
-            onChange={handleUserTypeChange}
+            onChange={(event) => handleUserTypeChange(event)}
             type="checkbox"
             className={styles.userTypeCheckbox}
+            id="userType"
           />
           <label className={styles.userTypeLabel} htmlFor="userType">
             Funcionário BarberOn

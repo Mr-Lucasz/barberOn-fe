@@ -161,7 +161,10 @@ export function BarberOption({ setTabNumber}) {
               imgClassName={styles.imgBarber}
               stars={barbeiro.stars}
               status={barbeiro.status}
-              onChooseServiceButtonClick={() => setTabNumber(1)}
+              onChooseServiceButtonClick={() => {
+                localStorage.setItem("barberId", barbeiro.id);
+                setTabNumber(1);
+              }}
             />
           ))
         )}
