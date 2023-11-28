@@ -43,4 +43,5 @@ BoxItemBarber.propTypes = {
   status: propTypes.string,
   name: propTypes.string,
   onChooseServiceButtonClick: propTypes.func,
+
 };

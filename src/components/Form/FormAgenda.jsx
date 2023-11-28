@@ -18,6 +18,7 @@ import { UserContext } from "../../context/UserContext.jsx";
 import axios from "axios";
 import { PauseFormAgenda } from "./Agenda/PauseFormAgenda.jsx";
 import PropTypes from "prop-types";
+import { useRef } from "react"; 
 
 import dayjs from "dayjs";
 
@@ -67,6 +68,7 @@ export function FormAgenda({ isEditMode }) {
   const [isChecked, setIsChecked] = useState({});
   const [agenda, setAgenda] = useState([]);
   const [isNewPause, setIsNewPause] = useState(false);
+  const hasPosted = useRef(false);
 
   const handleClickEdit = (dia) => {
     setSelectDay(dia.agendaDiaSemana);
@@ -357,7 +359,7 @@ export function FormAgenda({ isEditMode }) {
     axios
       .get(apiUrl)
       .then((response) => {
-        if (response.data.length === 0) {
+        if (response.data.length === 0  && !hasPosted.current) {
           const newAgendas = generateInitialAgendas();
           axios
             .post(
@@ -365,6 +367,7 @@ export function FormAgenda({ isEditMode }) {
               newAgendas
             )
             .then((response) => {
+              hasPosted.current = true;
               const sortedAgenda = response.data.sort(
                 (a, b) =>
                   dias.indexOf(a.agendaDiaSemana) -

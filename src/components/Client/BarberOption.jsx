@@ -24,6 +24,13 @@ export function BarberOption({ setTabNumber }) {
       .catch((error) => console.error(error));
   }, []);
 
+  useEffect(() => {
+    const start = (page - 1) * 4;
+    const end = start + 4;
+    setDisplayData(barbers.slice(start, end));
+  }, [barbers, page]);
+
+
   const getDayOfWeek = () => {
     const days = [
       "Domingo",
@@ -41,8 +48,10 @@ export function BarberOption({ setTabNumber }) {
 
   const getStatusForToday = (barbeiro) => {
     const today = getDayOfWeek();
-    const todayAgenda = barbeiro.agendas.find(agenda => agenda.agendaDiaSemana === today);
-    return todayAgenda ? todayAgenda.statusNome : 'Indisponível';
+    const todayAgenda = barbeiro.agendas.find(
+      (agenda) => agenda.agendaDiaSemana === today
+    );
+    return todayAgenda ? todayAgenda.statusNome : "Indisponível";
   };
 
   const handleSearchChange = (event) => {
@@ -137,12 +146,12 @@ export function BarberOption({ setTabNumber }) {
           <img src={iconSearch} alt="filter" />
         </button>
       </div>
-
       <div className={styles.barberItem}>
-        {barbers.length === 0 ? (
+        {displayData.length === 0 ? (
           <div className={styles.noResults}>Nenhum resultado</div>
         ) : (
-          barbers.map((barbeiro) => (
+          displayData.map((barbeiro) => (
+            
             <BoxItemBarber
               key={barbeiro.id}
               name={barbeiro.nome}
@@ -153,6 +162,7 @@ export function BarberOption({ setTabNumber }) {
                 localStorage.setItem("barberId", barbeiro.id);
                 setTabNumber(1);
               }}
+     
             />
           ))
         )}
